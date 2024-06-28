@@ -20,22 +20,23 @@ kotlin {
         iosSimulatorArm64()
     ).forEach { iosTarget ->
         iosTarget.binaries.framework {
-            baseName = "shared"
+            baseName = "model"
             isStatic = true
         }
     }
 
     sourceSets {
         commonMain.dependencies {
-            implementation(projects.ui)
-            implementation(projects.core.di)
-            implementation(libs.koin.core)
+            //put your multiplatform dependencies here
+        }
+        commonTest.dependencies {
+            implementation(libs.kotlin.test)
         }
     }
 }
 
 android {
-    namespace = "com.pokemon.shared"
+    namespace = "com.pokemon.model"
     compileSdk = 34
     defaultConfig {
         minSdk = 24

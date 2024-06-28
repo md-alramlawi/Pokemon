@@ -20,22 +20,32 @@ kotlin {
         iosSimulatorArm64()
     ).forEach { iosTarget ->
         iosTarget.binaries.framework {
-            baseName = "shared"
+            baseName = "di"
             isStatic = true
         }
     }
 
     sourceSets {
+        androidMain.dependencies {
+            implementation(libs.ktor.client.okhttp)
+        }
+        iosMain.dependencies {
+            implementation(libs.ktor.client.darwin)
+        }
         commonMain.dependencies {
+            implementation(projects.core.network)
+            implementation(projects.core.data)
             implementation(projects.ui)
-            implementation(projects.core.di)
             implementation(libs.koin.core)
+            implementation(libs.ktor.client.core)
+            implementation(libs.ktor.client.content.negotiation)
+            implementation(libs.ktor.serialization.kotlinx.json)
         }
     }
 }
 
 android {
-    namespace = "com.pokemon.shared"
+    namespace = "com.pokemon.di"
     compileSdk = 34
     defaultConfig {
         minSdk = 24
