@@ -22,37 +22,27 @@ kotlin {
         iosSimulatorArm64()
     ).forEach { iosTarget ->
         iosTarget.binaries.framework {
-            baseName = "shared"
+            baseName = "core-ui"
             isStatic = true
         }
     }
 
     sourceSets {
-        all {
-            languageSettings {
-                optIn("androidx.compose.material3.ExperimentalMaterial3Api")
-                optIn("org.jetbrains.compose.resources.ExperimentalResourceApi")
-            }
-        }
         commonMain.dependencies {
-            implementation(projects.feature.home)
-            implementation(projects.feature.details)
-            implementation(projects.core.network)
-            implementation(projects.core.common)
-            implementation(projects.core.data)
-            implementation(projects.core.ui)
-            implementation(libs.koin.core)
-
             implementation(compose.runtime)
             implementation(compose.foundation)
+            implementation(compose.material3)
+            implementation(compose.ui)
+            implementation(compose.components.resources)
+            implementation(compose.components.uiToolingPreview)
 
-            implementation(libs.navigation.compose)
+            implementation(libs.kamel)
         }
     }
 }
 
 android {
-    namespace = "com.pokemon.shared"
+    namespace = "com.pokemon.core.ui"
     compileSdk = 34
     defaultConfig {
         minSdk = 24

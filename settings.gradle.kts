@@ -29,9 +29,12 @@ dependencyResolutionManagement {
 rootProject.name = "Pokemon"
 include(":androidApp")
 include(":shared")
-include(":ui")
+
+include(":feature:home")
+include(":feature:details")
+
 include(":core:model")
 include(":core:common")
 include(":core:network")
 include(":core:data")
-include(":core:di")
+include(":core:ui")

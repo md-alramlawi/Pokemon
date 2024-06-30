@@ -22,37 +22,39 @@ kotlin {
         iosSimulatorArm64()
     ).forEach { iosTarget ->
         iosTarget.binaries.framework {
-            baseName = "shared"
+            baseName = "feature-home"
             isStatic = true
         }
     }
 
     sourceSets {
-        all {
-            languageSettings {
-                optIn("androidx.compose.material3.ExperimentalMaterial3Api")
-                optIn("org.jetbrains.compose.resources.ExperimentalResourceApi")
-            }
-        }
         commonMain.dependencies {
-            implementation(projects.feature.home)
             implementation(projects.feature.details)
-            implementation(projects.core.network)
+            implementation(projects.core.model)
             implementation(projects.core.common)
             implementation(projects.core.data)
             implementation(projects.core.ui)
-            implementation(libs.koin.core)
 
             implementation(compose.runtime)
             implementation(compose.foundation)
+            implementation(compose.material3)
+            implementation(compose.ui)
+            implementation(compose.components.resources)
+            implementation(compose.components.uiToolingPreview)
 
-            implementation(libs.navigation.compose)
+            implementation(libs.koin.core)
+            implementation(libs.koin.compose)
+            implementation(libs.lifecycle.viewmodel.compose)
+        }
+
+        androidMain.dependencies {
+            implementation(libs.koin.android)
         }
     }
 }
 
 android {
-    namespace = "com.pokemon.shared"
+    namespace = "com.pokemon.feature.home"
     compileSdk = 34
     defaultConfig {
         minSdk = 24

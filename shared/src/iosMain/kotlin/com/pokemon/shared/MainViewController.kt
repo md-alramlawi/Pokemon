@@ -1,5 +1,6 @@
 package com.pokemon.shared
 
-import com.pokemon.ui.UiViewController
+import androidx.compose.ui.window.ComposeUIViewController
 
-fun MainViewController() = UiViewController()
+
+fun MainViewController() = ComposeUIViewController { App() }
