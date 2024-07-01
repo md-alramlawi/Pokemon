@@ -1,6 +1,6 @@
 package com.pokemon.network.service.api
 
-import com.pokemon.network.util.Constant
+import com.pokemon.network.util.ApiConstant
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.request.get
@@ -12,12 +12,12 @@ import kotlinx.serialization.json.Json
 class KtorPokemonApi(private val client: HttpClient) : PokemonApi {
 
     override suspend fun getPokemonListing(): HttpResponse {
-        val endPoint = Constant.BaseUrl + "pokemon/"
+        val endPoint = ApiConstant.BASE_URL + "pokemon/"
         return client.get(endPoint)
     }
 
     override suspend fun getPokemon(name: String): HttpResponse {
-        val endPoint = Constant.BaseUrl + "pokemon/$name"
+        val endPoint = ApiConstant.BASE_URL + "pokemon/$name"
         return client.get(endPoint)
     }
 }

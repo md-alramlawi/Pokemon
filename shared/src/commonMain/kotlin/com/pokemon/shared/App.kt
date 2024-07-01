@@ -2,7 +2,6 @@ package com.pokemon.shared
 
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -17,7 +16,7 @@ import pokemon.feature.home.HomeScreen
 
 @Composable
 fun App() {
-    PokemonTheme(darkTheme = isSystemInDarkTheme()) {
+    PokemonTheme(darkTheme = false) {
         NavHostMain()
     }
 }
@@ -55,12 +54,17 @@ private fun NavHostMain(navController: NavHostController = rememberNavController
     ) {
         composable(route = "home") {
             HomeScreen(
-                onClickItem = { navController.navigate("details") }
+                onClickItem = {
+                    navController.navigate("details") {
+                        this.launchSingleTop = true
+                        this.restoreState = true
+                    }
+                }
             )
         }
         composable(route = "details") {
             DetailsScreen(
-                onBack = navController::navigateUp
+                onBack = navController::popBackStack
             )
         }
     }

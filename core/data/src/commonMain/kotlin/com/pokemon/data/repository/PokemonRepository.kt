@@ -7,7 +7,10 @@ import kotlinx.coroutines.flow.StateFlow
 
 interface PokemonRepository {
     val current: StateFlow<String>
+    val searchQuery: StateFlow<String>
     suspend fun setCurrent(name: String): Result<Unit>
     suspend fun getPokemonList(): Result<List<SimplePokemon>>
+    suspend fun search(query: String): List<SimplePokemon>
+
     suspend fun getPokemon(name: String): Result<Pokemon>
 }

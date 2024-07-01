@@ -1,18 +1,19 @@
 package pokemon.feature.home
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.systemBars
-import androidx.compose.foundation.layout.windowInsetsPadding
-import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -22,6 +23,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import com.pokemon.model.SimplePokemon
@@ -32,6 +34,7 @@ import com.pokemon.ui.composable.LoadingOverlay
 import com.pokemon.ui.theme.PokemonTheme
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.koinInject
+import pokemon.feature.home.composable.AppHeaderWithShadow
 
 @Composable
 fun HomeScreen(
@@ -39,7 +42,7 @@ fun HomeScreen(
     onClickItem: () -> Unit
 ) {
 
-    val list by viewModel.list.collectAsState()
+    val state by viewModel.state.collectAsState()
     val uiEvent by viewModel.uiEvent.collectAsState()
 
     LaunchedEffect(Unit) {
@@ -47,11 +50,13 @@ fun HomeScreen(
     }
 
     PokemonListContent(
-        list = list,
+        list = state.list,
         onClickItem = {
             viewModel.setCurrent(it.name)
             onClickItem()
-        }
+        },
+        onSearch = viewModel::search,
+        searchQuery = state.query
     )
 
     when (uiEvent) {
@@ -72,55 +77,64 @@ fun HomeScreen(
 private fun PokemonListContent(
     list: List<SimplePokemon>,
     onClickItem: (SimplePokemon) -> Unit,
+    searchQuery: String,
+    onSearch: (String) -> Unit
 ) {
-    Surface(
-        modifier = Modifier.fillMaxSize(),
-        color = MaterialTheme.colorScheme.background
+    Box(
+        modifier = Modifier.fillMaxSize()
+            .background(Color.Black),
+        contentAlignment = Alignment.TopCenter
     ) {
-        LazyColumn(
-            modifier = Modifier.windowInsetsPadding(WindowInsets.systemBars),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
+        LazyVerticalGrid(
+            columns = GridCells.Fixed(3),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            contentPadding = PaddingValues(
+                start = 10.dp,
+                end = 10.dp,
+                top = 210.dp,
+                bottom = 20.dp
+            )
         ) {
-
             items(list, key = { it.name }) { item ->
                 PokemonItem(pokemon = item, onClick = onClickItem)
             }
         }
+
+        AppHeaderWithShadow(
+            modifier = Modifier.height(200.dp),
+            searchQuery = searchQuery,
+            onSearch = onSearch
+        )
     }
 }
 
 @Composable
 private fun PokemonItem(pokemon: SimplePokemon, onClick: (SimplePokemon) -> Unit) {
-    fun pokemonIcon(id: String): String =
-        "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-vii/icons/$id.png"
-
     Surface(
-        shadowElevation = 2.dp,
-        modifier = Modifier
-            .padding(horizontal = 8.dp, vertical = 4.dp)
-            .fillMaxWidth()
-            .wrapContentHeight()
-            .clickable { onClick(pokemon) }
+        shape = MaterialTheme.shapes.large,
+        modifier = Modifier.clickable { onClick(pokemon) }
     ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp)
+        Column(
+            modifier = Modifier.fillMaxWidth().padding(10.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            AppImage(
-                modifier = Modifier.size(42.dp),
-                imageUrl = pokemonIcon(pokemon.id),
-                contentDescription = pokemon.name,
-                contentScale = ContentScale.Crop
+            Text(
+                modifier = Modifier.align(Alignment.End),
+                text = "#${pokemon.id}",
+                style = MaterialTheme.typography.labelMedium
             )
-
+            AppImage(
+                modifier = Modifier.fillMaxWidth(),
+                imageUrl = pokemon.url,
+                contentDescription = pokemon.name,
+                contentScale = ContentScale.FillWidth
+            )
+            Spacer(Modifier.height(8.dp))
             Text(
                 text = pokemon.name,
-                style = MaterialTheme.typography.headlineMedium,
+                style = MaterialTheme.typography.titleMedium,
                 modifier = Modifier
-                    .padding(start = 12.dp)
-                    .align(Alignment.CenterVertically)
             )
         }
     }
@@ -129,10 +143,10 @@ private fun PokemonItem(pokemon: SimplePokemon, onClick: (SimplePokemon) -> Unit
 
 @Preview
 @Composable
-private fun PokemonPreview(){
+private fun PokemonPreview() {
     PokemonTheme {
         PokemonItem(
-            pokemon = SimplePokemon("pidgy", ""),
+            pokemon = SimplePokemon("2", "pidgy", ""),
             onClick = {}
         )
     }
