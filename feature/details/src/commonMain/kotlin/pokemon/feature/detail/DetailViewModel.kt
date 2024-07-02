@@ -19,7 +19,6 @@ class DetailViewModel(
     private var _data: MutableStateFlow<Pokemon?> = MutableStateFlow(null)
     val data = _data.asStateFlow()
 
-
     fun getDetails() {
         viewModelScope.launch(ioDispatcher) {
             showLoader(true)

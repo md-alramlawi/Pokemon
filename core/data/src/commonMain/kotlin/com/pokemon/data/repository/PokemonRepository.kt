@@ -37,7 +37,7 @@ class PokemonRepositoryImpl(private val dataSource: PokemonDataSource) : Pokemon
         if (pokemonList.isNotEmpty()) {
             return Result.Success(search(searchQuery.value))
         }
-        delay(1_000)
+        delay(2_000)
         return dataSource.getPokemonListing().mapSuccess { listing ->
             listing.results.map { it.toPokemon }.also {
                 pokemonList.clear()
@@ -52,7 +52,7 @@ class PokemonRepositoryImpl(private val dataSource: PokemonDataSource) : Pokemon
     }
 
     override suspend fun getPokemon(name: String): Result<Pokemon> {
-        delay(1_000)
+        delay(2_000)
         return dataSource.getPokemon(name).mapSuccess { dto ->
             dto.toPokemon
         }

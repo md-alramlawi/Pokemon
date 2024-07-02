@@ -17,7 +17,9 @@ open class BaseViewModel(
     private val _uiEvents = MutableStateFlow<UIEvent>(UIEvent.Idle)
     val uiEvents = _uiEvents.asStateFlow()
 
-    open fun onReleaseScreenState() {
+    init { onReleaseScreenState() }
+
+    fun onReleaseScreenState() {
         viewModelScope.launch(ioDispatcher) {
             _uiEvents.emit(UIEvent.Idle)
         }

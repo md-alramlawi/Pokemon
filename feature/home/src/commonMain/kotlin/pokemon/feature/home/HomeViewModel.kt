@@ -21,15 +21,6 @@ class HomeViewModel(
         MutableStateFlow(State(query = pokemonRepository.searchQuery.value))
     val state = _state.asStateFlow()
 
-    init {
-        println("HomeViewModel initialized -> ${_state.value}")
-    }
-
-    override fun onCleared() {
-        super.onCleared()
-        println("HomeViewModel cleared")
-    }
-
     fun getList() {
         viewModelScope.launch(ioDispatcher) {
             showLoader(true)

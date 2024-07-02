@@ -4,8 +4,6 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidLibrary)
-    alias(libs.plugins.jetbrainsCompose)
-    alias(libs.plugins.compose.compiler)
 }
 
 kotlin {
@@ -22,40 +20,23 @@ kotlin {
         iosSimulatorArm64()
     ).forEach { iosTarget ->
         iosTarget.binaries.framework {
-            baseName = "feature-home"
+            baseName = "datastore"
             isStatic = true
         }
     }
 
     sourceSets {
         commonMain.dependencies {
-            implementation(projects.feature.details)
             implementation(projects.core.model)
             implementation(projects.core.common)
-            implementation(projects.core.data)
-            implementation(projects.core.ui)
 
-            implementation(compose.runtime)
-            implementation(compose.foundation)
-            implementation(compose.material3)
-            implementation(compose.ui)
-            implementation(compose.components.resources)
-            implementation(compose.components.uiToolingPreview)
-
-            implementation(libs.koin.core)
-            implementation(libs.koin.compose)
-
-            implementation(libs.lifecycle.viewmodel.compose)
-        }
-
-        androidMain.dependencies {
-            implementation(libs.koin.android)
+            implementation(libs.androidx.dataStore.preferences)
         }
     }
 }
 
 android {
-    namespace = "com.pokemon.feature.home"
+    namespace = "com.pokemon.datastore"
     compileSdk = 34
     defaultConfig {
         minSdk = 24

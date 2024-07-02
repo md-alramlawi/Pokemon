@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -19,7 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.pokemon.model.SimplePokemon
 import com.pokemon.ui.composable.ErrorDialog
-import com.pokemon.ui.composable.LoadingOverlay
+import com.pokemon.ui.composable.ShimmerEffect
 import com.pokemon.ui.state.UIEvent
 import org.koin.compose.koinInject
 import pokemon.feature.home.composable.AppHeaderWithShadow
@@ -39,6 +40,7 @@ fun HomeScreen(
     }
 
     PokemonListContent(
+        isLoading = uiEvent is UIEvent.Loading,
         list = state.list,
         onClickItem = {
             viewModel.setCurrent(it.name)
@@ -49,10 +51,6 @@ fun HomeScreen(
     )
 
     when (uiEvent) {
-        is UIEvent.Loading -> {
-            LoadingOverlay()
-        }
-
         is UIEvent.Error -> {
             ErrorDialog((uiEvent as UIEvent.Error).message) { viewModel.onReleaseScreenState() }
         }
@@ -64,6 +62,7 @@ fun HomeScreen(
 
 @Composable
 private fun PokemonListContent(
+    isLoading: Boolean,
     list: List<SimplePokemon>,
     onClickItem: (SimplePokemon) -> Unit,
     searchQuery: String,
@@ -85,8 +84,22 @@ private fun PokemonListContent(
                 bottom = 20.dp
             )
         ) {
-            items(list, key = { it.name }) { item ->
-                PokemonItem(pokemon = item, onClick = onClickItem)
+            if (isLoading) {
+                items(12) {
+                    ShimmerEffect(
+                        modifier = Modifier.fillMaxWidth().height(200.dp),
+                        shape = MaterialTheme.shapes.medium
+                    )
+                }
+                return@LazyVerticalGrid
+            }
+            items(list, key = { it.name }) { pokemon ->
+                PokemonItem(
+                    id = pokemon.id,
+                    name = pokemon.name,
+                    imageUrl = pokemon.url,
+                    onClick = { onClickItem(pokemon) }
+                )
             }
         }
 

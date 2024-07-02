@@ -35,6 +35,7 @@ include(":feature:details")
 
 include(":core:model")
 include(":core:common")
+include(":core:datastore")
 include(":core:network")
 include(":core:data")
 include(":core:ui")

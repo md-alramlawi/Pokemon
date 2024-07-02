@@ -14,33 +14,38 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
-import com.pokemon.model.SimplePokemon
 import com.pokemon.ui.composable.AppImage
 
 @Composable
-internal fun PokemonItem(pokemon: SimplePokemon, onClick: (SimplePokemon) -> Unit) {
+internal fun PokemonItem(
+    id: String,
+    name: String,
+    imageUrl: String,
+    onClick: () -> Unit
+) {
     Surface(
-        shape = MaterialTheme.shapes.medium,
-        modifier = Modifier.clickable { onClick(pokemon) }
+        shape = MaterialTheme.shapes.medium
     ) {
         Column(
-            modifier = Modifier.fillMaxWidth().padding(10.dp),
+            modifier = Modifier
+                .clickable { onClick() }
+                .fillMaxWidth().padding(10.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
                 modifier = Modifier.align(Alignment.End),
-                text = "#${pokemon.id}",
+                text = "#$id",
                 style = MaterialTheme.typography.labelMedium
             )
             AppImage(
-                modifier = Modifier.fillMaxWidth(),
-                imageUrl = pokemon.url,
-                contentDescription = pokemon.name,
+                modifier = Modifier.height(100.dp).fillMaxWidth(),
+                imageUrl = imageUrl,
+                contentDescription = name,
                 contentScale = ContentScale.FillWidth
             )
             Spacer(Modifier.height(8.dp))
             Text(
-                text = pokemon.name,
+                text = name,
                 style = MaterialTheme.typography.titleMedium,
                 modifier = Modifier
             )
