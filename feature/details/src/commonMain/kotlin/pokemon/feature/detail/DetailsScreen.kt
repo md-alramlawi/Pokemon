@@ -32,12 +32,12 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.pokemon.model.Pokemon
-import com.pokemon.model.UIEvent
 import com.pokemon.ui.composable.AppImage
 import com.pokemon.ui.composable.ErrorDialog
 import com.pokemon.ui.composable.LoadingOverlay
 import com.pokemon.ui.painter.BackgroundsPainterMap
 import com.pokemon.ui.painter.backPainter
+import com.pokemon.ui.state.UIEvent
 import com.pokemon.ui.theme.roundedBottomShape
 import org.koin.compose.koinInject
 import pokemon.feature.detail.component.PropertyItem
@@ -51,7 +51,7 @@ fun DetailsScreen(
     onBack: () -> Unit
 ) {
     val pokemonDate by viewModel.data.collectAsState()
-    val uiEvent by viewModel.uiEvent.collectAsState()
+    val uiEvent by viewModel.uiEvents.collectAsState()
     LaunchedEffect(Unit) {
         viewModel.getDetails()
     }
@@ -62,8 +62,8 @@ fun DetailsScreen(
             LoadingOverlay()
         }
 
-        is UIEvent.Failure -> {
-            ErrorDialog((uiEvent as UIEvent.Failure).message) { viewModel.resetUIEvent() }
+        is UIEvent.Error -> {
+            ErrorDialog((uiEvent as UIEvent.Error).message) { viewModel.onReleaseScreenState() }
         }
 
         else -> {}
@@ -84,7 +84,7 @@ private fun PokemonDetailsContent(pokemonData: Pokemon?, onBack: () -> Unit = {}
                 item {
                     Box(
                         modifier = Modifier.fillMaxWidth()
-                            .height(270.dp)
+                            .height(300.dp)
                             .clip(roundedBottomShape)
                             .background(Color.White),
                     ) {

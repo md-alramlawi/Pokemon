@@ -18,9 +18,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.pokemon.model.SimplePokemon
-import com.pokemon.model.UIEvent
 import com.pokemon.ui.composable.ErrorDialog
 import com.pokemon.ui.composable.LoadingOverlay
+import com.pokemon.ui.state.UIEvent
 import org.koin.compose.koinInject
 import pokemon.feature.home.composable.AppHeaderWithShadow
 import pokemon.feature.home.composable.PokemonItem
@@ -32,7 +32,7 @@ fun HomeScreen(
 ) {
 
     val state by viewModel.state.collectAsState()
-    val uiEvent by viewModel.uiEvent.collectAsState()
+    val uiEvent by viewModel.uiEvents.collectAsState()
 
     LaunchedEffect(Unit) {
         viewModel.getList()
@@ -53,8 +53,8 @@ fun HomeScreen(
             LoadingOverlay()
         }
 
-        is UIEvent.Failure -> {
-            ErrorDialog((uiEvent as UIEvent.Failure).message) { viewModel.resetUIEvent() }
+        is UIEvent.Error -> {
+            ErrorDialog((uiEvent as UIEvent.Error).message) { viewModel.onReleaseScreenState() }
         }
 
         else -> {}

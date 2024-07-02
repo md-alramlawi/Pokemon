@@ -1,26 +1,25 @@
 package pokemon.feature.home
 
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.pokemon.common.result.mapError
 import com.pokemon.common.result.mapSuccess
 import com.pokemon.data.repository.PokemonRepository
 import com.pokemon.model.SimplePokemon
-import com.pokemon.model.UIEvent
+import com.pokemon.ui.BaseViewModel
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class HomeViewModel(
-    private val pokemonRepository: PokemonRepository
-) : ViewModel() {
+    private val pokemonRepository: PokemonRepository,
+    private val ioDispatcher: CoroutineDispatcher
+) : BaseViewModel(ioDispatcher) {
+
     private var _state: MutableStateFlow<State> =
         MutableStateFlow(State(query = pokemonRepository.searchQuery.value))
     val state = _state.asStateFlow()
-
-    private var _uiEvent: MutableStateFlow<UIEvent> = MutableStateFlow(UIEvent.Idle)
-    val uiEvent = _uiEvent.asStateFlow()
 
     init {
         println("HomeViewModel initialized -> ${_state.value}")
@@ -32,28 +31,22 @@ class HomeViewModel(
     }
 
     fun getList() {
-        viewModelScope.launch {
-            _uiEvent.emit(UIEvent.Loading)
+        viewModelScope.launch(ioDispatcher) {
+            showLoader(true)
             pokemonRepository.getPokemonList()
-                .also {
-                    _uiEvent.emit(UIEvent.Idle)
-                }
+                .also { showLoader(false) }
                 .mapSuccess { list ->
                     _state.update { s -> s.copy(list = list) }
                 }.mapError {
-                    _uiEvent.emit(UIEvent.Failure(it))
+                    fireErrorMessage(it)
                 }
         }
     }
 
     fun setCurrent(name: String) {
-        viewModelScope.launch {
+        viewModelScope.launch(ioDispatcher) {
             pokemonRepository.setCurrent(name)
         }
-    }
-
-    fun resetUIEvent() {
-        viewModelScope.launch { _uiEvent.emit(UIEvent.Idle) }
     }
 
     fun search(query: String) {
