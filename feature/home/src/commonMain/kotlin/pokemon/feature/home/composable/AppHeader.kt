@@ -14,10 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsPadding
-import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -33,6 +30,8 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.pokemon.ui.painter.closePainter
+import com.pokemon.ui.theme.roundedBottomShape
 
 @Composable
 fun AppHeaderWithShadow(
@@ -49,7 +48,7 @@ fun AppHeaderWithShadow(
                 .background(
                     brush = Brush.verticalGradient(
                         colors = listOf(
-                            Color.Black,
+                            MaterialTheme.colorScheme.background,
                             Color.Transparent
                         )
                     )
@@ -64,12 +63,8 @@ fun AppHeader(
     searchQuery: String,
     onSearch: (String) -> Unit
 ) {
-    val roundedBottomShape = MaterialTheme.shapes.extraLarge.copy(
-        topEnd = CornerSize(0.dp),
-        topStart = CornerSize(0.dp)
-    )
     Surface(
-        modifier = modifier.background(Color.Black),
+        modifier = modifier.background(MaterialTheme.colorScheme.background),
         shape = roundedBottomShape,
         color = Color.Red
     ) {
@@ -83,8 +78,8 @@ fun AppHeader(
         ) {
             Text(
                 text = "Pokedex",
-                style = MaterialTheme.typography.headlineLarge,
-                color = Color.White,
+                style = MaterialTheme.typography.displayMedium,
+                color = Color.Yellow,
                 fontWeight = FontWeight.Bold
             )
             AppSearchBar(
@@ -138,7 +133,7 @@ private fun AppSearchBar(
                     onClick = { onSearch("") }
                 ) {
                     Icon(
-                        imageVector = Icons.Filled.Clear,
+                        painter = closePainter(),
                         contentDescription = "Clear Search",
                         tint = Color.Gray
                     )

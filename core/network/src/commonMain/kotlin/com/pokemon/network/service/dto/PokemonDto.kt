@@ -13,7 +13,7 @@ data class PokemonDto(
     val forms: List<Form>,
     @SerialName("game_indices")
     val gameIndices: List<GameIndice>,
-    val height: Int,
+    val height: Double,
     val id: Int,
     @SerialName("is_default")
     val isDefault: Boolean,
@@ -26,7 +26,7 @@ data class PokemonDto(
     val sprites: Sprites,
     val stats: List<Stat>,
     val types: List<Type>,
-    val weight: Int
+    val weight: Double
 ) {
     @Serializable
     data class Ability(

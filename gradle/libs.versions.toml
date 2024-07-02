@@ -19,7 +19,7 @@ ktor = "2.3.11"
 lifecycleViewmodelCompose = "2.8.0"
 navigationCompose = "2.7.0-alpha07"
 voyager = "1.0.0"
-accompanist = "0.32.0"
+accompanist = "0.34.0"
 androidxLifecycle = "2.8.2"
 
 [libraries]
@@ -56,6 +56,7 @@ lifecycle-viewmodel-compose = { module = "org.jetbrains.androidx.lifecycle:lifec
 navigation-compose = { module = "org.jetbrains.androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
 voyager-koin = { module = "cafe.adriel.voyager:voyager-koin", version.ref = "voyager" }
 voyager-navigator = { module = "cafe.adriel.voyager:voyager-navigator", version.ref = "voyager" }
+accompanist-systemuicontroller = { group = "com.google.accompanist", name = "accompanist-systemuicontroller", version.ref = "accompanist" }
 
 
 
