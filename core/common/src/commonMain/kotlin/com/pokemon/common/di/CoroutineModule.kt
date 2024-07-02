@@ -11,15 +11,15 @@ import org.koin.dsl.module
 // Define the ApplicationScope qualifier
 val ApplicationScope = named("ApplicationScope")
 
-enum class AppDispatchers(val raw: String) {
-    Default("DefaultDispatcher"),
-    IO("IoDispatcher")
+enum class AppDispatchers {
+    Default,
+    IO
 }
 
 object CoroutineModule {
     operator fun invoke() = module {
-        single(named(AppDispatchers.IO.raw)) { Dispatchers.IO }
-        single(named(AppDispatchers.Default.raw)) { Dispatchers.Default }
+        single(named(AppDispatchers.IO)) { Dispatchers.IO }
+        single(named(AppDispatchers.Default)) { Dispatchers.Default }
 
         single(ApplicationScope) {
             CoroutineScope(SupervisorJob() + get<CoroutineDispatcher>(named(AppDispatchers.Default)))

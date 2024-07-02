@@ -4,7 +4,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
@@ -84,7 +83,7 @@ private fun PokemonDetailsContent(pokemonData: Pokemon?, onBack: () -> Unit = {}
                 item {
                     Box(
                         modifier = Modifier.fillMaxWidth()
-                            .height(300.dp)
+                            .height(350.dp)
                             .clip(roundedBottomShape)
                             .background(Color.White),
                     ) {
@@ -142,12 +141,12 @@ private fun PokemonDetailsContent(pokemonData: Pokemon?, onBack: () -> Unit = {}
                 }
 
                 item {
-                    Column(
-                        modifier = Modifier.padding(horizontal = 20.dp)
+                    Row(
+                        modifier = Modifier.padding(horizontal = 20.dp),
+                        horizontalArrangement = Arrangement.spacedBy(20.dp)
                     ) {
-                        PropertyItem(title = "Weight :", content = "${pokemon.weight} KG")
-                        Spacer(Modifier.height(8.dp))
-                        PropertyItem(title = "Height :", content = "${pokemon.height} CM")
+                        PropertyItem(label = "weight", content = "${pokemon.weight} KG")
+                        PropertyItem(label = "height", content = "${pokemon.height} CM")
                     }
                 }
 

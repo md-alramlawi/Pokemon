@@ -1,7 +1,6 @@
 package pokemon.feature.detail.component
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -9,30 +8,27 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
 
 
 @Composable
 internal fun PropertyItem(
     modifier: Modifier = Modifier,
-    title: String,
+    label: String,
     content: String
 ) {
-    Row(
+    Column(
         modifier = modifier,
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-        verticalAlignment = Alignment.CenterVertically
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = title,
-            fontWeight = FontWeight.Normal,
-            style = MaterialTheme.typography.titleMedium,
+            text = content,
+            fontWeight = FontWeight.ExtraBold,
+            style = MaterialTheme.typography.titleLarge,
             color = Color.White
         )
-
         Text(
-            text = content,
-            fontWeight = FontWeight.Bold,
+            text = label,
+            fontWeight = FontWeight.Normal,
             style = MaterialTheme.typography.titleSmall,
             color = Color.White
         )

@@ -13,8 +13,8 @@ import pokemon.feature.home.HomeViewModel
 
 object ViewModelsModule {
     operator fun invoke() = module {
-        viewModelDefinition { HomeViewModel(get(), get(named(AppDispatchers.IO.raw))) }
-        viewModelDefinition { DetailViewModel(get(), get(named(AppDispatchers.IO.raw))) }
+        viewModelDefinition { HomeViewModel(get(), get(named(AppDispatchers.IO))) }
+        viewModelDefinition { DetailViewModel(get(), get(named(AppDispatchers.IO))) }
     }
 }
 
