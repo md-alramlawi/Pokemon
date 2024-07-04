@@ -36,7 +36,7 @@ kotlin {
 }
 
 android {
-    namespace = "com.pokemon.model"
+    namespace = "com.model"
     compileSdk = 34
     defaultConfig {
         minSdk = 24

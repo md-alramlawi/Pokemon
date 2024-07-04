@@ -18,10 +18,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.pokemon.model.SimplePokemon
-import com.pokemon.ui.composable.ErrorDialog
-import com.pokemon.ui.composable.ShimmerEffect
-import com.pokemon.ui.state.UIEvent
+import model.SimplePokemon
+import ui.composable.AppErrorDialog
+import ui.composable.ShimmerEffect
+import ui.state.UIEvent
 import org.koin.compose.koinInject
 import pokemon.feature.home.composable.AppHeaderWithShadow
 import pokemon.feature.home.composable.PokemonItem
@@ -29,10 +29,12 @@ import pokemon.feature.home.composable.PokemonItem
 @Composable
 fun HomeScreen(
     viewModel: HomeViewModel = koinInject(),
-    onClickItem: () -> Unit
+    onClickItem: () -> Unit,
+    onGoFavorite: () -> Unit
 ) {
 
     val state by viewModel.state.collectAsState()
+    val bookmarkIds by viewModel.bookmarkIds.collectAsState()
     val uiEvent by viewModel.uiEvents.collectAsState()
 
     LaunchedEffect(Unit) {
@@ -42,17 +44,20 @@ fun HomeScreen(
     PokemonListContent(
         isLoading = uiEvent is UIEvent.Loading,
         list = state.list,
+        bookmarkIds = bookmarkIds,
         onClickItem = {
-            viewModel.setCurrent(it.name)
+            viewModel.setCurrent(it.id)
             onClickItem()
         },
+        onClickSave = { viewModel.bookmark(it.id) },
         onSearch = viewModel::search,
-        searchQuery = state.query
+        searchQuery = state.query,
+        onGoFavorite = onGoFavorite
     )
 
     when (uiEvent) {
         is UIEvent.Error -> {
-            ErrorDialog((uiEvent as UIEvent.Error).message) { viewModel.onReleaseScreenState() }
+            AppErrorDialog((uiEvent as UIEvent.Error).message) { viewModel.onReleaseScreenState() }
         }
 
         else -> {}
@@ -64,9 +69,12 @@ fun HomeScreen(
 private fun PokemonListContent(
     isLoading: Boolean,
     list: List<SimplePokemon>,
+    bookmarkIds: List<String>,
     onClickItem: (SimplePokemon) -> Unit,
+    onClickSave: (SimplePokemon) -> Unit,
     searchQuery: String,
-    onSearch: (String) -> Unit
+    onSearch: (String) -> Unit,
+    onGoFavorite: () -> Unit
 ) {
     Box(
         modifier = Modifier.fillMaxSize()
@@ -98,7 +106,9 @@ private fun PokemonListContent(
                     id = pokemon.id,
                     name = pokemon.name,
                     imageUrl = pokemon.url,
-                    onClick = { onClickItem(pokemon) }
+                    isFavorite = bookmarkIds.contains(pokemon.id),
+                    onClick = { onClickItem(pokemon) },
+                    onClickSave = { onClickSave(pokemon) }
                 )
             }
         }
@@ -106,7 +116,8 @@ private fun PokemonListContent(
         AppHeaderWithShadow(
             modifier = Modifier.height(240.dp),
             searchQuery = searchQuery,
-            onSearch = onSearch
+            onSearch = onSearch,
+            onGoFavorite = onGoFavorite
         )
     }
 }

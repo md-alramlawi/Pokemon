@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsPadding
@@ -30,21 +31,26 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.pokemon.ui.painter.closePainter
-import com.pokemon.ui.theme.roundedBottomShape
+import ui.composable.AppIconButton
+import ui.painter.bookmarkPainter
+import ui.painter.closePainter
+import ui.painter.starOutlinePainter
+import ui.painter.starPainter
+import ui.theme.roundedBottomShape
 
 @Composable
 fun AppHeaderWithShadow(
     modifier: Modifier = Modifier,
     searchQuery: String,
-    onSearch: (String) -> Unit
+    onSearch: (String) -> Unit,
+    onGoFavorite: () -> Unit
 ) {
     Column {
-        AppHeader(modifier, searchQuery, onSearch)
+        AppHeader(modifier, searchQuery, onSearch, onGoFavorite)
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(20.dp)
+                .height(10.dp)
                 .background(
                     brush = Brush.verticalGradient(
                         colors = listOf(
@@ -61,7 +67,8 @@ fun AppHeaderWithShadow(
 fun AppHeader(
     modifier: Modifier = Modifier,
     searchQuery: String,
-    onSearch: (String) -> Unit
+    onSearch: (String) -> Unit,
+    onGoFavorite: () -> Unit
 ) {
     Surface(
         modifier = modifier.background(MaterialTheme.colorScheme.background),
@@ -76,12 +83,25 @@ fun AppHeader(
             verticalArrangement = Arrangement.SpaceEvenly,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(
-                text = "Pokedex",
-                style = MaterialTheme.typography.displayMedium,
-                color = Color.Yellow,
-                fontWeight = FontWeight.Bold
-            )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Spacer(Modifier.size(24.dp))
+                Text(
+                    text = "Pokedex",
+                    style = MaterialTheme.typography.displayMedium,
+                    color = Color.Yellow,
+                    fontWeight = FontWeight.Bold
+                )
+                AppIconButton(
+                    painter = starPainter(),
+                    tint = Color.White,
+                    size = 32.dp
+                ) {
+                    onGoFavorite()
+                }
+            }
             AppSearchBar(
                 onSearch = onSearch,
                 searchQuery = searchQuery

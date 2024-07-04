@@ -29,7 +29,6 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
-            implementation(projects.feature.details)
             implementation(projects.core.model)
             implementation(projects.core.common)
             implementation(projects.core.data)

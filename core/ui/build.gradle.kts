@@ -22,7 +22,7 @@ kotlin {
         iosSimulatorArm64()
     ).forEach { iosTarget ->
         iosTarget.binaries.framework {
-            baseName = "core-ui"
+            baseName = "ui"
             isStatic = true
         }
     }
@@ -45,7 +45,7 @@ kotlin {
 }
 
 android {
-    namespace = "com.pokemon.core.ui"
+    namespace = "com.ui"
     compileSdk = 34
     defaultConfig {
         minSdk = 24

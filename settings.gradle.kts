@@ -32,10 +32,11 @@ include(":shared")
 
 include(":feature:home")
 include(":feature:details")
+include(":feature:favorite")
 
 include(":core:model")
 include(":core:common")
-include(":core:datastore")
+include(":core:database")
 include(":core:network")
 include(":core:data")
 include(":core:ui")

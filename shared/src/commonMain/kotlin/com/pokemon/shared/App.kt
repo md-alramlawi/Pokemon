@@ -9,8 +9,9 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.pokemon.ui.theme.PokemonTheme
+import ui.theme.PokemonTheme
 import pokemon.feature.detail.DetailsScreen
+import pokemon.feature.favorite.FavoriteScreen
 import pokemon.feature.home.HomeScreen
 
 
@@ -55,15 +56,23 @@ private fun NavHostMain(navController: NavHostController = rememberNavController
         composable(route = "home") {
             HomeScreen(
                 onClickItem = {
-                    navController.navigate("details") {
-                        this.launchSingleTop = true
-                        this.restoreState = true
-                    }
-                }
+                    navController.navigate("details") { launchSingleTop = true }
+                },
+                onGoFavorite = {
+                    navController.navigate("favorite") { launchSingleTop = true }
+                },
             )
         }
         composable(route = "details") {
             DetailsScreen(
+                onBack = navController::popBackStack
+            )
+        }
+        composable(route = "favorite") {
+            FavoriteScreen(
+                onClickItem = {
+                    navController.navigate("details") { launchSingleTop = true }
+                },
                 onBack = navController::popBackStack
             )
         }

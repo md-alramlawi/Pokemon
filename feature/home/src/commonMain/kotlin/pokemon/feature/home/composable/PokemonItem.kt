@@ -1,7 +1,9 @@
 package pokemon.feature.home.composable
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -12,16 +14,22 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
-import com.pokemon.ui.composable.AppImage
+import ui.composable.AppIconButton
+import ui.composable.AppImage
+import ui.painter.starOutlinePainter
+import ui.painter.starPainter
 
 @Composable
-internal fun PokemonItem(
+fun PokemonItem(
     id: String,
     name: String,
     imageUrl: String,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    onClickSave: () -> Unit,
+    isFavorite: Boolean
 ) {
     Surface(
         shape = MaterialTheme.shapes.medium
@@ -32,11 +40,27 @@ internal fun PokemonItem(
                 .fillMaxWidth().padding(10.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(
-                modifier = Modifier.align(Alignment.End),
-                text = "#$id",
-                style = MaterialTheme.typography.labelMedium
-            )
+            Row(
+                Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "#$id",
+                    style = MaterialTheme.typography.labelMedium
+                )
+                AppIconButton(
+                    painter = if (isFavorite) {
+                        starPainter()
+                    } else {
+                        starOutlinePainter()
+                    },
+                    tint = Color.Red,
+                    size = 32.dp
+                ) {
+                    onClickSave()
+                }
+            }
             AppImage(
                 modifier = Modifier.height(100.dp).fillMaxWidth(),
                 imageUrl = imageUrl,

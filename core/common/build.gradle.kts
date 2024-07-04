@@ -42,7 +42,7 @@ kotlin {
 }
 
 android {
-    namespace = "com.pokemon.common"
+    namespace = "com.common"
     compileSdk = 34
     defaultConfig {
         minSdk = 24

@@ -36,6 +36,7 @@ kotlin {
             implementation(projects.core.model)
             implementation(projects.core.common)
             implementation(projects.core.network)
+            implementation(projects.core.database)
 
             implementation(libs.ktor.client.core)
             implementation(libs.ktor.client.content.negotiation)
@@ -46,7 +47,7 @@ kotlin {
 }
 
 android {
-    namespace = "com.pokemon.data"
+    namespace = "com.data"
     compileSdk = 34
     defaultConfig {
         minSdk = 24

@@ -1,11 +1,11 @@
 package pokemon.feature.detail
 
 import androidx.lifecycle.viewModelScope
-import com.pokemon.common.result.mapError
-import com.pokemon.common.result.mapSuccess
-import com.pokemon.data.repository.PokemonRepository
-import com.pokemon.model.Pokemon
-import com.pokemon.ui.BaseViewModel
+import common.result.mapError
+import common.result.mapSuccess
+import data.repository.PokemonRepository
+import model.Pokemon
+import ui.BaseViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow

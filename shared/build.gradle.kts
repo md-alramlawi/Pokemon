@@ -28,15 +28,12 @@ kotlin {
     }
 
     sourceSets {
-        all {
-            languageSettings {
-                optIn("androidx.compose.material3.ExperimentalMaterial3Api")
-                optIn("org.jetbrains.compose.resources.ExperimentalResourceApi")
-            }
-        }
         commonMain.dependencies {
             implementation(projects.feature.home)
             implementation(projects.feature.details)
+            implementation(projects.feature.favorite)
+
+            implementation(projects.core.database)
             implementation(projects.core.network)
             implementation(projects.core.common)
             implementation(projects.core.data)

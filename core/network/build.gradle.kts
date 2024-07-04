@@ -45,7 +45,7 @@ kotlin {
 }
 
 android {
-    namespace = "com.pokemon.network"
+    namespace = "com.network"
     compileSdk = 34
     defaultConfig {
         minSdk = 24
