@@ -12,19 +12,19 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import model.SimplePokemon
-import ui.composable.AppErrorDialog
-import ui.composable.ShimmerEffect
-import ui.state.UIEvent
 import org.koin.compose.koinInject
 import pokemon.feature.home.composable.AppHeaderWithShadow
 import pokemon.feature.home.composable.PokemonItem
+import ui.composable.AppErrorDialog
+import ui.composable.ShimmerEffect
+import ui.state.UIEvent
+import ui.state.UserAction
 
 @Composable
 fun HomeScreen(
@@ -33,17 +33,14 @@ fun HomeScreen(
     onGoFavorite: () -> Unit
 ) {
 
-    val state by viewModel.state.collectAsState()
+    val list by viewModel.list.collectAsState()
+    val query by viewModel.query.collectAsState()
     val bookmarkIds by viewModel.bookmarkIds.collectAsState()
     val uiEvent by viewModel.uiEvents.collectAsState()
 
-    LaunchedEffect(Unit) {
-        viewModel.getList()
-    }
-
     PokemonListContent(
         isLoading = uiEvent is UIEvent.Loading,
-        list = state.list,
+        list = list,
         bookmarkIds = bookmarkIds,
         onClickItem = {
             viewModel.setCurrent(it.id)
@@ -51,16 +48,12 @@ fun HomeScreen(
         },
         onClickSave = { viewModel.bookmark(it.id) },
         onSearch = viewModel::search,
-        searchQuery = state.query,
+        searchQuery = query,
         onGoFavorite = onGoFavorite
     )
 
-    when (uiEvent) {
-        is UIEvent.Error -> {
-            AppErrorDialog((uiEvent as UIEvent.Error).message) { viewModel.onReleaseScreenState() }
-        }
-
-        else -> {}
+    if (uiEvent is UIEvent.Error) {
+        AppErrorDialog((uiEvent as UIEvent.Error).message) { viewModel.onAction(UserAction.Release) }
     }
 }
 

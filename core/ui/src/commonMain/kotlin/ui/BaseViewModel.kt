@@ -8,6 +8,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 open class BaseViewModel(
@@ -17,10 +18,8 @@ open class BaseViewModel(
     private val _uiEvents = MutableStateFlow<UIEvent>(UIEvent.Idle)
     val uiEvents = _uiEvents.asStateFlow()
 
-    init { onReleaseScreenState() }
-
     fun onReleaseScreenState() {
-        viewModelScope.launch(ioDispatcher) {
+        viewModelScope.launch {
             _uiEvents.emit(UIEvent.Idle)
         }
     }
@@ -36,11 +35,11 @@ open class BaseViewModel(
     }
 
     fun showLoader(loading: Boolean) {
-        viewModelScope.launch(ioDispatcher) {
+        viewModelScope.launch {
             if (loading)
-                _uiEvents.emit(UIEvent.Loading)
+                _uiEvents.update { UIEvent.Loading }
             else
-                _uiEvents.emit(UIEvent.Idle)
+                _uiEvents.update { UIEvent.Idle }
         }
     }
 

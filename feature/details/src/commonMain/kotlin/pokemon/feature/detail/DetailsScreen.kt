@@ -44,6 +44,7 @@ import pokemon.feature.detail.component.PropertyItem
 import pokemon.feature.detail.component.StatusBar
 import pokemon.feature.detail.component.TagItem
 import pokemon.feature.detail.component.statColors
+import ui.state.UserAction
 
 @Composable
 fun DetailsScreen(
@@ -57,13 +58,8 @@ fun DetailsScreen(
     }
 
     PokemonDetailsContent(pokemonDate, onBack)
-    when (uiEvent) {
-
-        is UIEvent.Error -> {
-            AppErrorDialog((uiEvent as UIEvent.Error).message) { viewModel.onReleaseScreenState() }
-        }
-
-        else -> {}
+    if (uiEvent is UIEvent.Error) {
+        AppErrorDialog((uiEvent as UIEvent.Error).message) { viewModel.onAction(UserAction.Release) }
     }
 }
 

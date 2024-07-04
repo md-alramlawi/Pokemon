@@ -22,7 +22,7 @@ class DetailViewModel(
     fun getDetails() {
         viewModelScope.launch(ioDispatcher) {
             showLoader(true)
-            pokemonRepository.getPokemon(pokemonRepository.current.value)
+            pokemonRepository.getPokemon(pokemonRepository.currentId.value)
                 .also {
                     showLoader(false)
                 }

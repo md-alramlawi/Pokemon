@@ -15,11 +15,12 @@ import model.SimplePokemon
 import network.datasource.pokemon.PokemonDataSource
 
 interface PokemonRepository {
-    val current: StateFlow<String>
+    val currentList: StateFlow<List<SimplePokemon>>
+    val currentId: StateFlow<String>
     val searchQuery: StateFlow<String>
     suspend fun setCurrent(id: String): Result<Unit>
-    suspend fun getPokemonList(): Result<List<SimplePokemon>>
-    suspend fun search(query: String): List<SimplePokemon>
+    suspend fun getPokemonList(): Result<Unit>
+    suspend fun search(query: String)
     suspend fun getPokemon(id: String): Result<Pokemon>
 
     fun getBookmarks(): Flow<List<SimplePokemon>>
@@ -32,23 +33,24 @@ class PokemonRepositoryImpl(
 ) : PokemonRepository {
 
     private val pokemonHashMap: LinkedHashMap<String, SimplePokemon> = linkedMapOf()
-    override val current = MutableStateFlow("")
+    override val currentList = MutableStateFlow<List<SimplePokemon>>(emptyList())
+    override val currentId = MutableStateFlow("")
     override val searchQuery = MutableStateFlow("")
 
     override suspend fun setCurrent(id: String): Result<Unit> {
         return pokemonHashMap[id]?.let {
-            current.emit(it.id)
+            currentId.emit(it.id)
             Result.Success(Unit)
         } ?: Result.Error(Exception("Not found"))
     }
 
-    override suspend fun getPokemonList(): Result<List<SimplePokemon>> {
+    override suspend fun getPokemonList(): Result<Unit> {
         val result = if (pokemonHashMap.isNotEmpty()) {
-            Result.Success(search(searchQuery.value))
+            Result.Success(pokemonHashMap.values)
         } else {
             getApiPokemonList()
         }
-        return result
+        return result.mapSuccess { currentList.emit(it.toList()) }
     }
 
     private suspend fun getApiPokemonList(): Result<List<SimplePokemon>> {
@@ -62,9 +64,10 @@ class PokemonRepositoryImpl(
     }
 
 
-    override suspend fun search(query: String): List<SimplePokemon> {
+    override suspend fun search(query: String) {
         searchQuery.update { query }
-        return pokemonHashMap.values.filter { it.name.contains(query, true) }
+        val filteredList = pokemonHashMap.values.filter { it.name.contains(query, true) }
+        currentList.update { filteredList }
     }
 
     override suspend fun getPokemon(id: String): Result<Pokemon> {
