@@ -52,7 +52,7 @@ class PokemonRepositoryImpl(
     }
 
     private suspend fun getApiPokemonList(): Result<List<SimplePokemon>> {
-        delay(2_000)
+        delay(1_000)
         return remoteDataSource.getPokemonListing().mapSuccess { listing ->
             listing.results.map { dto -> dto.toModel }.also { list ->
                 pokemonHashMap.clear()
@@ -68,7 +68,7 @@ class PokemonRepositoryImpl(
     }
 
     override suspend fun getPokemon(id: String): Result<Pokemon> {
-        delay(2_000)
+        delay(1_000)
         val bookmarks = localDatasource.getAll().first().map { it.id }
         return pokemonHashMap[id]?.let {
             remoteDataSource.getPokemon(name = it.name).mapSuccess { dto ->

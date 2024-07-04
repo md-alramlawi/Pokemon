@@ -1,7 +1,8 @@
 package database.datasource
 
 import database.PokemonDao
-import database.PokemonEntity
+import database.mapper.toEntity
+import database.mapper.toModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import model.SimplePokemon
@@ -25,17 +26,3 @@ class LocalDatasourceImpl(private val dao: PokemonDao) : LocalDatasource {
         return dao.getPokemonList().map { entities -> entities.map { it.toModel } }
     }
 }
-
-private val SimplePokemon.toEntity: PokemonEntity
-    get() = PokemonEntity(
-        id = this.id,
-        name = this.name,
-        url = this.url
-    )
-
-private val PokemonEntity.toModel: SimplePokemon
-    get() = SimplePokemon(
-        id = this.id,
-        name = this.name,
-        url = this.url
-    )
