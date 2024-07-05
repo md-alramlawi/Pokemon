@@ -10,13 +10,20 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.launch
 import model.SimplePokemon
 import org.koin.compose.koinInject
 import pokemon.feature.home.composable.AppHeaderWithShadow
@@ -37,16 +44,19 @@ fun HomeScreen(
     val query by viewModel.query.collectAsState()
     val bookmarkIds by viewModel.bookmarkIds.collectAsState()
     val uiEvent by viewModel.uiEvents.collectAsState()
+    val moreLoading by viewModel.isLoadingMore.collectAsState()
 
     PokemonListContent(
-        isLoading = uiEvent is UIEvent.Loading,
+        initLoading = uiEvent is UIEvent.Loading,
+        moreLoading = moreLoading,
         list = list,
         bookmarkIds = bookmarkIds,
         onClickItem = {
-            viewModel.setCurrent(it.id)
+            viewModel.setCurrent(it.name)
             onClickItem()
         },
-        onClickSave = { viewModel.bookmark(it.id) },
+        onClickSave = viewModel::bookmark,
+        onLoadMore = viewModel::loadMore,
         onSearch = viewModel::search,
         searchQuery = query,
         onGoFavorite = onGoFavorite
@@ -60,50 +70,47 @@ fun HomeScreen(
 
 @Composable
 private fun PokemonListContent(
-    isLoading: Boolean,
+    initLoading: Boolean,
+    moreLoading: Boolean,
     list: List<SimplePokemon>,
     bookmarkIds: List<String>,
     onClickItem: (SimplePokemon) -> Unit,
     onClickSave: (SimplePokemon) -> Unit,
+    onLoadMore: () -> Unit,
     searchQuery: String,
     onSearch: (String) -> Unit,
     onGoFavorite: () -> Unit
 ) {
+    val gridState = rememberLazyGridState()
+    val coroutineScope = rememberCoroutineScope()
+
+    LaunchedEffect(gridState) {
+        snapshotFlow { gridState.firstVisibleItemIndex }
+            .collect { index ->
+                if (index >= list.size - 2) {
+                    coroutineScope.launch {
+                        onLoadMore()
+                    }
+                }
+            }
+    }
+
     Box(
         modifier = Modifier.fillMaxSize()
             .background(MaterialTheme.colorScheme.background),
         contentAlignment = Alignment.TopCenter
     ) {
-        LazyVerticalGrid(
-            columns = GridCells.Fixed(3),
-            verticalArrangement = Arrangement.spacedBy(5.dp),
-            horizontalArrangement = Arrangement.spacedBy(5.dp),
-            contentPadding = PaddingValues(
-                start = 5.dp,
-                end = 5.dp,
-                top = 250.dp,
-                bottom = 20.dp
+        if (initLoading) {
+            LoadingGridContent()
+        } else {
+            DataGridContent(
+                moreLoading,
+                list,
+                bookmarkIds,
+                onClickItem,
+                onClickSave,
+                onLoadMore
             )
-        ) {
-            if (isLoading) {
-                items(12) {
-                    ShimmerEffect(
-                        modifier = Modifier.fillMaxWidth().height(200.dp),
-                        shape = MaterialTheme.shapes.medium
-                    )
-                }
-                return@LazyVerticalGrid
-            }
-            items(list, key = { it.name }) { pokemon ->
-                PokemonItem(
-                    id = pokemon.id,
-                    name = pokemon.name,
-                    imageUrl = pokemon.url,
-                    isFavorite = bookmarkIds.contains(pokemon.id),
-                    onClick = { onClickItem(pokemon) },
-                    onClickSave = { onClickSave(pokemon) }
-                )
-            }
         }
 
         AppHeaderWithShadow(
@@ -112,5 +119,82 @@ private fun PokemonListContent(
             onSearch = onSearch,
             onGoFavorite = onGoFavorite
         )
+    }
+}
+
+@Composable
+private fun DataGridContent(
+    moreLoading: Boolean,
+    list: List<SimplePokemon>,
+    bookmarkIds: List<String>,
+    onClickItem: (SimplePokemon) -> Unit,
+    onClickSave: (SimplePokemon) -> Unit,
+    onLoadMore: () -> Unit
+) {
+    val gridState = rememberLazyGridState()
+
+    LaunchedEffect(gridState) {
+        snapshotFlow { gridState.layoutInfo.visibleItemsInfo.last().index }
+            .collect { lastIndex ->
+                if (lastIndex >= list.size - 2) {
+                    onLoadMore()
+                }
+            }
+    }
+
+    LazyVerticalGrid(
+        state = gridState,
+        columns = GridCells.Fixed(3),
+        verticalArrangement = Arrangement.spacedBy(5.dp),
+        horizontalArrangement = Arrangement.spacedBy(5.dp),
+        contentPadding = PaddingValues(
+            start = 5.dp,
+            end = 5.dp,
+            top = 250.dp,
+            bottom = 20.dp
+        )
+    ) {
+        items(list, key = { it.name }) { pokemon ->
+            PokemonItem(
+                id = pokemon.id,
+                name = pokemon.name,
+                imageUrl = pokemon.url,
+                isFavorite = bookmarkIds.contains(pokemon.id),
+                onClick = { onClickItem(pokemon) },
+                onClickSave = { onClickSave(pokemon) }
+            )
+        }
+        item {
+            if (moreLoading) {
+                Box(
+                    Modifier.fillMaxWidth().height(100.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator(color = Color.White)
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun LoadingGridContent() {
+    LazyVerticalGrid(
+        columns = GridCells.Fixed(3),
+        verticalArrangement = Arrangement.spacedBy(5.dp),
+        horizontalArrangement = Arrangement.spacedBy(5.dp),
+        contentPadding = PaddingValues(
+            start = 5.dp,
+            end = 5.dp,
+            top = 250.dp,
+            bottom = 20.dp
+        )
+    ) {
+        items(12) {
+            ShimmerEffect(
+                modifier = Modifier.fillMaxWidth().height(200.dp),
+                shape = MaterialTheme.shapes.medium
+            )
+        }
     }
 }

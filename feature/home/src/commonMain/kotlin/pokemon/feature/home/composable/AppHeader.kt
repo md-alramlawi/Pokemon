@@ -27,14 +27,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import ui.brush.shadowBrush
 import ui.composable.AppIconButton
-import ui.painter.bookmarkPainter
 import ui.painter.closePainter
-import ui.painter.starOutlinePainter
 import ui.painter.starPainter
 import ui.theme.roundedBottomShape
 
@@ -51,14 +49,7 @@ fun AppHeaderWithShadow(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(10.dp)
-                .background(
-                    brush = Brush.verticalGradient(
-                        colors = listOf(
-                            MaterialTheme.colorScheme.background,
-                            Color.Transparent
-                        )
-                    )
-                )
+                .background(brush = shadowBrush())
         )
     }
 }

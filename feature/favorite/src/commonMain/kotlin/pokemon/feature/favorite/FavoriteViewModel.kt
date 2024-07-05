@@ -7,6 +7,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import model.SimplePokemon
 import ui.BaseViewModel
 
 class FavoriteViewModel(
@@ -19,15 +20,15 @@ class FavoriteViewModel(
     )
 
 
-    fun setCurrent(id: String) {
+    fun setCurrent(name: String) {
         viewModelScope.launch(ioDispatcher) {
-            pokemonRepository.setCurrent(id)
+            pokemonRepository.setCurrent(name)
         }
     }
 
-    fun bookmark(id: String) {
+    fun bookmark(simplePokemon: SimplePokemon) {
         viewModelScope.launch {
-            pokemonRepository.bookmark(id).mapError {
+            pokemonRepository.bookmark(simplePokemon).mapError {
                 fireErrorMessage(it)
             }
         }

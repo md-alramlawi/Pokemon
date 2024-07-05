@@ -4,20 +4,20 @@ import androidx.lifecycle.viewModelScope
 import common.result.mapError
 import data.repository.PokemonRepository
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import model.SimplePokemon
 import ui.BaseViewModel
 
 class HomeViewModel(
     private val pokemonRepository: PokemonRepository,
     private val ioDispatcher: CoroutineDispatcher
 ) : BaseViewModel(ioDispatcher) {
-
-    private fun log(message: String) {
-        println("HomeViewModel -> $message")
-    }
 
     val bookmarkIds = pokemonRepository.getBookmarks()
         .map { bookmarks ->
@@ -26,19 +26,14 @@ class HomeViewModel(
 
     val list = pokemonRepository.currentList
     val query = pokemonRepository.searchQuery
+    val isLoadingMore = MutableStateFlow(false)
 
     init {
         getList()
-        viewModelScope.launch {
-            uiEvents.collect {
-                log("Current Event: $it")
-            }
-        }
     }
 
     private fun getList() {
         viewModelScope.launch(ioDispatcher) {
-            log("getList")
             showLoader(true)
             pokemonRepository.getPokemonList()
                 .also { showLoader(false) }
@@ -48,9 +43,9 @@ class HomeViewModel(
         }
     }
 
-    fun setCurrent(id: String) {
+    fun setCurrent(name: String) {
         viewModelScope.launch(ioDispatcher) {
-            pokemonRepository.setCurrent(id)
+            pokemonRepository.setCurrent(name)
         }
     }
 
@@ -60,9 +55,26 @@ class HomeViewModel(
         }
     }
 
-    fun bookmark(id: String) {
+    fun bookmark(simplePokemon: SimplePokemon) {
         viewModelScope.launch {
-            pokemonRepository.bookmark(id).mapError {
+            pokemonRepository.bookmark(simplePokemon).mapError {
+                fireErrorMessage(it)
+            }
+        }
+    }
+
+    fun loadMore() {
+        if (isLoadingMore.value) {
+            return
+        }
+
+        viewModelScope.launch {
+            isLoadingMore.update { true }
+            withContext(ioDispatcher) {
+                pokemonRepository.loadNext()
+            }.also {
+                isLoadingMore.update { false }
+            }.mapError {
                 fireErrorMessage(it)
             }
         }

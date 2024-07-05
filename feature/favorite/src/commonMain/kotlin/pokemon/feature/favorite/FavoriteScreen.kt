@@ -51,11 +51,11 @@ fun FavoriteScreen(
     FavoriteContent(
         list = list,
         onClickItem = {
-            viewModel.setCurrent(it.id)
+            viewModel.setCurrent(it.name)
             onClickItem()
         },
         onBack = onBack,
-        onClickSave = { viewModel.bookmark(it.id) }
+        onClickSave = viewModel::bookmark
     )
 
     when (uiEvent) {

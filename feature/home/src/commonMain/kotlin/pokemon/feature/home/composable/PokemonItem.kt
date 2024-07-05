@@ -14,13 +14,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import ui.composable.AppIconButton
 import ui.composable.AppImage
-import ui.painter.starOutlinePainter
-import ui.painter.starPainter
+import ui.composable.BookmarkIconButton
 
 @Composable
 fun PokemonItem(
@@ -45,21 +43,14 @@ fun PokemonItem(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
+                BookmarkIconButton(isFavorite){
+                    onClickSave()
+                }
+
                 Text(
                     text = "#$id",
                     style = MaterialTheme.typography.labelMedium
                 )
-                AppIconButton(
-                    painter = if (isFavorite) {
-                        starPainter()
-                    } else {
-                        starOutlinePainter()
-                    },
-                    tint = Color.Red,
-                    size = 32.dp
-                ) {
-                    onClickSave()
-                }
             }
             AppImage(
                 modifier = Modifier.height(100.dp).fillMaxWidth(),
@@ -67,11 +58,12 @@ fun PokemonItem(
                 contentDescription = name,
                 contentScale = ContentScale.FillWidth
             )
-            Spacer(Modifier.height(8.dp))
+            Spacer(Modifier.height(4.dp))
             Text(
+                modifier = Modifier.height(30.dp),
                 text = name,
                 style = MaterialTheme.typography.titleMedium,
-                modifier = Modifier
+                textAlign = TextAlign.Center
             )
         }
     }

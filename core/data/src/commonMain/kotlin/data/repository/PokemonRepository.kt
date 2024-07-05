@@ -16,15 +16,16 @@ import network.datasource.pokemon.PokemonDataSource
 
 interface PokemonRepository {
     val currentList: StateFlow<List<SimplePokemon>>
-    val currentId: StateFlow<String>
+    val currentName: StateFlow<String>
     val searchQuery: StateFlow<String>
-    suspend fun setCurrent(id: String): Result<Unit>
+    suspend fun setCurrent(name: String)
     suspend fun getPokemonList(): Result<Unit>
+    suspend fun loadNext(): Result<Unit>
     suspend fun search(query: String)
-    suspend fun getPokemon(id: String): Result<Pokemon>
+    suspend fun getPokemon(name: String): Result<Pokemon>
 
     fun getBookmarks(): Flow<List<SimplePokemon>>
-    suspend fun bookmark(id: String): Result<Unit>
+    suspend fun bookmark(simplePokemon: SimplePokemon): Result<Unit>
 }
 
 class PokemonRepositoryImpl(
@@ -34,14 +35,11 @@ class PokemonRepositoryImpl(
 
     private val pokemonHashMap: LinkedHashMap<String, SimplePokemon> = linkedMapOf()
     override val currentList = MutableStateFlow<List<SimplePokemon>>(emptyList())
-    override val currentId = MutableStateFlow("")
+    override val currentName = MutableStateFlow("")
     override val searchQuery = MutableStateFlow("")
 
-    override suspend fun setCurrent(id: String): Result<Unit> {
-        return pokemonHashMap[id]?.let {
-            currentId.emit(it.id)
-            Result.Success(Unit)
-        } ?: Result.Error(Exception("Not found"))
+    override suspend fun setCurrent(name: String) {
+        currentName.emit(name)
     }
 
     override suspend fun getPokemonList(): Result<Unit> {
@@ -50,7 +48,17 @@ class PokemonRepositoryImpl(
         } else {
             getApiPokemonList()
         }
-        return result.mapSuccess { currentList.emit(it.toList()) }
+        return result.mapSuccess { currentList.emitFilteredList(it.toList(), searchQuery.value) }
+    }
+
+    override suspend fun loadNext(): Result<Unit> {
+        delay(1_000)
+        return remoteDataSource.getNextList().mapSuccess { listing ->
+            listing.results.map { dto -> dto.toModel }.also { list ->
+                pokemonHashMap.putAll(list.associateBy { it.id })
+                currentList.emitFilteredList(pokemonHashMap.values.toList(), searchQuery.value)
+            }
+        }
     }
 
     private suspend fun getApiPokemonList(): Result<List<SimplePokemon>> {
@@ -66,33 +74,35 @@ class PokemonRepositoryImpl(
 
     override suspend fun search(query: String) {
         searchQuery.update { query }
-        val filteredList = pokemonHashMap.values.filter { it.name.contains(query, true) }
-        currentList.update { filteredList }
+        currentList.emitFilteredList(pokemonHashMap.values.toList(), query)
     }
 
-    override suspend fun getPokemon(id: String): Result<Pokemon> {
+    override suspend fun getPokemon(name: String): Result<Pokemon> {
         delay(1_000)
         val bookmarks = localDatasource.getAll().first().map { it.id }
-        return pokemonHashMap[id]?.let {
-            remoteDataSource.getPokemon(name = it.name).mapSuccess { dto ->
-                dto.toModel.copy(isFavorite = bookmarks.contains(id))
-            }
-        } ?: Result.Error(Exception("Not found"))
+        return remoteDataSource.getPokemon(name = name).mapSuccess { dto ->
+            dto.toModel.copy(isFavorite = bookmarks.contains(dto.id.toString()))
+        }
     }
 
     override fun getBookmarks(): Flow<List<SimplePokemon>> {
         return localDatasource.getAll()
     }
 
-    override suspend fun bookmark(id: String): Result<Unit> {
-        return pokemonHashMap[id]?.let {
-            val bookmarks = localDatasource.getAll().first()
-            if (bookmarks.contains(it)) {
-                localDatasource.delete(it)
-            } else {
-                localDatasource.upsert(it)
-            }
-            Result.Success(Unit)
-        } ?: Result.Error(Exception("Not found"))
+    override suspend fun bookmark(simplePokemon: SimplePokemon): Result<Unit> {
+        val bookmarks = localDatasource.getAll().first()
+        if (bookmarks.contains(simplePokemon)) {
+            localDatasource.delete(simplePokemon)
+        } else {
+            localDatasource.upsert(simplePokemon)
+        }
+        return Result.Success(Unit)
     }
+}
+
+private suspend fun MutableStateFlow<List<SimplePokemon>>.emitFilteredList(
+    list: List<SimplePokemon>,
+    query: String
+) {
+    this.emit(list.filter { it.name.contains(query, true) || it.id == query })
 }
