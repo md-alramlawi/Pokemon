@@ -46,7 +46,7 @@ import ui.painter.BackgroundsPainterMap
 import ui.painter.backPainter
 import ui.state.UIEvent
 import ui.state.UserAction
-import ui.theme.roundedBottomShape
+import ui.theme.BottomOnlyRoundedShape
 
 @Composable
 fun DetailsScreen(
@@ -61,7 +61,7 @@ fun DetailsScreen(
     }
 
     PokemonDetailsContent(
-        isFavorite = bookmarkIds.contains(pokemonDate?.id ?: false),
+        isBookmarked = bookmarkIds.contains(pokemonDate?.id ?: false),
         pokemon = pokemonDate,
         onClickSave = viewModel::bookmark,
         onBack = onBack
@@ -75,7 +75,7 @@ fun DetailsScreen(
 @Composable
 private fun PokemonDetailsContent(
     pokemon: Pokemon?,
-    isFavorite: Boolean,
+    isBookmarked: Boolean,
     onClickSave: (Pokemon) -> Unit,
     onBack: () -> Unit = {}
 ) {
@@ -86,7 +86,7 @@ private fun PokemonDetailsContent(
         pokemon?.let {
             DataContent(
                 pokemon = it,
-                isFavorite = isFavorite,
+                isBookmarked = isBookmarked,
                 onClickSave = { onClickSave(it) },
                 onBack = onBack
             )
@@ -104,7 +104,7 @@ private fun LoadingContent(onBack: () -> Unit) {
             Box {
                 ShimmerEffect(
                     modifier = Modifier.height(300.dp).fillMaxWidth(),
-                    shape = roundedBottomShape
+                    shape = BottomOnlyRoundedShape
                 )
                 BackButton { onBack() }
             }
@@ -134,7 +134,7 @@ private fun LoadingContent(onBack: () -> Unit) {
 @Composable
 private fun DataContent(
     pokemon: Pokemon,
-    isFavorite: Boolean,
+    isBookmarked: Boolean,
     onClickSave: () -> Unit,
     onBack: () -> Unit
 ) {
@@ -146,7 +146,7 @@ private fun DataContent(
             Box(
                 modifier = Modifier.fillMaxWidth()
                     .height(300.dp)
-                    .clip(roundedBottomShape)
+                    .clip(BottomOnlyRoundedShape)
                     .background(Color.White),
             ) {
                 BackgroundsPainterMap()[pokemon.types.random()]?.also {
@@ -197,7 +197,7 @@ private fun DataContent(
                 )
                 BookmarkIconButton(
                     modifier = Modifier.align(Alignment.CenterEnd),
-                    isFavorite = isFavorite
+                    isBookmarked = isBookmarked
                 ) {
                     onClickSave()
                 }

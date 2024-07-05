@@ -9,22 +9,27 @@ import ui.painter.starPainter
 
 @Composable
 fun BookmarkIconButton(
-    isFavorite: Boolean,
+    isBookmarked: Boolean,
     modifier: Modifier = Modifier,
     onClick: () -> Unit
 ) {
+    val iconPainter = if (isBookmarked) {
+        starPainter()
+    } else {
+        starOutlinePainter()
+    }
+
+    val iconTint = if (isBookmarked) {
+        Color.Red
+    } else {
+        Color.Gray
+    }
+
     AppIconButton(
         modifier = modifier,
-        painter = if (isFavorite) {
-            starPainter()
-        } else {
-            starOutlinePainter()
-        },
-        tint = if (isFavorite) {
-            Color.Red
-        } else Color.Gray,
-        size = 32.dp
-    ) {
-        onClick()
-    }
+        painter = iconPainter,
+        tint = iconTint,
+        size = 32.dp,
+        onClick = onClick
+    )
 }

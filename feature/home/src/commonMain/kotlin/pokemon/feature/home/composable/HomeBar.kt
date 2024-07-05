@@ -29,33 +29,41 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import ui.brush.shadowBrush
 import ui.composable.AppIconButton
 import ui.painter.closePainter
 import ui.painter.starPainter
-import ui.theme.roundedBottomShape
+import ui.theme.BottomOnlyRoundedShape
+
+internal val homeBarHeight: Dp = 240.dp
 
 @Composable
-fun AppHeaderWithShadow(
+fun HomeBarWithShadow(
     modifier: Modifier = Modifier,
     searchQuery: String,
     onSearch: (String) -> Unit,
     onGoFavorite: () -> Unit
 ) {
-    Column {
-        AppHeader(modifier, searchQuery, onSearch, onGoFavorite)
+    Column(modifier = modifier.height(homeBarHeight)) {
+        HomeBar(
+            modifier = Modifier.weight(1f),
+            searchQuery = searchQuery,
+            onSearch = onSearch,
+            onGoFavorite = onGoFavorite
+        )
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(10.dp)
+                .height(15.dp)
                 .background(brush = shadowBrush())
         )
     }
 }
 
 @Composable
-fun AppHeader(
+private fun HomeBar(
     modifier: Modifier = Modifier,
     searchQuery: String,
     onSearch: (String) -> Unit,
@@ -63,7 +71,7 @@ fun AppHeader(
 ) {
     Surface(
         modifier = modifier.background(MaterialTheme.colorScheme.background),
-        shape = roundedBottomShape,
+        shape = BottomOnlyRoundedShape,
         color = Color.Red
     ) {
         Column(
@@ -71,7 +79,7 @@ fun AppHeader(
                 .fillMaxSize()
                 .windowInsetsPadding(WindowInsets.statusBars)
                 .padding(horizontal = 25.dp, vertical = 10.dp),
-            verticalArrangement = Arrangement.SpaceEvenly,
+            verticalArrangement = Arrangement.SpaceAround,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Row(

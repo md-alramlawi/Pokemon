@@ -92,7 +92,7 @@ class PokemonRepositoryImpl(
         delay(1_000)
         val bookmarks = localDatasource.getAll().first().map { it.id }
         return remoteDataSource.getPokemon(name = name).mapSuccess { dto ->
-            dto.toModel.copy(isFavorite = bookmarks.contains(dto.id.toString()))
+            dto.toModel.copy(isBookmarked = bookmarks.contains(dto.id.toString()))
         }
     }
 

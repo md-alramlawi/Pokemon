@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -19,23 +20,24 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import ui.composable.AppImage
 import ui.composable.BookmarkIconButton
+import ui.theme.MediumRoundedCornerShape
 
 @Composable
 fun PokemonItem(
     id: String,
     name: String,
-    imageUrl: String,
+    iconUrl: String,
     onClick: () -> Unit,
     onClickSave: () -> Unit,
-    isFavorite: Boolean
+    isBookmarked: Boolean
 ) {
     Surface(
-        shape = MaterialTheme.shapes.medium
+        shape = MediumRoundedCornerShape
     ) {
         Column(
             modifier = Modifier
                 .clickable { onClick() }
-                .fillMaxWidth().padding(10.dp),
+                .fillMaxWidth().padding(horizontal = 10.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Row(
@@ -43,7 +45,7 @@ fun PokemonItem(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                BookmarkIconButton(isFavorite){
+                BookmarkIconButton(isBookmarked){
                     onClickSave()
                 }
 
@@ -53,16 +55,16 @@ fun PokemonItem(
                 )
             }
             AppImage(
-                modifier = Modifier.height(100.dp).fillMaxWidth(),
-                imageUrl = imageUrl,
+                modifier = Modifier.size(100.dp),
+                imageUrl = iconUrl,
                 contentDescription = name,
-                contentScale = ContentScale.FillWidth
+                contentScale = ContentScale.FillBounds
             )
             Spacer(Modifier.height(4.dp))
             Text(
-                modifier = Modifier.height(30.dp),
+                modifier = Modifier.height(40.dp),
                 text = name,
-                style = MaterialTheme.typography.titleMedium,
+                style = MaterialTheme.typography.titleSmall,
                 textAlign = TextAlign.Center
             )
         }

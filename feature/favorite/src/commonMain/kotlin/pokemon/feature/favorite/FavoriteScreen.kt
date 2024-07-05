@@ -109,8 +109,8 @@ private fun FavoriteContent(
                 PokemonItem(
                     id = pokemon.id,
                     name = pokemon.name,
-                    imageUrl = pokemon.url,
-                    isFavorite = true,
+                    iconUrl = pokemon.url,
+                    isBookmarked = true,
                     onClick = { onClickItem(pokemon) },
                     onClickSave = { onClickSave(pokemon) }
                 )

@@ -5,11 +5,7 @@ import common.result.mapError
 import common.result.mapSuccess
 import data.repository.PokemonRepository
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import model.SimplePokemon
@@ -20,66 +16,61 @@ class HomeViewModel(
     private val ioDispatcher: CoroutineDispatcher
 ) : BaseViewModel(ioDispatcher) {
 
-    val bookmarkIds = pokemonRepository.getBookmarks()
-        .map { bookmarks ->
-            bookmarks.map { it.id }
-        }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
+    val bookmarkIds: StateFlow<List<String>> = pokemonRepository.getBookmarks()
+        .map { bookmarks -> bookmarks.map { it.id } }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
 
-    val list = pokemonRepository.currentList
-    val query = pokemonRepository.searchQuery
-    val isLoadingMore = MutableStateFlow(false)
+    val currentList = pokemonRepository.currentList
+    val searchQuery = pokemonRepository.searchQuery
+    private val _isLoadingMore = MutableStateFlow(false)
+    val isLoadingMore: StateFlow<Boolean> = _isLoadingMore
 
     init {
-        getList()
+        fetchPokemonList()
     }
 
-    private fun getList() {
+    private fun fetchPokemonList() {
         viewModelScope.launch(ioDispatcher) {
             showLoader(true)
             pokemonRepository.getPokemonList()
                 .also { showLoader(false) }
-                .mapError {
-                    fireError(it)
-                }
+                .mapError { error -> fireError(error) }
         }
     }
 
-    fun setCurrent(name: String) {
+    fun setCurrentPokemon(name: String) {
         viewModelScope.launch(ioDispatcher) {
             pokemonRepository.setCurrent(name)
         }
     }
 
-    fun search(query: String) {
+    fun searchItems(query: String) {
         viewModelScope.launch(ioDispatcher) {
             pokemonRepository.search(query)
         }
     }
 
-    fun bookmark(simplePokemon: SimplePokemon) {
+    fun bookmarkPokemon(simplePokemon: SimplePokemon) {
         viewModelScope.launch(ioDispatcher) {
-            pokemonRepository.bookmark(simplePokemon).mapError {
-                fireError(it)
-            }
+            pokemonRepository.bookmark(simplePokemon)
+                .mapError { error -> fireError(error) }
         }
     }
 
-    fun loadMore() {
-        if (isLoadingMore.value) {
-            return
-        }
+    fun loadMoreItems() {
+        if (isLoadingMore.value) return
 
         viewModelScope.launch(ioDispatcher) {
-            isLoadingMore.update { true }
+            _isLoadingMore.value = true
             withContext(ioDispatcher) {
                 pokemonRepository.loadNext()
             }.also {
-                isLoadingMore.update { false }
-            }.mapError {
-                fireError(it)
+                _isLoadingMore.value = false
+            }.mapError { error ->
+                fireError(error)
             }.mapSuccess {
-                if (list.value.isEmpty()) {
-                    loadMore()
+                if (currentList.value.isEmpty()) {
+                    loadMoreItems()
                 }
             }
         }

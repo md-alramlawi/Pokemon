@@ -24,12 +24,14 @@ import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 import model.SimplePokemon
 import org.koin.compose.koinInject
-import pokemon.feature.home.composable.AppHeaderWithShadow
+import pokemon.feature.home.composable.HomeBarWithShadow
 import pokemon.feature.home.composable.PokemonItem
+import pokemon.feature.home.composable.homeBarHeight
 import ui.composable.AppErrorDialog
 import ui.composable.ShimmerEffect
 import ui.state.UIEvent
 import ui.state.UserAction
+import ui.theme.MediumRoundedCornerShape
 
 @Composable
 fun HomeScreen(
@@ -37,8 +39,8 @@ fun HomeScreen(
     onClickItem: () -> Unit,
     onGoFavorite: () -> Unit
 ) {
-    val list by viewModel.list.collectAsState()
-    val query by viewModel.query.collectAsState()
+    val list by viewModel.currentList.collectAsState()
+    val query by viewModel.searchQuery.collectAsState()
     val bookmarkIds by viewModel.bookmarkIds.collectAsState()
     val uiEvent by viewModel.uiEvents.collectAsState()
     val isLoadingMore by viewModel.isLoadingMore.collectAsState()
@@ -49,12 +51,12 @@ fun HomeScreen(
         list = list,
         bookmarkIds = bookmarkIds,
         onClickItem = {
-            viewModel.setCurrent(it.name)
+            viewModel.setCurrentPokemon(it.name)
             onClickItem()
         },
-        onClickSave = viewModel::bookmark,
-        onLoadMore = viewModel::loadMore,
-        onSearch = viewModel::search,
+        onClickSave = viewModel::bookmarkPokemon,
+        onLoadMore = viewModel::loadMoreItems,
+        onSearch = viewModel::searchItems,
         searchQuery = query,
         onGoFavorite = onGoFavorite
     )
@@ -98,8 +100,7 @@ private fun PokemonListContent(
             )
         }
 
-        AppHeaderWithShadow(
-            modifier = Modifier.height(240.dp),
+        HomeBarWithShadow(
             searchQuery = searchQuery,
             onSearch = onSearch,
             onGoFavorite = onGoFavorite
@@ -116,7 +117,7 @@ private fun LoadingGridContent() {
         contentPadding = PaddingValues(
             start = 5.dp,
             end = 5.dp,
-            top = 250.dp,
+            top = homeBarHeight,
             bottom = 20.dp
         )
     ) {
@@ -125,7 +126,7 @@ private fun LoadingGridContent() {
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(200.dp),
-                shape = MaterialTheme.shapes.medium
+                shape = MediumRoundedCornerShape
             )
         }
     }
@@ -149,7 +150,7 @@ private fun DataGridContent(
         contentPadding = PaddingValues(
             start = 5.dp,
             end = 5.dp,
-            top = 250.dp,
+            top = homeBarHeight,
             bottom = 20.dp
         )
     ) {
@@ -157,8 +158,8 @@ private fun DataGridContent(
             PokemonItem(
                 id = pokemon.id,
                 name = pokemon.name,
-                imageUrl = pokemon.url,
-                isFavorite = bookmarkIds.contains(pokemon.id),
+                iconUrl = pokemon.url,
+                isBookmarked = bookmarkIds.contains(pokemon.id),
                 onClick = { onClickItem(pokemon) },
                 onClickSave = { onClickSave(pokemon) }
             )
