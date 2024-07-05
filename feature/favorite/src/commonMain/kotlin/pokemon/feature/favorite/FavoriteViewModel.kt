@@ -29,7 +29,7 @@ class FavoriteViewModel(
     fun bookmark(simplePokemon: SimplePokemon) {
         viewModelScope.launch {
             pokemonRepository.bookmark(simplePokemon).mapError {
-                fireErrorMessage(it)
+                fireError(it)
             }
         }
     }

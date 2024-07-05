@@ -39,7 +39,7 @@ class DetailViewModel(
                 .mapSuccess {
                     _data.emit(it)
                 }.mapError {
-                    fireErrorMessage(it)
+                    fireError(it)
                 }
         }
     }
@@ -47,7 +47,7 @@ class DetailViewModel(
     fun bookmark(pokemon: Pokemon) {
         viewModelScope.launch {
             pokemonRepository.bookmark(pokemon.toSimple).mapError {
-                fireErrorMessage(it)
+                fireError(it)
             }
         }
     }

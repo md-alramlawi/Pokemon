@@ -2,6 +2,7 @@ package pokemon.feature.home
 
 import androidx.lifecycle.viewModelScope
 import common.result.mapError
+import common.result.mapSuccess
 import data.repository.PokemonRepository
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -38,7 +39,7 @@ class HomeViewModel(
             pokemonRepository.getPokemonList()
                 .also { showLoader(false) }
                 .mapError {
-                    fireErrorMessage(it)
+                    fireError(it)
                 }
         }
     }
@@ -50,15 +51,15 @@ class HomeViewModel(
     }
 
     fun search(query: String) {
-        viewModelScope.launch {
+        viewModelScope.launch(ioDispatcher) {
             pokemonRepository.search(query)
         }
     }
 
     fun bookmark(simplePokemon: SimplePokemon) {
-        viewModelScope.launch {
+        viewModelScope.launch(ioDispatcher) {
             pokemonRepository.bookmark(simplePokemon).mapError {
-                fireErrorMessage(it)
+                fireError(it)
             }
         }
     }
@@ -68,14 +69,18 @@ class HomeViewModel(
             return
         }
 
-        viewModelScope.launch {
+        viewModelScope.launch(ioDispatcher) {
             isLoadingMore.update { true }
             withContext(ioDispatcher) {
                 pokemonRepository.loadNext()
             }.also {
                 isLoadingMore.update { false }
             }.mapError {
-                fireErrorMessage(it)
+                fireError(it)
+            }.mapSuccess {
+                if (list.value.isEmpty()) {
+                    loadMore()
+                }
             }
         }
     }

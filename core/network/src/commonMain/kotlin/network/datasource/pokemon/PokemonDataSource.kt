@@ -1,5 +1,6 @@
 package network.datasource.pokemon
 
+import common.result.NoMoreException
 import common.result.Result
 import common.result.mapSuccess
 import io.ktor.client.call.body
@@ -27,7 +28,7 @@ class PokemonDataSourceImpl(private val api: PokemonApi) : PokemonDataSource {
 
     override suspend fun getNextList(): Result<PokemonListing> {
         if (nextUrl == null) {
-            return Result.Error(Exception("No More Data to Load"))
+            return Result.Error(NoMoreException("No More Data to Load"))
         }
         return try {
             val result = api.getNextList(nextUrl.orEmpty()).body<PokemonListing>()

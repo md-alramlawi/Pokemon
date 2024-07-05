@@ -47,16 +47,16 @@ open class BaseViewModel(
         viewModelScope.launch(ioDispatcher) {
             when (event) {
                 is UIEvent.Toast -> showSnackbar(event.message)
-                is UIEvent.Error -> fireErrorMessage(event.message)
+                is UIEvent.Error -> fireError(Exception(event.message))
                 is UIEvent.Loading -> showLoader(true)
                 is UIEvent.Idle -> onReleaseScreenState()
             }
         }
     }
 
-    fun fireErrorMessage(message: String?) {
+    fun fireError(exc: Exception) {
         viewModelScope.launch(ioDispatcher) {
-            _uiEvents.emit(UIEvent.Error(message ?: "Something went wrong"))
+            _uiEvents.emit(UIEvent.Error(exc.message ?: "Something went wrong"))
         }
     }
 

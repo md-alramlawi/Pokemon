@@ -1,6 +1,8 @@
 package data.repository
 
+import common.result.NoMoreException
 import common.result.Result
+import common.result.mapError
 import common.result.mapSuccess
 import data.mapper.toModel
 import database.datasource.LocalDatasource
@@ -34,6 +36,7 @@ class PokemonRepositoryImpl(
 ) : PokemonRepository {
 
     private val pokemonHashMap: LinkedHashMap<String, SimplePokemon> = linkedMapOf()
+    private var loadTotalItems = false
     override val currentList = MutableStateFlow<List<SimplePokemon>>(emptyList())
     override val currentName = MutableStateFlow("")
     override val searchQuery = MutableStateFlow("")
@@ -52,17 +55,21 @@ class PokemonRepositoryImpl(
     }
 
     override suspend fun loadNext(): Result<Unit> {
-        if (pokemonHashMap.isEmpty()) {
+        if (pokemonHashMap.isEmpty() || loadTotalItems) {
             return Result.Success(Unit)
         }
 
-        delay(1_000)
-        return remoteDataSource.getNextList().mapSuccess { listing ->
-            listing.results.map { dto -> dto.toModel }.also { list ->
-                pokemonHashMap.putAll(list.associateBy { it.id })
-                currentList.emitFilteredList(pokemonHashMap.values.toList(), searchQuery.value)
+        delay(200)
+        return remoteDataSource.getNextList()
+            .mapError { exc ->
+                loadTotalItems = exc is NoMoreException
             }
-        }
+            .mapSuccess { listing ->
+                listing.results.map { dto -> dto.toModel }.also { list ->
+                    pokemonHashMap.putAll(list.associateBy { it.id })
+                    currentList.emitFilteredList(pokemonHashMap.values.toList(), searchQuery.value)
+                }
+            }
     }
 
     private suspend fun getApiPokemonList(): Result<List<SimplePokemon>> {

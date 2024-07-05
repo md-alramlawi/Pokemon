@@ -28,9 +28,11 @@ inline fun <T, R> Result<T>.flatMapSuccess(transform: (T) -> Result<R>): Result<
     }
 }
 
-inline fun <R> Result<R>.mapError(transform: (String) -> Unit): Result<R> {
+inline fun <R> Result<R>.mapError(transform: (Exception) -> Unit): Result<R> {
     if (this is Result.Error) {
-        transform(this.exception.message ?: "Somethings went wrong")
+        transform(this.exception)
     }
     return this
 }
+
+class NoMoreException(message: String) : Exception(message)
