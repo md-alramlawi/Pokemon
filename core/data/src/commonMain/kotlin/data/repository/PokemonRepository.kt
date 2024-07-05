@@ -52,6 +52,10 @@ class PokemonRepositoryImpl(
     }
 
     override suspend fun loadNext(): Result<Unit> {
+        if (pokemonHashMap.isEmpty()) {
+            return Result.Success(Unit)
+        }
+
         delay(1_000)
         return remoteDataSource.getNextList().mapSuccess { listing ->
             listing.results.map { dto -> dto.toModel }.also { list ->
