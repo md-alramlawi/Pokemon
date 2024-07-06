@@ -3,7 +3,7 @@ package model
 data class Pokemon(
     val id: String,
     val name: String,
-    val imageUrl: String,
+    val images: List<String>,
     val iconUrl: String,
     val types: List<String>,
     val stats: List<Stat>,

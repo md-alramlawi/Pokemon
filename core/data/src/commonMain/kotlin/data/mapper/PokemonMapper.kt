@@ -9,7 +9,7 @@ val PokemonDto.toModel: Pokemon
     get() = Pokemon(
         id = this.id.toString(),
         name = this.name,
-        imageUrl = this.sprites.other.home.frontDefault ?: sprites.other.home.frontShiny.orEmpty(),
+        images = this.images(),
         iconUrl = "${ApiConstant.ICON_BASE_URL}$id.png",
         types = this.types.map { it.type.name },
         weight = this.weight.div(10.0),
@@ -23,6 +23,17 @@ val PokemonDto.toModel: Pokemon
             )
         }
     )
+
+private fun PokemonDto.images(): List<String> {
+    val images = mutableListOf<String>()
+    this.sprites.other?.home?.also { home ->
+        home.frontDefault?.let { images.add(it) }
+        home.frontShiny?.let { images.add(it) }
+        home.frontFemale?.let { images.add(it) }
+        home.frontShinyFemale?.let { images.add(it) }
+    }
+    return images
+}
 
 private val String.abbreviation: String
     get() {

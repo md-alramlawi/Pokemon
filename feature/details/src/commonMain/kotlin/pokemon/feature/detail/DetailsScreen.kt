@@ -1,6 +1,5 @@
 package pokemon.feature.detail
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -27,19 +26,18 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import model.Pokemon
 import org.koin.compose.koinInject
+import pokemon.feature.detail.component.ImagePagerHeight
+import pokemon.feature.detail.component.ImagePager
 import pokemon.feature.detail.component.PropertyItem
 import pokemon.feature.detail.component.StatusBar
 import pokemon.feature.detail.component.TagItem
 import pokemon.feature.detail.component.statColors
-import ui.brush.shadowBrush
 import ui.composable.AppErrorDialog
 import ui.composable.AppIconButton
-import ui.composable.AppImage
 import ui.composable.BookmarkIconButton
 import ui.composable.ShimmerEffect
 import ui.painter.BackgroundsPainterMap
@@ -143,42 +141,14 @@ private fun DataContent(
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         item {
-            Box(
-                modifier = Modifier.fillMaxWidth()
-                    .height(300.dp)
-                    .clip(BottomOnlyRoundedShape)
-                    .background(Color.White),
-            ) {
-                BackgroundsPainterMap()[pokemon.types.random()]?.also {
-                    Image(
-                        modifier = Modifier.fillMaxSize(),
-                        painter = it,
-                        contentDescription = "background",
-                        contentScale = ContentScale.FillBounds
-                    )
-                }
-                Box(
-                    modifier = Modifier.fillMaxSize()
-                        .background(color = Color.White.copy(0.75f))
-                )
-                AppImage(
-                    imageUrl = pokemon.imageUrl,
-                    contentDescription = pokemon.name,
-                    contentScale = ContentScale.Fit,
-                    modifier = Modifier.padding(20.dp).fillMaxSize()
-                )
-                Box(
+            Box {
+                ImagePager(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .height(100.dp)
-                        .background(
-                            brush = shadowBrush(
-                                listOf(
-                                    Color.Gray,
-                                    Color.Transparent
-                                )
-                            )
-                        )
+                        .height(ImagePagerHeight)
+                        .clip(BottomOnlyRoundedShape)
+                        .fillMaxWidth(),
+                    backgroundPainter = BackgroundsPainterMap()[pokemon.types.random()],
+                    images = pokemon.images
                 )
                 BackButton { onBack() }
             }
@@ -248,6 +218,7 @@ private fun DataContent(
         }
     }
 }
+
 
 @Composable
 private fun BackButton(
