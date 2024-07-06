@@ -34,6 +34,10 @@ kotlin {
             implementation(libs.sqlite.bundled)
         }
     }
+
+    sourceSets.commonMain {
+        kotlin.srcDir("build/generated/ksp/metadata")
+    }
 }
 
 android {
@@ -53,5 +57,13 @@ room {
 }
 
 dependencies {
-    ksp(libs.room.compiler)
+    add("kspCommonMainMetadata", libs.room.compiler)
+}
+
+tasks {
+    withType<org.jetbrains.kotlin.gradle.dsl.KotlinCompile<*>>().configureEach {
+        if (name != "kspCommonMainKotlinMetadata") {
+            dependsOn("kspCommonMainKotlinMetadata")
+        }
+    }
 }
