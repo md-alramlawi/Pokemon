@@ -31,7 +31,7 @@ import androidx.compose.ui.unit.dp
 import model.SimplePokemon
 import org.koin.compose.koinInject
 import pokemon.feature.home.composable.PokemonItem
-import ui.composable.AppErrorDialog
+import ui.composable.ErrorDialog
 import ui.composable.AppIconButton
 import ui.painter.backPainter
 import ui.state.UIEvent
@@ -60,7 +60,7 @@ fun FavoriteScreen(
 
     when (uiEvent) {
         is UIEvent.Error -> {
-            AppErrorDialog((uiEvent as UIEvent.Error).message) { viewModel.onReleaseScreenState() }
+            ErrorDialog((uiEvent as UIEvent.Error).message) { viewModel.onReleaseScreenState() }
         }
 
         else -> {}

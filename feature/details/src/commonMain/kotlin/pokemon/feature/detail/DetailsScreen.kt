@@ -3,21 +3,22 @@ package pokemon.feature.detail
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsPadding
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -26,25 +27,25 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import model.Pokemon
 import org.koin.compose.koinInject
-import pokemon.feature.detail.component.ImagePagerHeight
-import pokemon.feature.detail.component.ImagePager
-import pokemon.feature.detail.component.PropertyItem
-import pokemon.feature.detail.component.StatusBar
-import pokemon.feature.detail.component.TagItem
-import pokemon.feature.detail.component.statColors
-import ui.composable.AppErrorDialog
+import pokemon.feature.detail.component.CompactImagePager
+import pokemon.feature.detail.component.CompactInitialStatuses
+import pokemon.feature.detail.component.CompactPokemonInfo
+import pokemon.feature.detail.component.ExpandedImagePager
+import pokemon.feature.detail.component.ExpandedInitialStatuses
+import pokemon.feature.detail.component.ExpandedPokemonInfo
+import ui.brush.shadowBrush
+import ui.composable.AdaptiveLayout
 import ui.composable.AppIconButton
-import ui.composable.BookmarkIconButton
+import ui.composable.ErrorDialog
 import ui.composable.ShimmerEffect
 import ui.painter.BackgroundsPainterMap
 import ui.painter.backPainter
 import ui.state.UIEvent
 import ui.state.UserAction
-import ui.theme.BottomOnlyRoundedShape
+import ui.theme.AppShape
 
 @Composable
 fun DetailsScreen(
@@ -66,7 +67,7 @@ fun DetailsScreen(
     )
 
     if (uiEvent is UIEvent.Error) {
-        AppErrorDialog((uiEvent as UIEvent.Error).message) { viewModel.onAction(UserAction.Release) }
+        ErrorDialog((uiEvent as UIEvent.Error).message) { viewModel.onAction(UserAction.Release) }
     }
 }
 
@@ -81,49 +82,23 @@ private fun PokemonDetailsContent(
         modifier = Modifier.fillMaxSize(),
         color = MaterialTheme.colorScheme.background
     ) {
-        pokemon?.let {
-            DataContent(
-                pokemon = it,
-                isBookmarked = isBookmarked,
-                onClickSave = { onClickSave(it) },
-                onBack = onBack
-            )
-        } ?: LoadingContent { onBack() }
-    }
-}
-
-@Composable
-private fun LoadingContent(onBack: () -> Unit) {
-    LazyColumn(
-        verticalArrangement = Arrangement.SpaceBetween,
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
-        item {
-            Box {
-                ShimmerEffect(
-                    modifier = Modifier.height(300.dp).fillMaxWidth(),
-                    shape = BottomOnlyRoundedShape
+        Box {
+            pokemon?.let {
+                DataContent(
+                    pokemon = pokemon,
+                    isBookmarked = isBookmarked,
+                    onClickSave = { onClickSave(it) }
                 )
-                BackButton { onBack() }
-            }
-        }
+            } ?: LoadingContent()
 
-        item {
-            ShimmerEffect(modifier = Modifier.height(50.dp).fillMaxWidth(0.8f))
-        }
-
-        item {
-            Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                ShimmerEffect(modifier = Modifier.size(height = 50.dp, width = 100.dp))
-                ShimmerEffect(modifier = Modifier.size(height = 50.dp, width = 100.dp))
-            }
-        }
-
-        item {
-            ShimmerEffect(Modifier.padding(top = 10.dp).height(25.dp).fillMaxWidth(0.8f))
-            ShimmerEffect(Modifier.padding(top = 10.dp).height(25.dp).fillMaxWidth(0.8f))
-            ShimmerEffect(Modifier.padding(top = 10.dp).height(25.dp).fillMaxWidth(0.8f))
-            Spacer(Modifier.height(50.dp))
+            // status background
+            AdaptiveLayout(
+                compactContent = {
+                    StatusBackground(startColor = Color.Gray)
+                },
+                expandedContent = {}
+            )
+            BackButton { onBack() }
         }
     }
 }
@@ -133,106 +108,171 @@ private fun LoadingContent(onBack: () -> Unit) {
 private fun DataContent(
     pokemon: Pokemon,
     isBookmarked: Boolean,
-    onClickSave: () -> Unit,
-    onBack: () -> Unit
+    onClickSave: () -> Unit
 ) {
-    LazyColumn(
-        verticalArrangement = Arrangement.SpaceBetween,
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
-        item {
-            Box {
-                ImagePager(
-                    modifier = Modifier
-                        .height(ImagePagerHeight)
-                        .clip(BottomOnlyRoundedShape)
-                        .fillMaxWidth(),
-                    backgroundPainter = BackgroundsPainterMap()[pokemon.types.random()],
-                    images = pokemon.images
+    AdaptiveLayout(
+        compactContent = {
+            Column(
+                modifier = Modifier.fillMaxHeight(),
+                verticalArrangement = Arrangement.SpaceBetween,
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                CompactImagePager(
+                    modifier = Modifier.weight(1f),
+                    images = pokemon.images,
+                    backgroundPainter = BackgroundsPainterMap()[pokemon.types.random()]
                 )
-                BackButton { onBack() }
-            }
-        }
-
-        item {
-            Box(
-                modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp)
-            ) {
-                Text(
-                    pokemon.name,
-                    style = MaterialTheme.typography.headlineLarge,
-                    color = Color.White,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.align(Alignment.Center)
+                Spacer(Modifier.height(10.dp))
+                CompactPokemonInfo(
+                    modifier = Modifier.weight(1f),
+                    name = pokemon.name,
+                    height = pokemon.height,
+                    weight = pokemon.weight,
+                    types = pokemon.types,
+                    isBookmarked = isBookmarked,
+                    onBookmark = onClickSave,
                 )
-                BookmarkIconButton(
-                    modifier = Modifier.align(Alignment.CenterEnd),
-                    isBookmarked = isBookmarked
-                ) {
-                    onClickSave()
-                }
-            }
-        }
-
-        item {
-            Row(
-                modifier = Modifier.padding(horizontal = 20.dp),
-                horizontalArrangement = Arrangement.spacedBy(10.dp)
-            ) {
-                pokemon.types.forEach {
-                    TagItem(it.uppercase())
-                }
-            }
-        }
-
-        item {
-            Row(
-                modifier = Modifier.padding(horizontal = 20.dp),
-                horizontalArrangement = Arrangement.spacedBy(20.dp)
-            ) {
-                PropertyItem(label = "weight", content = "${pokemon.weight} KG")
-                PropertyItem(label = "height", content = "${pokemon.height} CM")
-            }
-        }
-
-        item {
-            Text(
-                text = "Initial Statuses",
-                style = MaterialTheme.typography.headlineMedium,
-                color = Color.White,
-                fontWeight = FontWeight.Bold
-            )
-            Spacer(Modifier.height(16.dp))
-            pokemon.stats.forEachIndexed { index, stat ->
-                StatusBar(
-                    modifier = Modifier.fillMaxWidth().padding(horizontal = 30.dp)
-                        .height(20.dp),
-                    label = stat.name,
-                    value = stat.baseStat,
-                    percentage = stat.percentage,
-                    color = statColors[index],
+                Spacer(Modifier.height(10.dp))
+                CompactInitialStatuses(
+                    modifier = Modifier.weight(1f),
+                    stats = pokemon.stats
                 )
                 Spacer(Modifier.height(10.dp))
             }
-            Spacer(Modifier.height(30.dp))
+        },
+        expandedContent = {
+            Row(
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                ExpandedImagePager(
+                    modifier = Modifier.weight(1.2f),
+                    images = pokemon.images,
+                    backgroundPainter = BackgroundsPainterMap()[pokemon.types.random()]
+                )
+                Spacer(Modifier.width(20.dp))
+                Column(modifier = Modifier.weight(1.8f)) {
+                    ExpandedPokemonInfo(
+                        modifier = Modifier.weight(0.8f).fillMaxWidth(),
+                        name = pokemon.name,
+                        height = pokemon.height,
+                        weight = pokemon.weight,
+                        types = pokemon.types,
+                        isBookmarked = isBookmarked,
+                        onBookmark = onClickSave,
+                    )
+                    ExpandedInitialStatuses(
+                        modifier = Modifier.weight(1.2f).fillMaxWidth(),
+                        stats = pokemon.stats
+                    )
+                }
+                Spacer(Modifier.width(20.dp))
+            }
         }
-    }
+    )
+}
+
+@Composable
+private fun LoadingContent() {
+    AdaptiveLayout(
+        compactContent = {
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.SpaceBetween,
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                ShimmerEffect(
+                    modifier = Modifier.height(300.dp).fillMaxWidth(),
+                    shape = AppShape.BottomOnlyRoundedShape
+                )
+
+                ShimmerEffect(modifier = Modifier.height(50.dp).fillMaxWidth(0.8f))
+
+                Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                    ShimmerEffect(modifier = Modifier.size(height = 50.dp, width = 100.dp))
+                    ShimmerEffect(modifier = Modifier.size(height = 50.dp, width = 100.dp))
+                }
+
+                Column {
+                    ShimmerEffect(
+                        Modifier.padding(top = 10.dp).height(25.dp).fillMaxWidth(0.8f)
+                    )
+                    ShimmerEffect(
+                        Modifier.padding(top = 10.dp).height(25.dp).fillMaxWidth(0.8f)
+                    )
+                    ShimmerEffect(
+                        Modifier.padding(top = 10.dp).height(25.dp).fillMaxWidth(0.8f)
+                    )
+                    Spacer(Modifier.height(50.dp))
+                }
+            }
+        },
+        expandedContent = {
+            Row {
+                ShimmerEffect(
+                    modifier = Modifier
+                        .padding(end = 15.dp)
+                        .weight(1.2f).fillMaxHeight(),
+                    shape = AppShape.EndOnlyRoundedShape
+                )
+
+                Column(
+                    modifier = Modifier
+                        .weight(1.8f)
+                        .fillMaxHeight()
+                        .padding(horizontal = 30.dp),
+                    verticalArrangement = Arrangement.SpaceAround
+                ) {
+                    Column {
+                        ShimmerEffect(modifier = Modifier.height(50.dp).fillMaxWidth())
+                        Spacer(Modifier.height(20.dp))
+                        ShimmerEffect(modifier = Modifier.height(30.dp).fillMaxWidth())
+                    }
+
+                    Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                        ShimmerEffect(modifier = Modifier.height(20.dp).fillMaxWidth())
+                        ShimmerEffect(modifier = Modifier.height(20.dp).fillMaxWidth())
+                        ShimmerEffect(modifier = Modifier.height(20.dp).fillMaxWidth())
+                        ShimmerEffect(modifier = Modifier.height(20.dp).fillMaxWidth())
+                    }
+                }
+            }
+        }
+    )
 }
 
 
 @Composable
 private fun BackButton(
-    modifier: Modifier = Modifier,
+    tint: Color = Color.Black,
+    backgroundColor: Color = Color.White.copy(alpha = 0.3f),
     onClick: () -> Unit
 ) {
     AppIconButton(
-        modifier = modifier
-            .padding(10.dp)
+        modifier = Modifier
+            .padding(20.dp)
             .windowInsetsPadding(WindowInsets.statusBars)
             .clip(CircleShape)
-            .background(Color.White.copy(alpha = 0.3f)),
+            .background(backgroundColor),
         painter = backPainter(),
-        tint = Color.Black,
+        tint = tint,
         onClick = onClick
+    )
+}
+
+@Composable
+fun StatusBackground(startColor: Color = Color.Gray) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(100.dp)
+            .background(
+                brush = shadowBrush(
+                    listOf(
+                        startColor,
+                        Color.Transparent
+                    )
+                )
+            )
     )
 }

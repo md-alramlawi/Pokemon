@@ -1,37 +1,28 @@
 package pokemon.feature.home
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 import model.SimplePokemon
 import org.koin.compose.koinInject
-import pokemon.feature.home.composable.HomeBarWithShadow
-import pokemon.feature.home.composable.PokemonItem
-import pokemon.feature.home.composable.homeBarHeight
-import ui.composable.AppErrorDialog
+import pokemon.feature.home.composable.*
+import ui.composable.AdaptiveLayout
+import ui.composable.ErrorDialog
 import ui.composable.ShimmerEffect
 import ui.state.UIEvent
 import ui.state.UserAction
-import ui.theme.MediumRoundedCornerShape
+import ui.theme.AppShape
 
 @Composable
 fun HomeScreen(
@@ -62,7 +53,7 @@ fun HomeScreen(
     )
 
     if (uiEvent is UIEvent.Error) {
-        AppErrorDialog((uiEvent as UIEvent.Error).message) {
+        ErrorDialog((uiEvent as UIEvent.Error).message) {
             viewModel.onAction(UserAction.Release)
         }
     }
@@ -87,17 +78,23 @@ private fun PokemonListContent(
             .background(MaterialTheme.colorScheme.background),
         contentAlignment = Alignment.TopCenter
     ) {
-        if (initLoading) {
-            LoadingGridContent()
-        } else {
-            DataGridContent(
-                isLoadingMore = isLoadingMore,
-                list = list,
-                bookmarkIds = bookmarkIds,
-                onClickItem = onClickItem,
-                onClickSave = onClickSave,
-                onLoadMore = onLoadMore
-            )
+        AdaptiveLayout(
+            compactContent = CompactHomeBarHeight,
+            expandedContent = ExpandedHomeBarHeight
+        ) { topPadding ->
+            if (initLoading) {
+                LoadingGridContent(topPadding)
+            } else {
+                DataGridContent(
+                    topPadding = topPadding,
+                    isLoadingMore = isLoadingMore,
+                    list = list,
+                    bookmarkIds = bookmarkIds,
+                    onClickItem = onClickItem,
+                    onClickSave = onClickSave,
+                    onLoadMore = onLoadMore
+                )
+            }
         }
 
         HomeBarWithShadow(
@@ -109,7 +106,7 @@ private fun PokemonListContent(
 }
 
 @Composable
-private fun LoadingGridContent() {
+private fun LoadingGridContent(topPadding: Dp) {
     LazyVerticalGrid(
         columns = GridCells.Fixed(3),
         verticalArrangement = Arrangement.spacedBy(5.dp),
@@ -117,7 +114,7 @@ private fun LoadingGridContent() {
         contentPadding = PaddingValues(
             start = 5.dp,
             end = 5.dp,
-            top = homeBarHeight,
+            top = topPadding,
             bottom = 20.dp
         )
     ) {
@@ -126,7 +123,7 @@ private fun LoadingGridContent() {
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(200.dp),
-                shape = MediumRoundedCornerShape
+                shape = AppShape.MediumRoundedCornerShape
             )
         }
     }
@@ -134,6 +131,7 @@ private fun LoadingGridContent() {
 
 @Composable
 private fun DataGridContent(
+    topPadding: Dp,
     isLoadingMore: Boolean,
     list: List<SimplePokemon>,
     bookmarkIds: List<String>,
@@ -150,7 +148,7 @@ private fun DataGridContent(
         contentPadding = PaddingValues(
             start = 5.dp,
             end = 5.dp,
-            top = homeBarHeight,
+            top = topPadding,
             bottom = 20.dp
         )
     ) {

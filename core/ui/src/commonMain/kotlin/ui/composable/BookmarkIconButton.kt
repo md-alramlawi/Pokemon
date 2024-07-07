@@ -22,7 +22,7 @@ fun BookmarkIconButton(
     val iconTint = if (isBookmarked) {
         Color.Red
     } else {
-        Color.Gray
+        Color.LightGray
     }
 
     AppIconButton(

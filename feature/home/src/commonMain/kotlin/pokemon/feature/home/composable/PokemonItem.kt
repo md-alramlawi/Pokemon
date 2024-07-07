@@ -8,7 +8,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -18,9 +18,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import ui.composable.AdaptiveLayout
 import ui.composable.AppImage
 import ui.composable.BookmarkIconButton
-import ui.theme.MediumRoundedCornerShape
+import ui.theme.AppShape
 
 @Composable
 fun PokemonItem(
@@ -32,7 +33,7 @@ fun PokemonItem(
     isBookmarked: Boolean
 ) {
     Surface(
-        shape = MediumRoundedCornerShape
+        shape = AppShape.MediumRoundedCornerShape
     ) {
         Column(
             modifier = Modifier
@@ -45,7 +46,7 @@ fun PokemonItem(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                BookmarkIconButton(isBookmarked){
+                BookmarkIconButton(isBookmarked) {
                     onClickSave()
                 }
 
@@ -54,12 +55,20 @@ fun PokemonItem(
                     style = MaterialTheme.typography.labelMedium
                 )
             }
-            AppImage(
-                modifier = Modifier.size(100.dp),
-                imageUrl = iconUrl,
-                contentDescription = name,
-                contentScale = ContentScale.FillBounds
-            )
+            AdaptiveLayout(
+                compactContent = 100.dp,
+                expandedContent = 150.dp,
+                fraction = 0.33f
+            ) { iconSize ->
+                AppImage(
+                    modifier = Modifier
+                        .height(100.dp)
+                        .width(iconSize),
+                    imageUrl = iconUrl,
+                    contentDescription = name,
+                    contentScale = ContentScale.FillWidth
+                )
+            }
             Spacer(Modifier.height(4.dp))
             Text(
                 modifier = Modifier.height(40.dp),

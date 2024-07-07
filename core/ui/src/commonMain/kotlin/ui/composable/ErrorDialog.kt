@@ -14,36 +14,38 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import ui.theme.MediumRoundedCornerShape
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AppErrorDialog(
-    message: String, onDismiss: () -> Unit
+fun ErrorDialog(
+    message: String,
+    onDismiss: () -> Unit
 ) {
     BasicAlertDialog(
         onDismissRequest = onDismiss,
         content = {
-            Surface(shape = MediumRoundedCornerShape) {
-                Column(modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(10.dp)) {
+            Surface(shape = MaterialTheme.shapes.medium) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 10.dp, horizontal = 20.dp)
+                ) {
                     Text(
-                        "Error",
-                        style = MaterialTheme.typography.headlineMedium.copy(
-                            color = Color.Red
+                        text = "Error",
+                        style = MaterialTheme.typography.headlineSmall.copy(
+                            color = MaterialTheme.colorScheme.error,
+                            fontWeight = FontWeight.Bold
                         )
                     )
-                    Spacer(Modifier.height(20.dp))
+                    Spacer(modifier = Modifier.height(20.dp))
                     Text(message, style = MaterialTheme.typography.bodyMedium)
-
-                    Spacer(Modifier.height(20.dp))
+                    Spacer(modifier = Modifier.height(20.dp))
                     TextButton(
                         onClick = onDismiss,
                         modifier = Modifier.align(Alignment.End)
-                    ){
+                    ) {
                         Text("Ok")
                     }
                 }

@@ -41,9 +41,6 @@ kotlin {
 
             implementation(libs.lifecycle.viewmodel.compose)
         }
-        androidMain.dependencies {
-            implementation(libs.androidx.lifecycle.runtimeCompose)
-        }
     }
 }
 
