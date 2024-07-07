@@ -1,18 +1,17 @@
 package pokemon.feature.detail.component
 
-
-import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.animateIntAsState
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -25,14 +24,41 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import model.Pokemon
 
 @Composable
-fun StatusBar(
+fun BaseStatuses(
+    modifier: Modifier = Modifier,
+    stats: List<Pokemon.Stat>
+) {
+    Column(modifier.padding(horizontal = 20.dp)) {
+        Text(
+            text = "Base Stats",
+            style = MaterialTheme.typography.headlineSmall,
+            color = MaterialTheme.colorScheme.surface,
+            fontWeight = FontWeight.Bold
+        )
+        Spacer(Modifier.height(10.dp))
+
+        stats.forEachIndexed { index, stat ->
+            StatusBar(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                label = stat.name.replaceFirstChar { it.uppercase() },
+                value = stat.baseStat,
+                color = statColors[index]
+            )
+        }
+    }
+}
+
+@Composable
+private fun StatusBar(
     modifier: Modifier = Modifier,
     label: String,
     value: Int,
-    percentage: Float,
     color: Color
 ) {
 
@@ -42,21 +68,13 @@ fun StatusBar(
         targetValue = if (startAnimation) value else 0,
         animationSpec = tween(durationMillis = 2_000)
     )
-    val animatedPercentage by animateFloatAsState(
-        targetValue = if (startAnimation) percentage else 0f,
-        animationSpec = tween(durationMillis = 2_000)
-    )
 
     LaunchedEffect(Unit) {
         startAnimation = true
     }
 
-
-    val outerShape = RoundedCornerShape(5.dp)
-    val innerShape = RoundedCornerShape(topStart = 0.dp, bottomStart = 0.dp, topEnd = 5.dp, bottomEnd = 5.dp)
-
     Row(
-        modifier = modifier,
+        modifier = modifier.padding(vertical = 4.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
@@ -67,19 +85,17 @@ fun StatusBar(
         )
         Spacer(Modifier.width(6.dp))
         Box(
-            modifier = Modifier
-                .weight(1f)
-                .clip(shape = outerShape)
-                .background(color)
+            modifier = Modifier.weight(1f)
         ) {
-            Box(
+            LinearProgressIndicator(
+                progress = { (animatedValue.toFloat().div(100)) },
                 modifier = Modifier
-                    .align(Alignment.CenterEnd)
-                    .padding(0.5.dp)
-                    .clip(shape = innerShape)
-                    .fillMaxHeight()
-                    .fillMaxWidth(1f - animatedPercentage)
-                    .background(Color.White)
+                    .fillMaxWidth()
+                    .height(18.dp)
+                    .clip(MaterialTheme.shapes.extraSmall)
+                    .border(width = 1.dp, color = color),
+                color = color,
+                trackColor = Color.White,
             )
 
             Text(
@@ -93,8 +109,7 @@ fun StatusBar(
 }
 
 
-
-val statColors = listOf(
+private val statColors = listOf(
     Color(0xFF4CAF50),
     Color(0xFFF44336),
     Color(0xFF2196F3),

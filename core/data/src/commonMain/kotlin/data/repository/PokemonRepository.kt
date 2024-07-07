@@ -6,7 +6,6 @@ import common.result.mapError
 import common.result.mapSuccess
 import data.mapper.toModel
 import database.datasource.LocalDatasource
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -15,6 +14,7 @@ import kotlinx.coroutines.flow.update
 import model.Pokemon
 import model.SimplePokemon
 import network.datasource.pokemon.PokemonDataSource
+import network.service.dto.PokemonDto
 
 interface PokemonRepository {
     val currentList: StateFlow<List<SimplePokemon>>
@@ -35,6 +35,7 @@ class PokemonRepositoryImpl(
     private val localDatasource: LocalDatasource
 ) : PokemonRepository {
 
+    private val detailsMap: LinkedHashMap<String, PokemonDto> = linkedMapOf()
     private val pokemonHashMap: LinkedHashMap<String, SimplePokemon> = linkedMapOf()
     private var loadTotalItems = false
     override val currentList = MutableStateFlow<List<SimplePokemon>>(emptyList())
@@ -59,7 +60,6 @@ class PokemonRepositoryImpl(
             return Result.Success(Unit)
         }
 
-        delay(200)
         return remoteDataSource.getNextList()
             .mapError { exc ->
                 loadTotalItems = exc is NoMoreException
@@ -73,7 +73,6 @@ class PokemonRepositoryImpl(
     }
 
     private suspend fun getApiPokemonList(): Result<List<SimplePokemon>> {
-        delay(1_000)
         return remoteDataSource.getPokemonListing().mapSuccess { listing ->
             listing.results.map { dto -> dto.toModel }.also { list ->
                 pokemonHashMap.clear()
@@ -89,9 +88,12 @@ class PokemonRepositoryImpl(
     }
 
     override suspend fun getPokemon(name: String): Result<Pokemon> {
-        delay(1_000)
         val bookmarks = localDatasource.getAll().first().map { it.id }
-        return remoteDataSource.getPokemon(name = name).mapSuccess { dto ->
+        val detailsResult = detailsMap[name]?.let {
+            Result.Success(it)
+        } ?: remoteDataSource.getPokemon(name = name)
+        return detailsResult.mapSuccess { dto ->
+            detailsMap[name] = dto
             dto.toModel.copy(isBookmarked = bookmarks.contains(dto.id.toString()))
         }
     }

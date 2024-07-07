@@ -9,7 +9,6 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -27,11 +26,10 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import ui.composable.AppImage
-import ui.theme.AppShape
 import ui.theme.Gray95
 
 @Composable
-fun CompactImagePager(
+fun ImagePager(
     images: List<String>,
     backgroundPainter: Painter?,
     modifier: Modifier = Modifier,
@@ -41,8 +39,6 @@ fun CompactImagePager(
     )
     Box(
         modifier = modifier
-            .clip(AppShape.BottomOnlyRoundedShape)
-            .fillMaxWidth()
     ) {
         BackgroundContent(
             modifier = Modifier.fillMaxSize(),
@@ -52,7 +48,6 @@ fun CompactImagePager(
             modifier = Modifier.fillMaxSize(),
             state = pagerState,
         ) { page ->
-            // Our page content
             ImageContent(
                 imageUrl = images[page],
                 modifier = Modifier.fillMaxSize()
@@ -67,7 +62,7 @@ fun CompactImagePager(
                 .padding(bottom = 8.dp),
             horizontalArrangement = Arrangement.Center
         ) {
-            repeat(pagerState.pageCount) { iteration ->
+            repeat(times = pagerState.pageCount) { iteration ->
                 val color = if (pagerState.currentPage == iteration) Gray95 else Color.Transparent
                 Box(
                     modifier = Modifier
@@ -79,61 +74,6 @@ fun CompactImagePager(
                 )
             }
         }
-
-    }
-}
-
-@Composable
-fun ExpandedImagePager(
-    images: List<String>,
-    backgroundPainter: Painter?,
-    modifier: Modifier = Modifier,
-) {
-    val pagerState = rememberPagerState(
-        pageCount = { images.size }
-    )
-    Box(
-        modifier = modifier
-            .clip(AppShape.EndOnlyRoundedShape)
-            .fillMaxHeight()
-    ) {
-        BackgroundContent(
-            modifier = Modifier.fillMaxSize(),
-            backgroundPainter = backgroundPainter
-        )
-        HorizontalPager(
-            modifier = Modifier.fillMaxSize(),
-            state = pagerState,
-        ) { page ->
-            // Our page content
-            ImageContent(
-                imageUrl = images[page],
-                modifier = Modifier.fillMaxSize()
-            )
-        }
-
-        // Indicators
-        Row(
-            Modifier
-                .wrapContentHeight()
-                .fillMaxWidth()
-                .align(Alignment.BottomCenter)
-                .padding(bottom = 8.dp),
-            horizontalArrangement = Arrangement.Center
-        ) {
-            repeat(pagerState.pageCount) { iteration ->
-                val color = if (pagerState.currentPage == iteration) Gray95 else Color.Transparent
-                Box(
-                    modifier = Modifier
-                        .padding(2.dp)
-                        .clip(CircleShape)
-                        .border(1.dp, Gray95, shape = CircleShape)
-                        .background(color)
-                        .size(10.dp)
-                )
-            }
-        }
-
     }
 }
 
@@ -149,7 +89,9 @@ private fun ImageContent(
             imageUrl = imageUrl,
             contentDescription = "",
             contentScale = ContentScale.Fit,
-            modifier = Modifier.padding(20.dp).fillMaxSize()
+            modifier = Modifier
+                .padding(20.dp)
+                .fillMaxSize()
         )
     }
 }
@@ -169,8 +111,9 @@ private fun BackgroundContent(
             )
         }
         Box(
-            modifier = Modifier.fillMaxSize()
-                .background(color = Color.White.copy(0.75f))
+            modifier = Modifier
+                .fillMaxSize()
+                .background(color = Color.White.copy(alpha = 0.75f))
         )
     }
 }

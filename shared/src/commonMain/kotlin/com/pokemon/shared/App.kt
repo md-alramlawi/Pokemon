@@ -2,6 +2,7 @@ package com.pokemon.shared
 
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -13,6 +14,7 @@ import ui.theme.PokemonTheme
 import pokemon.feature.detail.DetailsScreen
 import pokemon.feature.favorite.FavoriteScreen
 import pokemon.feature.home.HomeScreen
+import ui.theme.Gray95
 
 
 @Composable
@@ -27,7 +29,7 @@ private fun NavHostMain(navController: NavHostController = rememberNavController
     NavHost(
         navController = navController,
         startDestination = "home",
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier.fillMaxSize().background(Gray95),
         enterTransition = {
             slideIntoContainer(
                 AnimatedContentTransitionScope.SlideDirection.Left,

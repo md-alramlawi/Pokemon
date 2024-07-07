@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -18,7 +17,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import ui.composable.AdaptiveLayout
 import ui.composable.AppImage
 import ui.composable.BookmarkIconButton
 import ui.theme.AppShape
@@ -55,20 +53,14 @@ fun PokemonItem(
                     style = MaterialTheme.typography.labelMedium
                 )
             }
-            AdaptiveLayout(
-                compactContent = 100.dp,
-                expandedContent = 150.dp,
-                fraction = 0.33f
-            ) { iconSize ->
-                AppImage(
-                    modifier = Modifier
-                        .height(100.dp)
-                        .width(iconSize),
-                    imageUrl = iconUrl,
-                    contentDescription = name,
-                    contentScale = ContentScale.FillWidth
-                )
-            }
+            AppImage(
+                modifier = Modifier
+                    .height(100.dp)
+                    .fillMaxWidth(),
+                imageUrl = iconUrl,
+                contentDescription = name,
+                contentScale = ContentScale.FillHeight
+            )
             Spacer(Modifier.height(4.dp))
             Text(
                 modifier = Modifier.height(40.dp),

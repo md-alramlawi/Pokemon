@@ -2,17 +2,9 @@ package pokemon.feature.favorite
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBars
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
@@ -22,7 +14,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -31,11 +22,12 @@ import androidx.compose.ui.unit.dp
 import model.SimplePokemon
 import org.koin.compose.koinInject
 import pokemon.feature.home.composable.PokemonItem
-import ui.composable.ErrorDialog
+import ui.composable.AppBarHeight
 import ui.composable.AppIconButton
+import ui.composable.AppTopBar
+import ui.composable.ErrorDialog
 import ui.painter.backPainter
 import ui.state.UIEvent
-import ui.theme.Gray95
 
 @Composable
 fun FavoriteScreen(
@@ -50,10 +42,7 @@ fun FavoriteScreen(
 
     FavoriteContent(
         list = list,
-        onClickItem = {
-            viewModel.setCurrent(it.name)
-            onClickItem()
-        },
+        onClickItem = { viewModel.setCurrent(it.name);onClickItem() },
         onBack = onBack,
         onClickSave = viewModel::bookmark
     )
@@ -75,34 +64,16 @@ private fun FavoriteContent(
     onClickSave: (SimplePokemon) -> Unit,
     onBack: () -> Unit
 ) {
-    Column(
-        modifier = Modifier.fillMaxSize()
-            .background(Gray95)
-
-    ) {
-        Row(
-            modifier = Modifier.fillMaxWidth()
-                .background(Color.Red)
-                .padding(10.dp)
-                .windowInsetsPadding(WindowInsets.statusBars),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            BackButton { onBack() }
-            Spacer(Modifier.width(20.dp))
-            Text(
-                text = "Favorite",
-                style = MaterialTheme.typography.headlineMedium,
-                color = Color.White,
-                fontWeight = FontWeight.Bold
-            )
-        }
+    Box {
         LazyVerticalGrid(
             columns = GridCells.Fixed(3),
             verticalArrangement = Arrangement.spacedBy(5.dp),
             horizontalArrangement = Arrangement.spacedBy(5.dp),
             contentPadding = PaddingValues(
-                horizontal = 5.dp,
-                vertical = 10.dp
+                start = 5.dp,
+                end = 5.dp,
+                top = AppBarHeight.BasicHeight,
+                bottom = 20.dp
             )
         ) {
             items(list, key = { it.name }) { pokemon ->
@@ -116,20 +87,29 @@ private fun FavoriteContent(
                 )
             }
         }
+
+        AppTopBar(Modifier.height(AppBarHeight.BasicHeight)) {
+            BackButton { onBack() }
+            Text(
+                text = "Favorite",
+                style = MaterialTheme.typography.headlineMedium,
+                color = Color.White,
+                fontWeight = FontWeight.Bold
+            )
+        }
     }
 }
 
 @Composable
 private fun BackButton(
-    modifier: Modifier = Modifier,
+    tint: Color = Color.White,
+    backgroundColor: Color = Color.Black.copy(alpha = 0.3f),
     onClick: () -> Unit
 ) {
     AppIconButton(
-        modifier = modifier
-            .clip(CircleShape)
-            .background(Color.Black.copy(alpha = 0.1f)),
+        modifier = Modifier.clip(CircleShape).background(backgroundColor),
         painter = backPainter(),
-        tint = Color.White,
+        tint = tint,
         onClick = onClick
     )
 }

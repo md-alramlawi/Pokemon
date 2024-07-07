@@ -4,6 +4,7 @@ import common.result.NoMoreException
 import common.result.Result
 import common.result.mapSuccess
 import io.ktor.client.call.body
+import kotlinx.coroutines.delay
 import network.service.api.PokemonApi
 import network.service.dto.PokemonDto
 import network.service.response.PokemonListing
@@ -18,6 +19,7 @@ interface PokemonDataSource {
 class PokemonDataSourceImpl(private val api: PokemonApi) : PokemonDataSource {
     private var nextUrl: String? = null
     override suspend fun getPokemonListing(): Result<PokemonListing> {
+        delay(5_00)
         return try {
             val result = api.getInitialList().body<PokemonListing>()
             Result.Success(result).mapSuccess { nextUrl = it.next; it }
@@ -27,6 +29,7 @@ class PokemonDataSourceImpl(private val api: PokemonApi) : PokemonDataSource {
     }
 
     override suspend fun getNextList(): Result<PokemonListing> {
+        delay(2_00)
         if (nextUrl == null) {
             return Result.Error(NoMoreException("No More Data to Load"))
         }
@@ -39,6 +42,7 @@ class PokemonDataSourceImpl(private val api: PokemonApi) : PokemonDataSource {
     }
 
     override suspend fun getPokemon(name: String): Result<PokemonDto> {
+        delay(5_00)
         return try {
             val result = api.getPokemon(name).body<PokemonDto>()
             Result.Success(result)

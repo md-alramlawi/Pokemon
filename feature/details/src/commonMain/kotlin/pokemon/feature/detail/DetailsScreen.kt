@@ -20,7 +20,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -30,12 +29,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import model.Pokemon
 import org.koin.compose.koinInject
-import pokemon.feature.detail.component.CompactImagePager
-import pokemon.feature.detail.component.CompactInitialStatuses
+import pokemon.feature.detail.component.BaseStatuses
 import pokemon.feature.detail.component.CompactPokemonInfo
-import pokemon.feature.detail.component.ExpandedImagePager
-import pokemon.feature.detail.component.ExpandedInitialStatuses
 import pokemon.feature.detail.component.ExpandedPokemonInfo
+import pokemon.feature.detail.component.ImagePager
 import ui.brush.shadowBrush
 import ui.composable.AdaptiveLayout
 import ui.composable.AppIconButton
@@ -55,9 +52,6 @@ fun DetailsScreen(
     val pokemonDate by viewModel.data.collectAsState()
     val bookmarkIds by viewModel.bookmarkIds.collectAsState()
     val uiEvent by viewModel.uiEvents.collectAsState()
-    LaunchedEffect(Unit) {
-        viewModel.getDetails()
-    }
 
     PokemonDetailsContent(
         isBookmarked = bookmarkIds.contains(pokemonDate?.id ?: false),
@@ -113,12 +107,13 @@ private fun DataContent(
     AdaptiveLayout(
         compactContent = {
             Column(
-                modifier = Modifier.fillMaxHeight(),
                 verticalArrangement = Arrangement.SpaceBetween,
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                CompactImagePager(
-                    modifier = Modifier.weight(1f),
+                ImagePager(
+                    modifier = Modifier
+                        .clip(AppShape.BottomOnlyRoundedShape)
+                        .weight(1f),
                     images = pokemon.images,
                     backgroundPainter = BackgroundsPainterMap()[pokemon.types.random()]
                 )
@@ -133,11 +128,11 @@ private fun DataContent(
                     onBookmark = onClickSave,
                 )
                 Spacer(Modifier.height(10.dp))
-                CompactInitialStatuses(
+                BaseStatuses(
                     modifier = Modifier.weight(1f),
                     stats = pokemon.stats
                 )
-                Spacer(Modifier.height(10.dp))
+                Spacer(Modifier.height(20.dp))
             }
         },
         expandedContent = {
@@ -145,8 +140,10 @@ private fun DataContent(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                ExpandedImagePager(
-                    modifier = Modifier.weight(1.2f),
+                ImagePager(
+                    modifier = Modifier
+                        .clip(AppShape.EndOnlyRoundedShape)
+                        .weight(1.2f),
                     images = pokemon.images,
                     backgroundPainter = BackgroundsPainterMap()[pokemon.types.random()]
                 )
@@ -161,7 +158,7 @@ private fun DataContent(
                         isBookmarked = isBookmarked,
                         onBookmark = onClickSave,
                     )
-                    ExpandedInitialStatuses(
+                    BaseStatuses(
                         modifier = Modifier.weight(1.2f).fillMaxWidth(),
                         stats = pokemon.stats
                     )
@@ -182,40 +179,37 @@ private fun LoadingContent() {
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 ShimmerEffect(
-                    modifier = Modifier.height(300.dp).fillMaxWidth(),
+                    modifier = Modifier.weight(1f).fillMaxWidth(),
                     shape = AppShape.BottomOnlyRoundedShape
                 )
-
-                ShimmerEffect(modifier = Modifier.height(50.dp).fillMaxWidth(0.8f))
-
-                Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                    ShimmerEffect(modifier = Modifier.size(height = 50.dp, width = 100.dp))
-                    ShimmerEffect(modifier = Modifier.size(height = 50.dp, width = 100.dp))
+                Spacer(Modifier.height(10.dp))
+                Column(
+                    modifier = Modifier.weight(1f),
+                    verticalArrangement = Arrangement.SpaceEvenly,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    ShimmerEffect(modifier = Modifier.height(50.dp).fillMaxWidth(0.8f))
+                    Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                        ShimmerEffect(modifier = Modifier.size(height = 50.dp, width = 100.dp))
+                        ShimmerEffect(modifier = Modifier.size(height = 50.dp, width = 100.dp))
+                    }
                 }
-
-                Column {
-                    ShimmerEffect(
-                        Modifier.padding(top = 10.dp).height(25.dp).fillMaxWidth(0.8f)
-                    )
-                    ShimmerEffect(
-                        Modifier.padding(top = 10.dp).height(25.dp).fillMaxWidth(0.8f)
-                    )
-                    ShimmerEffect(
-                        Modifier.padding(top = 10.dp).height(25.dp).fillMaxWidth(0.8f)
-                    )
-                    Spacer(Modifier.height(50.dp))
+                Spacer(Modifier.height(10.dp))
+                Column(Modifier.weight(1f).fillMaxWidth(0.8f)) {
+                    repeat(6) {
+                        ShimmerEffect(Modifier.height(20.dp))
+                        Spacer(Modifier.height(10.dp))
+                    }
                 }
+                Spacer(Modifier.height(20.dp))
             }
         },
         expandedContent = {
             Row {
                 ShimmerEffect(
-                    modifier = Modifier
-                        .padding(end = 15.dp)
-                        .weight(1.2f).fillMaxHeight(),
+                    modifier = Modifier.padding(end = 15.dp).weight(1.2f).fillMaxHeight(),
                     shape = AppShape.EndOnlyRoundedShape
                 )
-
                 Column(
                     modifier = Modifier
                         .weight(1.8f)
@@ -228,7 +222,6 @@ private fun LoadingContent() {
                         Spacer(Modifier.height(20.dp))
                         ShimmerEffect(modifier = Modifier.height(30.dp).fillMaxWidth())
                     }
-
                     Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
                         ShimmerEffect(modifier = Modifier.height(20.dp).fillMaxWidth())
                         ShimmerEffect(modifier = Modifier.height(20.dp).fillMaxWidth())

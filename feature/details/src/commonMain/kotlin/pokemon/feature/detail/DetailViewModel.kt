@@ -28,8 +28,11 @@ class DetailViewModel(
             bookmarks.map { it.id }
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
 
+    init {
+        getPokemonDetails()
+    }
 
-    fun getDetails() {
+    private fun getPokemonDetails() {
         viewModelScope.launch(ioDispatcher) {
             showLoader(true)
             pokemonRepository.getPokemon(pokemonRepository.currentName.value)

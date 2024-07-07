@@ -18,6 +18,7 @@ import model.SimplePokemon
 import org.koin.compose.koinInject
 import pokemon.feature.home.composable.*
 import ui.composable.AdaptiveLayout
+import ui.composable.AppBarHeight
 import ui.composable.ErrorDialog
 import ui.composable.ShimmerEffect
 import ui.state.UIEvent
@@ -79,14 +80,14 @@ private fun PokemonListContent(
         contentAlignment = Alignment.TopCenter
     ) {
         AdaptiveLayout(
-            compactContent = CompactHomeBarHeight,
-            expandedContent = ExpandedHomeBarHeight
-        ) { topPadding ->
+            compactContent = AppBarHeight.WideHeight,
+            expandedContent = AppBarHeight.BasicHeight
+        ) { padding ->
             if (initLoading) {
-                LoadingGridContent(topPadding)
+                LoadingGridContent(padding)
             } else {
                 DataGridContent(
-                    topPadding = topPadding,
+                    topPadding = padding,
                     isLoadingMore = isLoadingMore,
                     list = list,
                     bookmarkIds = bookmarkIds,

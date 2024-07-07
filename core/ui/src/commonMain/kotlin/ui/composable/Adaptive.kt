@@ -22,11 +22,10 @@ fun AdaptiveLayout(
 fun <T> AdaptiveLayout(
     compactContent: T,
     expandedContent: T,
-    fraction: Float = 1.0f,
     onSelect: @Composable (T) -> Unit
 ) {
     BoxWithConstraints {
-        if (maxWidth <= 600.dp * fraction) {
+        if (maxWidth <= 600.dp) {
             onSelect(compactContent)
         } else {
             onSelect(expandedContent)

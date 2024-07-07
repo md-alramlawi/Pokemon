@@ -1,26 +1,37 @@
 package pokemon.feature.home.composable
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.*
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import ui.brush.shadowBrush
 import ui.composable.AdaptiveLayout
+import ui.composable.AppBarHeight
 import ui.composable.AppIconButton
+import ui.composable.AppTopBar
 import ui.painter.closePainter
 import ui.painter.starPainter
 import ui.theme.AppShape
-
-internal val CompactHomeBarHeight: Dp = 240.dp
-internal val ExpandedHomeBarHeight: Dp = 120.dp
 
 @Composable
 fun HomeBarWithShadow(
@@ -28,12 +39,10 @@ fun HomeBarWithShadow(
     onSearch: (String) -> Unit,
     onGoFavorite: () -> Unit
 ) {
-    val shadowHeight = 15.dp
     Column {
         AdaptiveLayout(
             compactContent = {
                 CompactHomeBar(
-                    modifier = Modifier.height(CompactHomeBarHeight - shadowHeight),
                     searchQuery = searchQuery,
                     onSearch = onSearch,
                     onGoFavorite = onGoFavorite
@@ -41,43 +50,51 @@ fun HomeBarWithShadow(
             },
             expandedContent = {
                 ExpandHomeBar(
-                    modifier = Modifier.height(ExpandedHomeBarHeight - shadowHeight),
                     searchQuery = searchQuery,
                     onSearch = onSearch,
                     onGoFavorite = onGoFavorite
                 )
             }
         )
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(shadowHeight)
-                .background(shadowBrush())
-        )
     }
 }
 
 @Composable
 private fun CompactHomeBar(
-    modifier: Modifier = Modifier,
     searchQuery: String,
     onSearch: (String) -> Unit,
     onGoFavorite: () -> Unit
 ) {
-    Surface(
-        modifier = modifier.background(MaterialTheme.colorScheme.background),
+    AppTopBar(
+        modifier = Modifier.height(AppBarHeight.WideHeight),
         shape = AppShape.BottomOnlyRoundedShape,
-        color = Color.Red
     ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .windowInsetsPadding(WindowInsets.statusBars)
-                .padding(horizontal = 25.dp, vertical = 10.dp),
+                .padding(vertical = 10.dp),
             verticalArrangement = Arrangement.SpaceAround,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            HomeBarHeader(onGoFavorite = onGoFavorite)
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Spacer(Modifier.size(24.dp))
+                Text(
+                    text = "Pokedex",
+                    style = MaterialTheme.typography.displayMedium,
+                    color = Color.Yellow,
+                    fontWeight = FontWeight.Bold
+                )
+                AppIconButton(
+                    painter = starPainter(),
+                    tint = Color.White,
+                    size = 32.dp
+                ) {
+                    onGoFavorite()
+                }
+            }
             AppSearchBar(
                 modifier = Modifier.fillMaxWidth(),
                 searchQuery = searchQuery,
@@ -89,63 +106,21 @@ private fun CompactHomeBar(
 
 @Composable
 private fun ExpandHomeBar(
-    modifier: Modifier = Modifier,
     searchQuery: String,
     onSearch: (String) -> Unit,
     onGoFavorite: () -> Unit
 ) {
-    Surface(
-        modifier = modifier.background(MaterialTheme.colorScheme.background),
-        color = Color.Red
-    ) {
-        Box(
-            modifier = Modifier
-                .windowInsetsPadding(WindowInsets.statusBars)
-                .fillMaxSize(),
-            contentAlignment = Alignment.BottomCenter
-        ) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 40.dp, vertical = 10.dp),
-                horizontalArrangement = Arrangement.spacedBy(20.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = "Pokedex",
-                    style = MaterialTheme.typography.titleLarge,
-                    color = Color.Yellow,
-                    fontWeight = FontWeight.Bold
-                )
-                AppSearchBar(
-                    modifier = Modifier.weight(1f),
-                    searchQuery = searchQuery,
-                    onSearch = onSearch
-                )
-                AppIconButton(
-                    painter = starPainter(),
-                    tint = Color.White,
-                    size = 32.dp
-                ) {
-                    onGoFavorite()
-                }
-            }
-        }
-    }
-}
-
-@Composable
-private fun HomeBarHeader(onGoFavorite: () -> Unit) {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-        Spacer(Modifier.size(24.dp))
+    AppTopBar(Modifier.height(AppBarHeight.BasicHeight)) {
         Text(
             text = "Pokedex",
-            style = MaterialTheme.typography.displayMedium,
+            style = MaterialTheme.typography.titleLarge,
             color = Color.Yellow,
             fontWeight = FontWeight.Bold
+        )
+        AppSearchBar(
+            modifier = Modifier.weight(1f),
+            searchQuery = searchQuery,
+            onSearch = onSearch
         )
         AppIconButton(
             painter = starPainter(),
