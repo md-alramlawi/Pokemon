@@ -1,3 +1,5 @@
+---
+
 # Pokemon KMP Demo App
 
 ## Overview
@@ -14,10 +16,13 @@ The Pokemon KMP Demo App is a Kotlin Multiplatform (KMP) project designed to sho
 ## Screenshots
 
 ### Home Screen
-![Home Screen](https://github.com/md-alramlawi/Pokemon/assets/60019872/8b5cf915-849a-4720-a74f-b111b7c8b091)
+![Home Screen](https://github.com/cvivek07/KMM-PicSplash/assets/60019872/8ce36247-007e-490a-b364-769f2d97de9e)
 
 ### Details Screen
-![Details Screen](https://github.com/md-alramlawi/Pokemon/assets/60019872/6c014ef4-8842-4dbe-9747-32300dcb6539)
+![Details Screen](https://github.com/cvivek07/KMM-PicSplash/assets/60019872/b9aa6841-87da-49b6-baed-5f7d888896ac)
+
+### Modularization Technique
+![Modularization Technique](https://github.com/cvivek07/KMM-PicSplash/assets/60019872/1c56fa08-59ad-429c-91c5-52ac5cb62589)
 
 ## Technologies and Libraries
 
@@ -53,3 +58,5 @@ The Pokemon KMP Demo App is a Kotlin Multiplatform (KMP) project designed to sho
 2. Open the project in Android Studio.
 
 3. Build and run the project on your preferred platform (Android or iOS).
+
+---
