@@ -195,11 +195,16 @@ private fun LoadingContent() {
                     }
                 }
                 Spacer(Modifier.height(10.dp))
-                Column(Modifier.weight(1f).fillMaxWidth(0.8f)) {
-                    repeat(6) {
-                        ShimmerEffect(Modifier.height(20.dp))
-                        Spacer(Modifier.height(10.dp))
-                    }
+                Column(
+                    Modifier.weight(1f).fillMaxWidth(0.8f),
+                    verticalArrangement = Arrangement.spacedBy(10.dp)
+                ) {
+                    ShimmerEffect(modifier = Modifier.height(20.dp).fillMaxWidth())
+                    ShimmerEffect(modifier = Modifier.height(20.dp).fillMaxWidth())
+                    ShimmerEffect(modifier = Modifier.height(20.dp).fillMaxWidth())
+                    ShimmerEffect(modifier = Modifier.height(20.dp).fillMaxWidth())
+                    ShimmerEffect(modifier = Modifier.height(20.dp).fillMaxWidth())
+                    ShimmerEffect(modifier = Modifier.height(20.dp).fillMaxWidth())
                 }
                 Spacer(Modifier.height(20.dp))
             }

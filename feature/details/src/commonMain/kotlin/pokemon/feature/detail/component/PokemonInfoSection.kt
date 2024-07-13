@@ -51,14 +51,9 @@ internal fun CompactPokemonInfo(
             BookmarkIconButton(isBookmarked = isBookmarked) { onBookmark() }
         }
 
-        FlowRow(
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
+        FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             types.forEach {
-                TagItem(
-                    modifier = Modifier.width(100.dp),
-                    tag = it.uppercase()
-                )
+                TagItem(Modifier.width(100.dp), it.uppercase())
             }
         }
         Spacer(modifier = Modifier.width(16.dp))
@@ -87,37 +82,26 @@ internal fun ExpandedPokemonInfo(
         horizontalArrangement = Arrangement.spacedBy(30.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Column(
-            verticalArrangement = Arrangement.spacedBy(20.dp)
-        ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(20.dp)
-            ) {
+        Column(verticalArrangement = Arrangement.spacedBy(20.dp)) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
                     text = name,
                     style = MaterialTheme.typography.headlineMedium,
                     color = Color.White,
                     fontWeight = FontWeight.Bold
                 )
+                Spacer(Modifier.width(10.dp))
                 BookmarkIconButton(isBookmarked = isBookmarked) { onBookmark() }
             }
 
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 types.forEach {
-                    TagItem(
-                        modifier = Modifier.width(100.dp),
-                        tag = it.uppercase()
-                    )
+                    TagItem(Modifier.width(100.dp), it.uppercase())
                 }
             }
         }
 
-        Column(
-            verticalArrangement = Arrangement.spacedBy(10.dp)
-        ) {
+        Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
             PropertyItem(label = "Weight", content = "$weight KG")
             PropertyItem(label = "Height", content = "$height CM")
         }

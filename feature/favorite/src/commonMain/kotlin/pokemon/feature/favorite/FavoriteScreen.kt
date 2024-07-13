@@ -103,7 +103,7 @@ private fun FavoriteContent(
 @Composable
 private fun BackButton(
     tint: Color = Color.White,
-    backgroundColor: Color = Color.Black.copy(alpha = 0.3f),
+    backgroundColor: Color = Color.Black.copy(alpha = 0.1f),
     onClick: () -> Unit
 ) {
     AppIconButton(

@@ -13,7 +13,7 @@ import androidx.compose.ui.graphics.Color
 
 private val shimmerColors = listOf(
     Color.LightGray,
-    Color.LightGray.copy(alpha = 0.7f),
+    Color.LightGray.copy(alpha = 0.5f),
     Color.LightGray
 )
 
