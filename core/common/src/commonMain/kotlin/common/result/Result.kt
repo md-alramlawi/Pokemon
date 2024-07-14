@@ -1,9 +1,9 @@
 package common.result
 
-sealed class Result<out R> {
-    data class Success<out T>(val data: T) : Result<T>()
-    data class Error(val exception: Exception) : Result<Nothing>()
-    data object Loading : Result<Nothing>()
+sealed interface Result<out R> {
+    data class Success<out T>(val data: T) : Result<T>
+    data class Error(val exception: Exception) : Result<Nothing>
+    data object Loading : Result<Nothing>
 }
 
 inline fun <T, R> Result<T>.mapSuccess(transform: (T) -> R): Result<R> {
