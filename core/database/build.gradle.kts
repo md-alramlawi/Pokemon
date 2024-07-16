@@ -41,7 +41,7 @@ kotlin {
 }
 
 android {
-    namespace = "com.database"
+    namespace = "core.database"
     compileSdk = 34
     defaultConfig {
         minSdk = 24

@@ -36,16 +36,18 @@ kotlin {
         commonMain.dependencies {
             implementation(projects.core.common)
             implementation(projects.core.model)
+
             implementation(libs.ktor.client.core)
             implementation(libs.ktor.client.content.negotiation)
             implementation(libs.ktor.serialization.kotlinx.json)
+
             implementation(libs.koin.core)
         }
     }
 }
 
 android {
-    namespace = "com.network"
+    namespace = "core.network"
     compileSdk = 34
     defaultConfig {
         minSdk = 24

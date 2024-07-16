@@ -1,4 +1,4 @@
-package pokemon.feature.detail
+package detail
 
 import androidx.lifecycle.viewModelScope
 import common.result.mapError

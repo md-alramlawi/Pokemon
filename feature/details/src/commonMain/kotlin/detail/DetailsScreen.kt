@@ -1,4 +1,4 @@
-package pokemon.feature.detail
+package detail
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -29,10 +29,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import model.Pokemon
 import org.koin.compose.koinInject
-import pokemon.feature.detail.component.BaseStatuses
-import pokemon.feature.detail.component.CompactPokemonInfo
-import pokemon.feature.detail.component.ExpandedPokemonInfo
-import pokemon.feature.detail.component.ImagePager
+import detail.component.BaseStatuses
+import detail.component.CompactPokemonInfo
+import detail.component.ExpandedPokemonInfo
+import detail.component.ImagePager
 import ui.brush.shadowBrush
 import ui.composable.AdaptiveLayout
 import ui.composable.AppIconButton

@@ -1,4 +1,4 @@
-package pokemon.feature.home.composable
+package home.composable
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

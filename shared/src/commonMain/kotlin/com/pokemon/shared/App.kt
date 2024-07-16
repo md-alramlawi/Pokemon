@@ -11,9 +11,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import ui.theme.PokemonTheme
-import pokemon.feature.detail.DetailsScreen
-import pokemon.feature.favorite.FavoriteScreen
-import pokemon.feature.home.HomeScreen
+import detail.DetailsScreen
+import favorite.FavoriteScreen
+import home.HomeScreen
 import ui.theme.Gray95
 
 

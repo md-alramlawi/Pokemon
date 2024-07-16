@@ -26,28 +26,21 @@ kotlin {
     }
 
     sourceSets {
-        androidMain.dependencies {
-            implementation(libs.ktor.client.okhttp)
-        }
-        iosMain.dependencies {
-            implementation(libs.ktor.client.darwin)
-        }
         commonMain.dependencies {
             implementation(projects.core.model)
             implementation(projects.core.common)
             implementation(projects.core.network)
             implementation(projects.core.database)
 
-            implementation(libs.ktor.client.core)
-            implementation(libs.ktor.client.content.negotiation)
-            implementation(libs.ktor.serialization.kotlinx.json)
+            implementation(libs.kotlinx.coroutines.core)
+
             implementation(libs.koin.core)
         }
     }
 }
 
 android {
-    namespace = "com.data"
+    namespace = "core.data"
     compileSdk = 34
     defaultConfig {
         minSdk = 24

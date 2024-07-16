@@ -5,10 +5,10 @@ plugins {
 }
 
 android {
-    namespace = "com.alramlawi.pokemon.android"
+    namespace = "com.alramlawi.pokemon"
     compileSdk = 34
     defaultConfig {
-        applicationId = "com.alramlawi.pokemon.android"
+        applicationId = "com.alramlawi.pokemon"
         minSdk = 24
         targetSdk = 34
         versionCode = 1
@@ -39,7 +39,4 @@ android {
 dependencies {
     implementation(projects.shared)
     implementation(libs.androidx.activity.compose)
-    implementation(libs.compose.material3)
-    implementation(libs.compose.ui.tooling.preview)
-    debugImplementation(libs.compose.ui.tooling)
 }

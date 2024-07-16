@@ -7,9 +7,9 @@ import data.di.DataModule
 import network.di.NetworkModule
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
-import pokemon.feature.detail.DetailViewModel
-import pokemon.feature.favorite.FavoriteViewModel
-import pokemon.feature.home.HomeViewModel
+import detail.DetailViewModel
+import favorite.FavoriteViewModel
+import home.HomeViewModel
 
 private object ViewModelsModule {
     operator fun invoke() = module {

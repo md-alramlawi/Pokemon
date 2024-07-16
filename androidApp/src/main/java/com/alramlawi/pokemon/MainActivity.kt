@@ -1,4 +1,4 @@
-package com.alramlawi.pokemon.android
+package com.alramlawi.pokemon
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity

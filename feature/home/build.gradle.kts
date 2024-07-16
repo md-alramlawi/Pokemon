@@ -46,15 +46,11 @@ kotlin {
 
             implementation(libs.lifecycle.viewmodel.compose)
         }
-
-        androidMain.dependencies {
-            implementation(libs.koin.android)
-        }
     }
 }
 
 android {
-    namespace = "com.pokemon.feature.home"
+    namespace = "feature.home"
     compileSdk = 34
     defaultConfig {
         minSdk = 24

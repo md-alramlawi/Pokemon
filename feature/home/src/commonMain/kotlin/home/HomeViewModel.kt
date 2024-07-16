@@ -1,4 +1,4 @@
-package pokemon.feature.home
+package home
 
 import androidx.lifecycle.viewModelScope
 import common.result.mapError

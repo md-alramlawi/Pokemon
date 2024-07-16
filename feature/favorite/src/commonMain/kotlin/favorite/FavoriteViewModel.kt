@@ -1,4 +1,4 @@
-package pokemon.feature.favorite
+package favorite
 
 import androidx.lifecycle.viewModelScope
 import common.result.mapError

@@ -55,7 +55,7 @@ kotlin {
 }
 
 android {
-    namespace = "com.pokemon.feature.favorite"
+    namespace = "feature.favorite"
     compileSdk = 34
     defaultConfig {
         minSdk = 24

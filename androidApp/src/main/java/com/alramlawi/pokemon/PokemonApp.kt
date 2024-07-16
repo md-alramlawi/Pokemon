@@ -1,4 +1,4 @@
-package com.alramlawi.pokemon.android
+package com.alramlawi.pokemon
 
 import android.app.Application
 import com.pokemon.shared.initKoin

@@ -1,4 +1,4 @@
-package pokemon.feature.detail.component
+package detail.component
 
 import androidx.compose.animation.core.animateIntAsState
 import androidx.compose.animation.core.tween

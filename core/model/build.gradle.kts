@@ -36,7 +36,7 @@ kotlin {
 }
 
 android {
-    namespace = "com.model"
+    namespace = "core.model"
     compileSdk = 34
     defaultConfig {
         minSdk = 24

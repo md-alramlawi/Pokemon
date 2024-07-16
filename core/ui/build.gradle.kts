@@ -45,7 +45,7 @@ kotlin {
 }
 
 android {
-    namespace = "com.ui"
+    namespace = "core.ui"
     compileSdk = 34
     defaultConfig {
         minSdk = 24

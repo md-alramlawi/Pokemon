@@ -27,14 +27,11 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
-            //put your multiplatform dependencies here
             implementation(libs.koin.core)
             implementation(libs.koin.compose)
             implementation(libs.lifecycle.viewmodel.compose)
         }
-        commonTest.dependencies {
-            implementation(libs.kotlin.test)
-        }
+
         androidMain.dependencies {
             implementation(libs.koin.android)
         }
@@ -42,7 +39,7 @@ kotlin {
 }
 
 android {
-    namespace = "com.common"
+    namespace = "core.common"
     compileSdk = 34
     defaultConfig {
         minSdk = 24

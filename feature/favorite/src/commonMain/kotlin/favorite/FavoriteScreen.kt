@@ -1,4 +1,4 @@
-package pokemon.feature.favorite
+package favorite
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -21,7 +21,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import model.SimplePokemon
 import org.koin.compose.koinInject
-import pokemon.feature.home.composable.PokemonItem
+import home.composable.PokemonItem
 import ui.composable.AppBarHeight
 import ui.composable.AppIconButton
 import ui.composable.AppTopBar

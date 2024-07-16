@@ -53,7 +53,7 @@ kotlin {
 }
 
 android {
-    namespace = "com.pokemon.feature.details"
+    namespace = "feature.details"
     compileSdk = 34
     defaultConfig {
         minSdk = 24

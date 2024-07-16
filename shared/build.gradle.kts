@@ -49,7 +49,7 @@ kotlin {
 }
 
 android {
-    namespace = "com.pokemon.shared"
+    namespace = "shared"
     compileSdk = 34
     defaultConfig {
         minSdk = 24
