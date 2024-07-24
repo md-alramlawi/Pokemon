@@ -1,13 +1,18 @@
-package database
+package database.di
 
 import android.content.Context
 import androidx.room.Room
 import androidx.sqlite.driver.bundled.BundledSQLiteDriver
+import database.PokemonDatabase
 import database.datasource.LocalDatasource
 import database.datasource.LocalDatasourceImpl
+import org.koin.core.module.Module
+import org.koin.dsl.module
 
-fun getLocalDatasource(context: Context): LocalDatasource {
-    return LocalDatasourceImpl(pokemonDatabase(context).pokemonDao())
+object DatabaseModule {
+    operator fun invoke(context: Context): Module = module {
+        single<LocalDatasource> { LocalDatasourceImpl(pokemonDatabase(context).pokemonDao()) }
+    }
 }
 
 private fun pokemonDatabase(context: Context): PokemonDatabase {

@@ -1,17 +1,13 @@
 package com.pokemon.shared
 
 import android.content.Context
-import database.datasource.LocalDatasource
-import database.getLocalDatasource
+import database.di.DatabaseModule
 import org.koin.core.context.startKoin
-import org.koin.dsl.module
 
 
 fun initKoin(context: Context) {
-    val localDatasourceModule = module {
-        single<LocalDatasource> { getLocalDatasource(context)}
-    }
     startKoin {
-        modules(commonModules.plus(localDatasourceModule))
+        val databaseModule = DatabaseModule.invoke(context)
+        modules(commonModules.plus(databaseModule))
     }
 }
