@@ -8,7 +8,9 @@ import model.SimplePokemon
 
 interface LocalDatasource {
     suspend fun upsert(pokemon: SimplePokemon)
+
     suspend fun delete(pokemon: SimplePokemon)
+
     fun getAll(): Flow<List<SimplePokemon>>
 
     companion object {

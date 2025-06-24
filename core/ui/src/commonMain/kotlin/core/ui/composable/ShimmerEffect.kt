@@ -11,10 +11,14 @@ import androidx.compose.ui.unit.dp
 import core.ui.brush.shimmerBrush
 
 @Composable
-fun ShimmerEffect(modifier: Modifier, shape: Shape = RoundedCornerShape(5.dp)) {
+fun ShimmerEffect(
+    modifier: Modifier,
+    shape: Shape = RoundedCornerShape(5.dp),
+) {
     Box(
-        modifier = modifier
+        modifier =
+        modifier
             .clip(shape)
-            .background(brush = shimmerBrush())
+            .background(brush = shimmerBrush()),
     )
 }

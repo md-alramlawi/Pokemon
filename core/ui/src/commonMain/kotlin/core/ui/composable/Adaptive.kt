@@ -7,7 +7,7 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun AdaptiveLayout(
     compactContent: @Composable () -> Unit,
-    expandedContent: @Composable () -> Unit
+    expandedContent: @Composable () -> Unit,
 ) {
     BoxWithConstraints {
         if (maxWidth <= 600.dp) {
@@ -22,7 +22,7 @@ fun AdaptiveLayout(
 fun <T> AdaptiveLayout(
     compactContent: T,
     expandedContent: T,
-    onSelect: @Composable (T) -> Unit
+    onSelect: @Composable (T) -> Unit,
 ) {
     BoxWithConstraints {
         if (maxWidth <= 600.dp) {

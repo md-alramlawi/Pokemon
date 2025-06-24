@@ -17,17 +17,17 @@ fun AppIconButton(
     tint: Color = Color.Black,
     contentDescription: String = "",
     size: Dp = 24.dp,
-    onClick: () -> Unit = {}
+    onClick: () -> Unit = {},
 ) {
     IconButton(
         modifier = modifier,
-        onClick = onClick
+        onClick = onClick,
     ) {
         Icon(
             modifier = Modifier.size(size),
             painter = painter,
             contentDescription = contentDescription,
-            tint = tint
+            tint = tint,
         )
     }
 }

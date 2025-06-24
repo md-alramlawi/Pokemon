@@ -32,14 +32,14 @@ fun ImagePager(
     modifier: Modifier = Modifier,
 ) {
     val pagerState = rememberPagerState(
-        pageCount = { images.size }
+        pageCount = { images.size },
     )
     Box(
-        modifier = modifier
+        modifier = modifier,
     ) {
         BackgroundContent(
             modifier = Modifier.fillMaxSize(),
-            backgroundPainter = backgroundPainter
+            backgroundPainter = backgroundPainter,
         )
         HorizontalPager(
             modifier = Modifier.fillMaxSize(),
@@ -47,7 +47,7 @@ fun ImagePager(
         ) { page ->
             ImageContent(
                 imageUrl = images[page],
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier.fillMaxSize(),
             )
         }
         // Indicators
@@ -57,7 +57,7 @@ fun ImagePager(
                 .fillMaxWidth()
                 .align(Alignment.BottomCenter)
                 .padding(bottom = 8.dp),
-            horizontalArrangement = Arrangement.Center
+            horizontalArrangement = Arrangement.Center,
         ) {
             repeat(times = pagerState.pageCount) { iteration ->
                 val color = if (pagerState.currentPage == iteration) Gray95 else Color.Transparent
@@ -67,7 +67,7 @@ fun ImagePager(
                         .clip(CircleShape)
                         .border(1.dp, Gray95, shape = CircleShape)
                         .background(color)
-                        .size(10.dp)
+                        .size(10.dp),
                 )
             }
         }
@@ -77,10 +77,10 @@ fun ImagePager(
 @Composable
 private fun ImageContent(
     imageUrl: String,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Box(
-        modifier = modifier
+        modifier = modifier,
     ) {
         AppImage(
             imageUrl = imageUrl,
@@ -88,7 +88,7 @@ private fun ImageContent(
             contentScale = ContentScale.Fit,
             modifier = Modifier
                 .padding(20.dp)
-                .fillMaxSize()
+                .fillMaxSize(),
         )
     }
 }
@@ -104,13 +104,13 @@ private fun BackgroundContent(
                 modifier = Modifier.fillMaxSize(),
                 painter = backgroundPainter,
                 contentDescription = "background",
-                contentScale = ContentScale.FillBounds
+                contentScale = ContentScale.FillBounds,
             )
         }
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(color = Color.White.copy(alpha = 0.75f))
+                .background(color = Color.White.copy(alpha = 0.75f)),
         )
     }
 }

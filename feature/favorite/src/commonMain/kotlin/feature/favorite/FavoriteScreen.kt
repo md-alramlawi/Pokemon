@@ -31,18 +31,19 @@ import org.koin.compose.koinInject
 fun FavoriteScreen(
     viewModel: FavoriteViewModel = koinInject(),
     onClickItem: () -> Unit,
-    onBack: () -> Unit
+    onBack: () -> Unit,
 ) {
-
     val list by viewModel.list.collectAsStateWithLifecycle()
 //    val uiEvent by viewModel.uiEvents.collectAsState()
 
-
     FavoriteContent(
         list = list,
-        onClickItem = { viewModel.setCurrent(it.name);onClickItem() },
+        onClickItem = {
+            viewModel.setCurrent(it.name)
+            onClickItem()
+        },
         onBack = onBack,
-        onClickSave = viewModel::bookmark
+        onClickSave = viewModel::bookmark,
     )
 
 //    when (uiEvent) {
@@ -54,13 +55,12 @@ fun FavoriteScreen(
 //    }
 }
 
-
 @Composable
 private fun FavoriteContent(
     list: List<SimplePokemon>,
     onClickItem: (SimplePokemon) -> Unit,
     onClickSave: (SimplePokemon) -> Unit,
-    onBack: () -> Unit
+    onBack: () -> Unit,
 ) {
     Box {
         LazyVerticalGrid(
@@ -71,8 +71,8 @@ private fun FavoriteContent(
                 start = 5.dp,
                 end = 5.dp,
                 top = AppBarHeight.BasicHeight,
-                bottom = 20.dp
-            )
+                bottom = 20.dp,
+            ),
         ) {
             items(list, key = { it.name }) { pokemon ->
                 PokemonItem(
@@ -81,7 +81,7 @@ private fun FavoriteContent(
                     iconUrl = pokemon.url,
                     isBookmarked = true,
                     onClick = { onClickItem(pokemon) },
-                    onClickSave = { onClickSave(pokemon) }
+                    onClickSave = { onClickSave(pokemon) },
                 )
             }
         }
@@ -92,7 +92,7 @@ private fun FavoriteContent(
                 text = "Favorite",
                 style = MaterialTheme.typography.headlineMedium,
                 color = Color.White,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
             )
         }
     }
@@ -102,12 +102,12 @@ private fun FavoriteContent(
 private fun BackButton(
     tint: Color = Color.White,
     backgroundColor: Color = Color.Black.copy(alpha = 0.1f),
-    onClick: () -> Unit
+    onClick: () -> Unit,
 ) {
     AppIconButton(
         modifier = Modifier.clip(CircleShape).background(backgroundColor),
         painter = backPainter(),
         tint = tint,
-        onClick = onClick
+        onClick = onClick,
     )
 }

@@ -37,7 +37,7 @@ import core.ui.theme.AppShape
 fun HomeBarWithShadow(
     searchQuery: String,
     onSearch: (String) -> Unit,
-    onGoFavorite: () -> Unit
+    onGoFavorite: () -> Unit,
 ) {
     Column {
         AdaptiveLayout(
@@ -45,16 +45,16 @@ fun HomeBarWithShadow(
                 CompactHomeBar(
                     searchQuery = searchQuery,
                     onSearch = onSearch,
-                    onGoFavorite = onGoFavorite
+                    onGoFavorite = onGoFavorite,
                 )
             },
             expandedContent = {
                 ExpandHomeBar(
                     searchQuery = searchQuery,
                     onSearch = onSearch,
-                    onGoFavorite = onGoFavorite
+                    onGoFavorite = onGoFavorite,
                 )
-            }
+            },
         )
     }
 }
@@ -63,7 +63,7 @@ fun HomeBarWithShadow(
 private fun CompactHomeBar(
     searchQuery: String,
     onSearch: (String) -> Unit,
-    onGoFavorite: () -> Unit
+    onGoFavorite: () -> Unit,
 ) {
     AppTopBar(
         modifier = Modifier.height(AppBarHeight.WideHeight),
@@ -74,23 +74,23 @@ private fun CompactHomeBar(
                 .fillMaxSize()
                 .padding(vertical = 10.dp),
             verticalArrangement = Arrangement.SpaceAround,
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
+                horizontalArrangement = Arrangement.SpaceBetween,
             ) {
                 Spacer(Modifier.size(24.dp))
                 Text(
                     text = "Pokedex",
                     style = MaterialTheme.typography.displayMedium,
                     color = Color.Yellow,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.Bold,
                 )
                 AppIconButton(
                     painter = starPainter(),
                     tint = Color.White,
-                    size = 32.dp
+                    size = 32.dp,
                 ) {
                     onGoFavorite()
                 }
@@ -98,7 +98,7 @@ private fun CompactHomeBar(
             AppSearchBar(
                 modifier = Modifier.fillMaxWidth(),
                 searchQuery = searchQuery,
-                onSearch = onSearch
+                onSearch = onSearch,
             )
         }
     }
@@ -108,24 +108,24 @@ private fun CompactHomeBar(
 private fun ExpandHomeBar(
     searchQuery: String,
     onSearch: (String) -> Unit,
-    onGoFavorite: () -> Unit
+    onGoFavorite: () -> Unit,
 ) {
     AppTopBar(Modifier.height(AppBarHeight.BasicHeight)) {
         Text(
             text = "Pokedex",
             style = MaterialTheme.typography.titleLarge,
             color = Color.Yellow,
-            fontWeight = FontWeight.Bold
+            fontWeight = FontWeight.Bold,
         )
         AppSearchBar(
             modifier = Modifier.weight(1f),
             searchQuery = searchQuery,
-            onSearch = onSearch
+            onSearch = onSearch,
         )
         AppIconButton(
             painter = starPainter(),
             tint = Color.White,
-            size = 32.dp
+            size = 32.dp,
         ) {
             onGoFavorite()
         }
@@ -137,17 +137,17 @@ private fun AppSearchBar(
     modifier: Modifier = Modifier,
     searchQuery: String,
     onSearch: (String) -> Unit,
-    hint: String = "Search"
+    hint: String = "Search",
 ) {
     Surface(
         modifier = modifier.clip(RoundedCornerShape(24.dp)),
-        color = Color.White
+        color = Color.White,
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 8.dp),
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             TextField(
                 value = searchQuery,
@@ -160,9 +160,9 @@ private fun AppSearchBar(
                     unfocusedContainerColor = Color.Transparent,
                     cursorColor = Color.Black,
                     focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent
+                    unfocusedIndicatorColor = Color.Transparent,
                 ),
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.weight(1f),
             )
             if (searchQuery.isNotEmpty()) {
                 Spacer(modifier = Modifier.width(8.dp))
@@ -170,7 +170,7 @@ private fun AppSearchBar(
                     Icon(
                         painter = closePainter(),
                         contentDescription = "Clear Search",
-                        tint = Color.Gray
+                        tint = Color.Gray,
                     )
                 }
             }

@@ -36,7 +36,7 @@ import org.koin.compose.viewmodel.koinViewModel
 fun HomeScreen(
     viewModel: HomeViewModel = koinViewModel(),
     onClickItem: () -> Unit,
-    onGoFavorite: () -> Unit
+    onGoFavorite: () -> Unit,
 ) {
     val list by viewModel.currentList.collectAsStateWithLifecycle()
     val query by viewModel.searchQuery.collectAsStateWithLifecycle()
@@ -57,7 +57,7 @@ fun HomeScreen(
         onLoadMore = viewModel::loadMoreItems,
         onSearch = viewModel::searchItems,
         searchQuery = query,
-        onGoFavorite = onGoFavorite
+        onGoFavorite = onGoFavorite,
     )
 
 //    if (uiEvent is UIEvent.Error) {
@@ -78,17 +78,17 @@ private fun PokemonListContent(
     onLoadMore: () -> Unit,
     searchQuery: String,
     onSearch: (String) -> Unit,
-    onGoFavorite: () -> Unit
+    onGoFavorite: () -> Unit,
 ) {
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background),
-        contentAlignment = Alignment.TopCenter
+        contentAlignment = Alignment.TopCenter,
     ) {
         AdaptiveLayout(
             compactContent = AppBarHeight.WideHeight,
-            expandedContent = AppBarHeight.BasicHeight
+            expandedContent = AppBarHeight.BasicHeight,
         ) { padding ->
             if (initLoading) {
                 LoadingGridContent(padding)
@@ -100,7 +100,7 @@ private fun PokemonListContent(
                     bookmarkIds = bookmarkIds,
                     onClickItem = onClickItem,
                     onClickSave = onClickSave,
-                    onLoadMore = onLoadMore
+                    onLoadMore = onLoadMore,
                 )
             }
         }
@@ -108,7 +108,7 @@ private fun PokemonListContent(
         HomeBarWithShadow(
             searchQuery = searchQuery,
             onSearch = onSearch,
-            onGoFavorite = onGoFavorite
+            onGoFavorite = onGoFavorite,
         )
     }
 }
@@ -123,15 +123,15 @@ private fun LoadingGridContent(topPadding: Dp) {
             start = 5.dp,
             end = 5.dp,
             top = topPadding,
-            bottom = 20.dp
-        )
+            bottom = 20.dp,
+        ),
     ) {
         items(12) {
             ShimmerEffect(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(200.dp),
-                shape = AppShape.MediumRoundedCornerShape
+                shape = AppShape.MediumRoundedCornerShape,
             )
         }
     }
@@ -145,7 +145,7 @@ private fun DataGridContent(
     bookmarkIds: List<String>,
     onClickItem: (SimplePokemon) -> Unit,
     onClickSave: (SimplePokemon) -> Unit,
-    onLoadMore: () -> Unit
+    onLoadMore: () -> Unit,
 ) {
     val coroutineScope = rememberCoroutineScope()
 
@@ -157,8 +157,8 @@ private fun DataGridContent(
             start = 5.dp,
             end = 5.dp,
             top = topPadding,
-            bottom = 20.dp
-        )
+            bottom = 20.dp,
+        ),
     ) {
         items(list, key = { it.name }) { pokemon ->
             PokemonItem(
@@ -167,7 +167,7 @@ private fun DataGridContent(
                 iconUrl = pokemon.url,
                 isBookmarked = bookmarkIds.contains(pokemon.id),
                 onClick = { onClickItem(pokemon) },
-                onClickSave = { onClickSave(pokemon) }
+                onClickSave = { onClickSave(pokemon) },
             )
         }
         item {
@@ -179,7 +179,7 @@ private fun DataGridContent(
                     Modifier
                         .fillMaxWidth()
                         .height(100.dp),
-                    contentAlignment = Alignment.Center
+                    contentAlignment = Alignment.Center,
                 ) {
                     CircularProgressIndicator(color = Color.White)
                 }

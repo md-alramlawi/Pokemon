@@ -16,9 +16,10 @@ class FavoriteViewModel(
 ) : ViewModel() {
 
     val list = pokemonRepository.getBookmarks().stateIn(
-        viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList()
+        viewModelScope,
+        SharingStarted.WhileSubscribed(5_000),
+        emptyList(),
     )
-
 
     fun setCurrent(name: String) {
         viewModelScope.launch(Dispatchers.IO) {

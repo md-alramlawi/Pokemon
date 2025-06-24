@@ -31,14 +31,14 @@ import model.Pokemon
 @Composable
 fun BaseStatuses(
     modifier: Modifier = Modifier,
-    stats: List<Pokemon.Stat>
+    stats: List<Pokemon.Stat>,
 ) {
     Column(modifier.padding(horizontal = 20.dp)) {
         Text(
             text = "Base Stats",
             style = MaterialTheme.typography.headlineSmall,
             color = MaterialTheme.colorScheme.surface,
-            fontWeight = FontWeight.Bold
+            fontWeight = FontWeight.Bold,
         )
         Spacer(Modifier.height(10.dp))
 
@@ -48,7 +48,7 @@ fun BaseStatuses(
                     .fillMaxWidth(),
                 label = stat.name.replaceFirstChar { it.uppercase() },
                 value = stat.baseStat,
-                color = statColors[index]
+                color = statColors[index],
             )
         }
     }
@@ -59,14 +59,13 @@ private fun StatusBar(
     modifier: Modifier = Modifier,
     label: String,
     value: Int,
-    color: Color
+    color: Color,
 ) {
-
     var startAnimation by remember { mutableStateOf(false) }
 
     val animatedValue by animateIntAsState(
         targetValue = if (startAnimation) value else 0,
-        animationSpec = tween(durationMillis = 2_000)
+        animationSpec = tween(durationMillis = 2_000),
     )
 
     LaunchedEffect(Unit) {
@@ -75,17 +74,17 @@ private fun StatusBar(
 
     Row(
         modifier = modifier.padding(vertical = 4.dp),
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         Text(
             text = label,
             color = Color.White,
             style = MaterialTheme.typography.labelMedium,
-            modifier = Modifier.width(60.dp)
+            modifier = Modifier.width(60.dp),
         )
         Spacer(Modifier.width(6.dp))
         Box(
-            modifier = Modifier.weight(1f)
+            modifier = Modifier.weight(1f),
         ) {
             LinearProgressIndicator(
                 progress = { (animatedValue.toFloat().div(100)) },
@@ -102,12 +101,11 @@ private fun StatusBar(
                 text = "$animatedValue/100",
                 color = Color.Black,
                 modifier = Modifier.align(Alignment.Center),
-                style = MaterialTheme.typography.labelMedium
+                style = MaterialTheme.typography.labelMedium,
             )
         }
     }
 }
-
 
 private val statColors = listOf(
     Color(0xFF4CAF50),
@@ -115,5 +113,5 @@ private val statColors = listOf(
     Color(0xFF2196F3),
     Color(0xFFFFC107),
     Color(0xFF9C27B0),
-    Color(0xFF00BCD4)
+    Color(0xFF00BCD4),
 )

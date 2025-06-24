@@ -21,35 +21,37 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun ErrorDialog(
     message: String,
-    onDismiss: () -> Unit
+    onDismiss: () -> Unit,
 ) {
     BasicAlertDialog(
         onDismissRequest = onDismiss,
         content = {
             Surface(shape = MaterialTheme.shapes.medium) {
                 Column(
-                    modifier = Modifier
+                    modifier =
+                    Modifier
                         .fillMaxWidth()
-                        .padding(vertical = 10.dp, horizontal = 20.dp)
+                        .padding(vertical = 10.dp, horizontal = 20.dp),
                 ) {
                     Text(
                         text = "Error",
-                        style = MaterialTheme.typography.headlineSmall.copy(
+                        style =
+                        MaterialTheme.typography.headlineSmall.copy(
                             color = MaterialTheme.colorScheme.error,
-                            fontWeight = FontWeight.Bold
-                        )
+                            fontWeight = FontWeight.Bold,
+                        ),
                     )
                     Spacer(modifier = Modifier.height(20.dp))
                     Text(message, style = MaterialTheme.typography.bodyMedium)
                     Spacer(modifier = Modifier.height(20.dp))
                     TextButton(
                         onClick = onDismiss,
-                        modifier = Modifier.align(Alignment.End)
+                        modifier = Modifier.align(Alignment.End),
                     ) {
                         Text("Ok")
                     }
                 }
             }
-        }
+        },
     )
 }

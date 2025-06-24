@@ -34,10 +34,11 @@ fun AppTopBar(
     modifier: Modifier = Modifier,
     background: Color = Color.Red,
     shape: Shape = RoundedCornerShape(0.dp),
-    content: @Composable (RowScope.() -> Unit)
+    content: @Composable (RowScope.() -> Unit),
 ) {
     Column(modifier.fillMaxWidth()) {
-        Row( Modifier
+        Row(
+            Modifier
                 .weight(1f)
                 .background(Gray95)
                 .clip(shape)
@@ -46,16 +47,16 @@ fun AppTopBar(
                 .fillMaxWidth()
                 .padding(horizontal = 20.dp),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(20.dp)
+            horizontalArrangement = Arrangement.spacedBy(20.dp),
         ) {
             content.invoke(this)
         }
         Box(
-            modifier = Modifier
+            modifier =
+            Modifier
                 .fillMaxWidth()
                 .height(15.dp)
-                .background(shadowBrush())
+                .background(shadowBrush()),
         )
-
     }
 }

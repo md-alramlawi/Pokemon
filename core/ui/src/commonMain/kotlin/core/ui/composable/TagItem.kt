@@ -15,19 +15,19 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 @Composable
 fun TagItem(
     modifier: Modifier = Modifier,
-    tag: String
+    tag: String,
 ) {
     Surface(
         modifier = modifier.padding(4.dp),
         shape = RoundedCornerShape(16.dp),
-        color = MaterialTheme.colorScheme.secondary
+        color = MaterialTheme.colorScheme.secondary,
     ) {
         Text(
             text = tag,
             color = Color.White,
             textAlign = TextAlign.Center,
             style = MaterialTheme.typography.bodyMedium,
-            modifier = Modifier.padding(vertical = 8.dp)
+            modifier = Modifier.padding(vertical = 8.dp),
         )
     }
 }

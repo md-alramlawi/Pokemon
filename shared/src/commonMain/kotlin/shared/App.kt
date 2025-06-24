@@ -10,13 +10,12 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import core.ui.theme.Gray95
+import core.ui.theme.PokemonTheme
 import feature.detail.DetailsScreen
 import feature.favorite.FavoriteScreen
 import feature.home.HomeScreen
 import org.jetbrains.compose.ui.tooling.preview.Preview
-import core.ui.theme.Gray95
-import core.ui.theme.PokemonTheme
-
 
 @Composable
 @Preview
@@ -35,27 +34,27 @@ private fun NavHostMain(navController: NavHostController = rememberNavController
         enterTransition = {
             slideIntoContainer(
                 AnimatedContentTransitionScope.SlideDirection.Left,
-                animationSpec = tween(500)
+                animationSpec = tween(500),
             )
         },
         exitTransition = {
             slideOutOfContainer(
                 AnimatedContentTransitionScope.SlideDirection.Left,
-                animationSpec = tween(500)
+                animationSpec = tween(500),
             )
         },
         popEnterTransition = {
             slideIntoContainer(
                 AnimatedContentTransitionScope.SlideDirection.Right,
-                animationSpec = tween(500)
+                animationSpec = tween(500),
             )
         },
         popExitTransition = {
             slideOutOfContainer(
                 AnimatedContentTransitionScope.SlideDirection.Right,
-                animationSpec = tween(500)
+                animationSpec = tween(500),
             )
-        }
+        },
     ) {
         composable(route = "home") {
             HomeScreen(
@@ -69,7 +68,7 @@ private fun NavHostMain(navController: NavHostController = rememberNavController
         }
         composable(route = "details") {
             DetailsScreen(
-                onBack = navController::navigateUp
+                onBack = navController::navigateUp,
             )
         }
         composable(route = "favorite") {
@@ -77,7 +76,7 @@ private fun NavHostMain(navController: NavHostController = rememberNavController
                 onClickItem = {
                     navController.navigate("details") { launchSingleTop = true }
                 },
-                onBack = navController::navigateUp
+                onBack = navController::navigateUp,
             )
         }
     }

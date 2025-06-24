@@ -9,7 +9,7 @@ data class Pokemon(
     val stats: List<Stat>,
     val weight: Double,
     val height: Double,
-    val isBookmarked: Boolean = false
+    val isBookmarked: Boolean = false,
 ) {
     data class Stat(
         val name: String,

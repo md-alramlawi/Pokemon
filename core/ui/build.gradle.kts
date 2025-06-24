@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.androidLibrary)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
+    alias(libs.plugins.ktlint)
 }
 
 kotlin {
@@ -13,18 +14,17 @@ kotlin {
             jvmTarget.set(JvmTarget.JVM_11)
         }
     }
-    
+
     listOf(
         iosX64(),
         iosArm64(),
-        iosSimulatorArm64()
+        iosSimulatorArm64(),
     ).forEach { iosTarget ->
         iosTarget.binaries.framework {
             baseName = "Ui"
             isStatic = true
         }
     }
-
 
     sourceSets {
         commonMain.dependencies {
@@ -36,7 +36,6 @@ kotlin {
             implementation(compose.components.uiToolingPreview)
 
             implementation(libs.kamel)
-
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
@@ -54,5 +53,12 @@ android {
 
     defaultConfig {
         minSdk = libs.versions.android.minSdk.get().toInt()
+    }
+}
+
+ktlint {
+    filter {
+        exclude("**/generated/**")
+        include("**/kotlin/**")
     }
 }

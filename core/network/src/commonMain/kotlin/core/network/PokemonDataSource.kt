@@ -9,9 +9,10 @@ import kotlin.coroutines.cancellation.CancellationException
 import kotlin.coroutines.coroutineContext
 
 interface PokemonDataSource {
+    suspend fun getPokemonListing(): Result<PokemonListingResponse>
 
-    suspend fun getPokemonListing(): Result<PokemonListing>
-    suspend fun getNextList(): Result<PokemonListing>
+    suspend fun getNextList(): Result<PokemonListingResponse>
+
     suspend fun getPokemon(name: String): Result<PokemonDto>
 
     companion object {
@@ -24,22 +25,22 @@ interface PokemonDataSource {
 private class PokemonDataSourceImpl(private val api: PokemonApi) : PokemonDataSource {
     private var nextUrl: String? = null
 
-    override suspend fun getPokemonListing(): Result<PokemonListing> {
+    override suspend fun getPokemonListing(): Result<PokemonListingResponse> {
         delay(500)
         return safeApiCall {
-            val result = api.getInitialList().body<PokemonListing>()
+            val result = api.getInitialList().body<PokemonListingResponse>()
             nextUrl = result.next
             result
         }
     }
 
-    override suspend fun getNextList(): Result<PokemonListing> {
+    override suspend fun getNextList(): Result<PokemonListingResponse> {
         delay(200)
         if (nextUrl == null) {
             return Result.Error(NoMoreException("No More Data to Load"))
         }
         return safeApiCall {
-            val result = api.getNextList(nextUrl.orEmpty()).body<PokemonListing>()
+            val result = api.getNextList(nextUrl.orEmpty()).body<PokemonListingResponse>()
             nextUrl = result.next
             result
         }

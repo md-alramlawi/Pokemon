@@ -1,5 +1,6 @@
 package core.network
 
+import core.network.util.ApiConstant
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.request.get
@@ -7,15 +8,15 @@ import io.ktor.client.statement.HttpResponse
 import io.ktor.http.ContentType
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
-import core.network.util.ApiConstant
 
 internal interface PokemonApi {
-
     suspend fun getInitialList(): HttpResponse
+
     suspend fun getNextList(nextUrl: String): HttpResponse
+
     suspend fun getPokemon(name: String): HttpResponse
 
-    companion object{
+    companion object {
         fun create(): PokemonApi {
             return KtorPokemonApi(client)
         }
@@ -23,8 +24,6 @@ internal interface PokemonApi {
 }
 
 private class KtorPokemonApi(private val client: HttpClient) : PokemonApi {
-
-
     override suspend fun getInitialList(): HttpResponse {
         val endPoint = ApiConstant.BASE_URL + "pokemon/"
         return client.get(endPoint)

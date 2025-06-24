@@ -17,6 +17,6 @@ fun AppImage(
         resource = asyncPainterResource(data = imageUrl),
         contentDescription = contentDescription,
         contentScale = contentScale,
-        modifier = modifier
+        modifier = modifier,
     )
 }

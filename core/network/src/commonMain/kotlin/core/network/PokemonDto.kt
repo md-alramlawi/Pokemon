@@ -1,6 +1,5 @@
 package core.network
 
-
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -25,38 +24,38 @@ data class PokemonDto(
     val sprites: Sprites,
     val stats: List<Stat>,
     val types: List<Type>,
-    val weight: Double
+    val weight: Double,
 ) {
     @Serializable
     data class Ability(
         val ability: Ability,
         @SerialName("is_hidden")
         val isHidden: Boolean,
-        val slot: Int
+        val slot: Int,
     ) {
         @Serializable
         data class Ability(
             val name: String,
-            val url: String
+            val url: String,
         )
     }
 
     @Serializable
     data class Form(
         val name: String,
-        val url: String
+        val url: String,
     )
 
     @Serializable
     data class GameIndice(
         @SerialName("game_index")
         val gameIndex: Int,
-        val version: Version
+        val version: Version,
     ) {
         @Serializable
         data class Version(
             val name: String,
-            val url: String
+            val url: String,
         )
     }
 
@@ -64,12 +63,12 @@ data class PokemonDto(
     data class Move(
         val move: Move,
         @SerialName("version_group_details")
-        val versionGroupDetails: List<VersionGroupDetail>
+        val versionGroupDetails: List<VersionGroupDetail>,
     ) {
         @Serializable
         data class Move(
             val name: String,
-            val url: String
+            val url: String,
         )
 
         @Serializable
@@ -79,18 +78,18 @@ data class PokemonDto(
             @SerialName("move_learn_method")
             val moveLearnMethod: MoveLearnMethod,
             @SerialName("version_group")
-            val versionGroup: VersionGroup
+            val versionGroup: VersionGroup,
         ) {
             @Serializable
             data class MoveLearnMethod(
                 val name: String,
-                val url: String
+                val url: String,
             )
 
             @Serializable
             data class VersionGroup(
                 val name: String,
-                val url: String
+                val url: String,
             )
         }
     }
@@ -98,7 +97,7 @@ data class PokemonDto(
     @Serializable
     data class Species(
         val name: String,
-        val url: String
+        val url: String,
     )
 
     @Serializable
@@ -123,7 +122,7 @@ data class PokemonDto(
     ) {
         @Serializable
         data class Other(
-            val home: Home
+            val home: Home,
         ) {
             @Serializable
             data class Home(
@@ -134,7 +133,7 @@ data class PokemonDto(
                 @SerialName("front_shiny")
                 val frontShiny: String?,
                 @SerialName("front_shiny_female")
-                val frontShinyFemale: String?
+                val frontShinyFemale: String?,
             )
         }
     }
@@ -144,24 +143,24 @@ data class PokemonDto(
         @SerialName("base_stat")
         val baseStat: Int,
         val effort: Int,
-        val stat: Stat
+        val stat: Stat,
     ) {
         @Serializable
         data class Stat(
             val name: String,
-            val url: String
+            val url: String,
         )
     }
 
     @Serializable
     data class Type(
         val slot: Int,
-        val type: Type
+        val type: Type,
     ) {
         @Serializable
         data class Type(
             val name: String,
-            val url: String
+            val url: String,
         )
     }
 }

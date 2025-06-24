@@ -28,21 +28,21 @@ fun PokemonItem(
     iconUrl: String,
     onClick: () -> Unit,
     onClickSave: () -> Unit,
-    isBookmarked: Boolean
+    isBookmarked: Boolean,
 ) {
     Surface(
-        shape = AppShape.MediumRoundedCornerShape
+        shape = AppShape.MediumRoundedCornerShape,
     ) {
         Column(
             modifier = Modifier
                 .clickable { onClick() }
                 .fillMaxWidth().padding(horizontal = 10.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Row(
                 Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
             ) {
                 BookmarkIconButton(isBookmarked) {
                     onClickSave()
@@ -50,7 +50,7 @@ fun PokemonItem(
 
                 Text(
                     text = "#$id",
-                    style = MaterialTheme.typography.labelMedium
+                    style = MaterialTheme.typography.labelMedium,
                 )
             }
             AppImage(
@@ -59,14 +59,14 @@ fun PokemonItem(
                     .fillMaxWidth(),
                 imageUrl = iconUrl,
                 contentDescription = name,
-                contentScale = ContentScale.FillHeight
+                contentScale = ContentScale.FillHeight,
             )
             Spacer(Modifier.height(4.dp))
             Text(
                 modifier = Modifier.height(40.dp),
                 text = name,
                 style = MaterialTheme.typography.titleSmall,
-                textAlign = TextAlign.Center
+                textAlign = TextAlign.Center,
             )
         }
     }

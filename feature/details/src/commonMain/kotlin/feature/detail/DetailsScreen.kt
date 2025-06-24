@@ -44,7 +44,7 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 fun DetailsScreen(
     viewModel: DetailViewModel = koinViewModel(),
-    onBack: () -> Unit
+    onBack: () -> Unit,
 ) {
     val pokemonDate by viewModel.data.collectAsStateWithLifecycle()
     val bookmarkIds by viewModel.bookmarkIds.collectAsStateWithLifecycle()
@@ -54,7 +54,7 @@ fun DetailsScreen(
         isBookmarked = bookmarkIds.contains(pokemonDate?.id ?: false),
         pokemon = pokemonDate,
         onClickSave = viewModel::bookmark,
-        onBack = onBack
+        onBack = onBack,
     )
 
 //    if (uiEvent is UIEvent.Error) {
@@ -67,18 +67,18 @@ private fun PokemonDetailsContent(
     pokemon: Pokemon?,
     isBookmarked: Boolean,
     onClickSave: (Pokemon) -> Unit,
-    onBack: () -> Unit = {}
+    onBack: () -> Unit = {},
 ) {
     Surface(
         modifier = Modifier.fillMaxSize(),
-        color = MaterialTheme.colorScheme.background
+        color = MaterialTheme.colorScheme.background,
     ) {
         Box {
             pokemon?.let {
                 DataContent(
                     pokemon = pokemon,
                     isBookmarked = isBookmarked,
-                    onClickSave = { onClickSave(it) }
+                    onClickSave = { onClickSave(it) },
                 )
             } ?: LoadingContent()
 
@@ -87,19 +87,18 @@ private fun PokemonDetailsContent(
                 compactContent = {
                     StatusBackground(startColor = Color.Gray)
                 },
-                expandedContent = {}
+                expandedContent = {},
             )
             BackButton { onBack() }
         }
     }
 }
 
-
 @Composable
 private fun DataContent(
     pokemon: Pokemon,
     isBookmarked: Boolean,
-    onClickSave: () -> Unit
+    onClickSave: () -> Unit,
 ) {
     AdaptiveLayout(
         compactContent = {
@@ -112,7 +111,7 @@ private fun DataContent(
                         .clip(AppShape.BottomOnlyRoundedShape)
                         .weight(1f),
                     images = pokemon.images,
-                    backgroundPainter = BackgroundsPainterMap()[pokemon.types.random()]
+                    backgroundPainter = BackgroundsPainterMap()[pokemon.types.random()],
                 )
                 Spacer(Modifier.height(10.dp))
                 CompactPokemonInfo(
@@ -127,7 +126,7 @@ private fun DataContent(
                 Spacer(Modifier.height(10.dp))
                 BaseStatuses(
                     modifier = Modifier.weight(1f),
-                    stats = pokemon.stats
+                    stats = pokemon.stats,
                 )
                 Spacer(Modifier.height(20.dp))
             }
@@ -135,14 +134,14 @@ private fun DataContent(
         expandedContent = {
             Row(
                 horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
             ) {
                 ImagePager(
                     modifier = Modifier
                         .clip(AppShape.EndOnlyRoundedShape)
                         .weight(1.2f),
                     images = pokemon.images,
-                    backgroundPainter = BackgroundsPainterMap()[pokemon.types.random()]
+                    backgroundPainter = BackgroundsPainterMap()[pokemon.types.random()],
                 )
                 Spacer(Modifier.width(20.dp))
                 Column(modifier = Modifier.weight(1.8f)) {
@@ -157,12 +156,12 @@ private fun DataContent(
                     )
                     BaseStatuses(
                         modifier = Modifier.weight(1.2f).fillMaxWidth(),
-                        stats = pokemon.stats
+                        stats = pokemon.stats,
                     )
                 }
                 Spacer(Modifier.width(20.dp))
             }
-        }
+        },
     )
 }
 
@@ -177,13 +176,13 @@ private fun LoadingContent() {
             ) {
                 ShimmerEffect(
                     modifier = Modifier.weight(1f).fillMaxWidth(),
-                    shape = AppShape.BottomOnlyRoundedShape
+                    shape = AppShape.BottomOnlyRoundedShape,
                 )
                 Spacer(Modifier.height(10.dp))
                 Column(
                     modifier = Modifier.weight(1f),
                     verticalArrangement = Arrangement.SpaceEvenly,
-                    horizontalAlignment = Alignment.CenterHorizontally
+                    horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
                     ShimmerEffect(modifier = Modifier.height(50.dp).fillMaxWidth(0.8f))
                     Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
@@ -194,7 +193,7 @@ private fun LoadingContent() {
                 Spacer(Modifier.height(10.dp))
                 Column(
                     Modifier.weight(1f).fillMaxWidth(0.8f),
-                    verticalArrangement = Arrangement.spacedBy(10.dp)
+                    verticalArrangement = Arrangement.spacedBy(10.dp),
                 ) {
                     ShimmerEffect(modifier = Modifier.height(20.dp).fillMaxWidth())
                     ShimmerEffect(modifier = Modifier.height(20.dp).fillMaxWidth())
@@ -210,14 +209,14 @@ private fun LoadingContent() {
             Row {
                 ShimmerEffect(
                     modifier = Modifier.padding(end = 15.dp).weight(1.2f).fillMaxHeight(),
-                    shape = AppShape.EndOnlyRoundedShape
+                    shape = AppShape.EndOnlyRoundedShape,
                 )
                 Column(
                     modifier = Modifier
                         .weight(1.8f)
                         .fillMaxHeight()
                         .padding(horizontal = 30.dp),
-                    verticalArrangement = Arrangement.SpaceAround
+                    verticalArrangement = Arrangement.SpaceAround,
                 ) {
                     Column {
                         ShimmerEffect(modifier = Modifier.height(50.dp).fillMaxWidth())
@@ -232,16 +231,15 @@ private fun LoadingContent() {
                     }
                 }
             }
-        }
+        },
     )
 }
-
 
 @Composable
 private fun BackButton(
     tint: Color = Color.Black,
     backgroundColor: Color = Color.White.copy(alpha = 0.3f),
-    onClick: () -> Unit
+    onClick: () -> Unit,
 ) {
     AppIconButton(
         modifier = Modifier
@@ -251,7 +249,7 @@ private fun BackButton(
             .background(backgroundColor),
         painter = backPainter(),
         tint = tint,
-        onClick = onClick
+        onClick = onClick,
     )
 }
 
@@ -265,9 +263,9 @@ fun StatusBackground(startColor: Color = Color.Gray) {
                 brush = shadowBrush(
                     listOf(
                         startColor,
-                        Color.Transparent
-                    )
-                )
-            )
+                        Color.Transparent,
+                    ),
+                ),
+            ),
     )
 }

@@ -4,6 +4,8 @@ import common.result.NoMoreException
 import common.result.Result
 import common.result.mapError
 import common.result.mapSuccess
+import core.network.PokemonDataSource
+import core.network.PokemonDto
 import data.mapper.toModel
 import database.datasource.LocalDatasource
 import kotlinx.coroutines.flow.Flow
@@ -13,28 +15,31 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import model.Pokemon
 import model.SimplePokemon
-import core.network.PokemonDataSource
-import core.network.PokemonDto
 
 interface PokemonRepository {
     val currentList: StateFlow<List<SimplePokemon>>
     val currentName: StateFlow<String>
     val searchQuery: StateFlow<String>
+
     suspend fun setCurrent(name: String)
+
     suspend fun getPokemonList(): Result<Unit>
+
     suspend fun loadNext(): Result<Unit>
+
     suspend fun search(query: String)
+
     suspend fun getPokemon(name: String): Result<Pokemon>
 
     fun getBookmarks(): Flow<List<SimplePokemon>>
+
     suspend fun bookmark(simplePokemon: SimplePokemon): Result<Unit>
 }
 
 class PokemonRepositoryImpl(
     private val remoteDataSource: PokemonDataSource,
-    private val localDatasource: LocalDatasource
+    private val localDatasource: LocalDatasource,
 ) : PokemonRepository {
-
     private val detailsMap: LinkedHashMap<String, PokemonDto> = linkedMapOf()
     private val pokemonHashMap: LinkedHashMap<String, SimplePokemon> = linkedMapOf()
     private var loadTotalItems = false
@@ -47,11 +52,12 @@ class PokemonRepositoryImpl(
     }
 
     override suspend fun getPokemonList(): Result<Unit> {
-        val result = if (pokemonHashMap.isNotEmpty()) {
-            Result.Success(pokemonHashMap.values)
-        } else {
-            getApiPokemonList()
-        }
+        val result =
+            if (pokemonHashMap.isNotEmpty()) {
+                Result.Success(pokemonHashMap.values)
+            } else {
+                getApiPokemonList()
+            }
         return result.mapSuccess { currentList.emitFilteredList(it.toList(), searchQuery.value) }
     }
 
@@ -81,7 +87,6 @@ class PokemonRepositoryImpl(
         }
     }
 
-
     override suspend fun search(query: String) {
         searchQuery.update { query }
         currentList.emitFilteredList(pokemonHashMap.values.toList(), query)
@@ -89,9 +94,10 @@ class PokemonRepositoryImpl(
 
     override suspend fun getPokemon(name: String): Result<Pokemon> {
         val bookmarks = localDatasource.getAll().first().map { it.id }
-        val detailsResult = detailsMap[name]?.let {
-            Result.Success(it)
-        } ?: remoteDataSource.getPokemon(name = name)
+        val detailsResult =
+            detailsMap[name]?.let {
+                Result.Success(it)
+            } ?: remoteDataSource.getPokemon(name = name)
         return detailsResult.mapSuccess { dto ->
             detailsMap[name] = dto
             dto.toModel.copy(isBookmarked = bookmarks.contains(dto.id.toString()))
@@ -115,7 +121,7 @@ class PokemonRepositoryImpl(
 
 private suspend fun MutableStateFlow<List<SimplePokemon>>.emitFilteredList(
     list: List<SimplePokemon>,
-    query: String
+    query: String,
 ) {
     this.emit(list.filter { it.name.contains(query, true) || it.id == query })
 }

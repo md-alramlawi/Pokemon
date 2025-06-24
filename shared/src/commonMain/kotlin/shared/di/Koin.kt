@@ -6,7 +6,7 @@ import org.koin.dsl.includes
 import shared.di.modules.dataModule
 import shared.di.modules.viewModelModule
 
-fun initKoin(config : KoinAppDeclaration? = null){
+fun initKoin(config: KoinAppDeclaration? = null) {
     startKoin {
         includes(config)
         modules(dataModule)

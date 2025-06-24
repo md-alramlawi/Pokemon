@@ -22,7 +22,6 @@ import androidx.compose.ui.unit.dp
 import core.ui.composable.BookmarkIconButton
 import core.ui.composable.TagItem
 
-
 @Composable
 internal fun CompactPokemonInfo(
     modifier: Modifier = Modifier,
@@ -36,17 +35,17 @@ internal fun CompactPokemonInfo(
     Column(
         modifier = modifier.padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.SpaceEvenly
+        verticalArrangement = Arrangement.SpaceEvenly,
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(20.dp)
+            horizontalArrangement = Arrangement.spacedBy(20.dp),
         ) {
             Text(
                 text = name,
                 style = MaterialTheme.typography.headlineMedium,
                 color = Color.White,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
             )
             BookmarkIconButton(isBookmarked = isBookmarked) { onBookmark() }
         }
@@ -59,7 +58,7 @@ internal fun CompactPokemonInfo(
         Spacer(modifier = Modifier.width(16.dp))
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceAround
+            horizontalArrangement = Arrangement.SpaceAround,
         ) {
             PropertyItem(label = "Weight", content = "$weight KG")
             PropertyItem(label = "Height", content = "$height CM")
@@ -80,7 +79,7 @@ internal fun ExpandedPokemonInfo(
     Row(
         modifier,
         horizontalArrangement = Arrangement.spacedBy(30.dp),
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         Column(verticalArrangement = Arrangement.spacedBy(20.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
@@ -88,7 +87,7 @@ internal fun ExpandedPokemonInfo(
                     text = name,
                     style = MaterialTheme.typography.headlineMedium,
                     color = Color.White,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.Bold,
                 )
                 Spacer(Modifier.width(10.dp))
                 BookmarkIconButton(isBookmarked = isBookmarked) { onBookmark() }
@@ -113,23 +112,23 @@ private fun PropertyItem(
     modifier: Modifier = Modifier,
     label: String,
     content: String,
-    color: Color = Color.White
+    color: Color = Color.White,
 ) {
     Column(
         modifier = modifier,
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Text(
             text = content,
             fontWeight = FontWeight.Bold,
             style = MaterialTheme.typography.titleLarge,
-            color = color
+            color = color,
         )
         Text(
             text = label,
             fontWeight = FontWeight.Normal,
             style = MaterialTheme.typography.labelSmall,
-            color = color.copy(alpha = 0.5f)
+            color = color.copy(alpha = 0.5f),
         )
     }
 }
