@@ -12,20 +12,20 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import model.SimplePokemon
-import org.koin.compose.koinInject
-import feature.home.composable.PokemonItem
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import core.ui.composable.AppBarHeight
 import core.ui.composable.AppIconButton
 import core.ui.composable.AppTopBar
 import core.ui.painter.backPainter
+import feature.home.composable.PokemonItem
+import model.SimplePokemon
+import org.koin.compose.koinInject
 
 @Composable
 fun FavoriteScreen(
@@ -34,7 +34,7 @@ fun FavoriteScreen(
     onBack: () -> Unit
 ) {
 
-    val list by viewModel.list.collectAsState()
+    val list by viewModel.list.collectAsStateWithLifecycle()
 //    val uiEvent by viewModel.uiEvents.collectAsState()
 
 

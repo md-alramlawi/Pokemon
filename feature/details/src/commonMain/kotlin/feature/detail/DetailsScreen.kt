@@ -20,19 +20,13 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import model.Pokemon
-import feature.detail.component.BaseStatuses
-import feature.detail.component.CompactPokemonInfo
-import feature.detail.component.ExpandedPokemonInfo
-import feature.detail.component.ImagePager
-import org.koin.compose.viewmodel.koinViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import core.ui.brush.shadowBrush
 import core.ui.composable.AdaptiveLayout
 import core.ui.composable.AppIconButton
@@ -40,14 +34,20 @@ import core.ui.composable.ShimmerEffect
 import core.ui.painter.BackgroundsPainterMap
 import core.ui.painter.backPainter
 import core.ui.theme.AppShape
+import feature.detail.component.BaseStatuses
+import feature.detail.component.CompactPokemonInfo
+import feature.detail.component.ExpandedPokemonInfo
+import feature.detail.component.ImagePager
+import model.Pokemon
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun DetailsScreen(
     viewModel: DetailViewModel = koinViewModel(),
     onBack: () -> Unit
 ) {
-    val pokemonDate by viewModel.data.collectAsState()
-    val bookmarkIds by viewModel.bookmarkIds.collectAsState()
+    val pokemonDate by viewModel.data.collectAsStateWithLifecycle()
+    val bookmarkIds by viewModel.bookmarkIds.collectAsStateWithLifecycle()
 //    val uiEvent by viewModel.uiEvents.collectAsState()
 
     PokemonDetailsContent(

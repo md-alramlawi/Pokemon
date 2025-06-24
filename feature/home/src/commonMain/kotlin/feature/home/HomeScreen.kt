@@ -14,7 +14,6 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -22,15 +21,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import core.ui.composable.AdaptiveLayout
+import core.ui.composable.AppBarHeight
+import core.ui.composable.ShimmerEffect
+import core.ui.theme.AppShape
 import feature.home.composable.HomeBarWithShadow
 import feature.home.composable.PokemonItem
 import kotlinx.coroutines.launch
 import model.SimplePokemon
 import org.koin.compose.viewmodel.koinViewModel
-import core.ui.composable.AdaptiveLayout
-import core.ui.composable.AppBarHeight
-import core.ui.composable.ShimmerEffect
-import core.ui.theme.AppShape
 
 @Composable
 fun HomeScreen(
@@ -38,11 +38,11 @@ fun HomeScreen(
     onClickItem: () -> Unit,
     onGoFavorite: () -> Unit
 ) {
-    val list by viewModel.currentList.collectAsState()
-    val query by viewModel.searchQuery.collectAsState()
-    val bookmarkIds by viewModel.bookmarkIds.collectAsState()
+    val list by viewModel.currentList.collectAsStateWithLifecycle()
+    val query by viewModel.searchQuery.collectAsStateWithLifecycle()
+    val bookmarkIds by viewModel.bookmarkIds.collectAsStateWithLifecycle()
 //    val uiEvent by viewModel.uiEvents.collectAsState()
-    val isLoadingMore by viewModel.isLoadingMore.collectAsState()
+    val isLoadingMore by viewModel.isLoadingMore.collectAsStateWithLifecycle()
 
     PokemonListContent(
         initLoading = false,
