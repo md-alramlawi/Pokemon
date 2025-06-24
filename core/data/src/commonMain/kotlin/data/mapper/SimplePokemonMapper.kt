@@ -1,8 +1,8 @@
 package data.mapper
 
 import model.SimplePokemon
-import network.service.response.PokemonListing
-import network.util.ApiConstant
+import core.network.PokemonListing
+import core.network.util.ApiConstant
 
 val PokemonListing.Pokemon.toModel: SimplePokemon
     get() {

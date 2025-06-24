@@ -1,4 +1,6 @@
+rootProject.name = "PokemonCM"
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
+
 pluginManagement {
     repositories {
         google {
@@ -26,17 +28,16 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Pokemon"
 include(":androidApp")
 include(":shared")
+
+include(":core:common")
+include(":core:data")
+include(":core:database")
+include(":core:model")
+include(":core:network")
+include(":core:ui")
 
 include(":feature:home")
 include(":feature:details")
 include(":feature:favorite")
-
-include(":core:model")
-include(":core:common")
-include(":core:database")
-include(":core:network")
-include(":core:data")
-include(":core:ui")

@@ -1,16 +1,14 @@
-import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidLibrary)
-    alias(libs.plugins.jetbrainsCompose)
-    alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.composeMultiplatform)
+    alias(libs.plugins.composeCompiler)
 }
 
 kotlin {
     androidTarget {
-        @OptIn(ExperimentalKotlinGradlePluginApi::class)
         compilerOptions {
             jvmTarget.set(JvmTarget.JVM_11)
         }
@@ -22,40 +20,58 @@ kotlin {
         iosSimulatorArm64()
     ).forEach { iosTarget ->
         iosTarget.binaries.framework {
-            baseName = "shared"
+            baseName = "Shared"
             isStatic = true
         }
     }
 
+
     sourceSets {
         commonMain.dependencies {
-            implementation(projects.feature.home)
-            implementation(projects.feature.details)
-            implementation(projects.feature.favorite)
+            implementation(compose.runtime)
+            implementation(compose.foundation)
+            implementation(compose.material3)
+            implementation(compose.ui)
+            implementation(compose.components.resources)
+            implementation(compose.components.uiToolingPreview)
 
-            implementation(projects.core.database)
+            implementation(libs.androidx.lifecycle.viewmodel)
+            implementation(libs.androidx.lifecycle.runtime.compose)
+
+            // koin
+            implementation(libs.koin.core)
+            implementation(libs.koin.compose.viewmodel)
+
+            // navigation
+            implementation(libs.navigation.compose)
+
+            // core
             implementation(projects.core.network)
             implementation(projects.core.common)
             implementation(projects.core.data)
+            implementation(projects.core.database)
             implementation(projects.core.ui)
-            implementation(libs.koin.core)
 
-            implementation(compose.runtime)
-            implementation(compose.foundation)
-
-            implementation(libs.navigation.compose)
+            // features
+            implementation(projects.feature.home)
+            implementation(projects.feature.favorite)
+            implementation(projects.feature.details)
+        }
+        commonTest.dependencies {
+            implementation(libs.kotlin.test)
         }
     }
 }
 
 android {
-    namespace = "shared"
-    compileSdk = 34
-    defaultConfig {
-        minSdk = 24
-    }
+    namespace = "core.shared"
+    compileSdk = libs.versions.android.compileSdk.get().toInt()
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
+    }
+
+    defaultConfig {
+        minSdk = libs.versions.android.minSdk.get().toInt()
     }
 }

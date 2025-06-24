@@ -13,8 +13,8 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import model.Pokemon
 import model.SimplePokemon
-import network.datasource.pokemon.PokemonDataSource
-import network.service.dto.PokemonDto
+import core.network.PokemonDataSource
+import core.network.PokemonDto
 
 interface PokemonRepository {
     val currentList: StateFlow<List<SimplePokemon>>

@@ -2,8 +2,8 @@ package data.mapper
 
 import model.Pokemon
 import model.SimplePokemon
-import network.service.dto.PokemonDto
-import network.util.ApiConstant
+import core.network.PokemonDto
+import core.network.util.ApiConstant
 
 val PokemonDto.toModel: Pokemon
     get() = Pokemon(
