@@ -9,7 +9,7 @@ androidx-activity = "1.10.1"
 androidx-espresso = "3.6.1"
 androidx-lifecycle = "2.9.0"
 androidx-testExt = "1.2.1"
-composeMultiplatform = "1.8.1"
+compose-multiplatform = "1.8.1"
 junit = "4.13.2"
 kotlin = "2.1.21"
 koin = "4.1.0"
@@ -20,11 +20,11 @@ sqlite = "2.5.2"
 
 ktor = "2.3.12"
 
-kotlinxCoroutinesCore = "1.10.2"
+kotlinx-coroutines-core = "1.10.2"
 
 kamel = "0.9.5"
 
-navigationCompose = "2.7.0-alpha07"
+navigation-compose = "2.7.0-alpha07"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -53,19 +53,19 @@ ktor-client-darwin = { module = "io.ktor:ktor-client-darwin", version.ref = "kto
 ktor-client-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktor" }
 ktor-serialization-kotlinx-json = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktor" }
 
-kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinxCoroutinesCore" }
+kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinx-coroutines-core" }
 
 kamel = { module = "media.kamel:kamel-image", version.ref = "kamel" }
 
-navigation-compose = { module = "org.jetbrains.androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
+navigation-compose = { module = "org.jetbrains.androidx.navigation:navigation-compose", version.ref = "navigation-compose" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
 androidLibrary = { id = "com.android.library", version.ref = "agp" }
-composeMultiplatform = { id = "org.jetbrains.compose", version.ref = "composeMultiplatform" }
+composeMultiplatform = { id = "org.jetbrains.compose", version.ref = "compose-multiplatform" }
 composeCompiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 kotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 room = { id = "androidx.room", version.ref = "room" }
-kotlinx-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+kotlinxSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
