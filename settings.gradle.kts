@@ -1,4 +1,4 @@
-rootProject.name = "PokemonCM"
+rootProject.name = "Pokemon"
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 pluginManagement {
