@@ -3,9 +3,9 @@ package core.ui.painter
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.painter.Painter
 import org.jetbrains.compose.resources.painterResource
-import pokemoncm.core.ui.generated.resources.Res
-import pokemoncm.core.ui.generated.resources.baseline_bookmark
-import pokemoncm.core.ui.generated.resources.baseline_bookmark_border
+import pokemon.core.ui.generated.resources.Res
+import pokemon.core.ui.generated.resources.baseline_bookmark
+import pokemon.core.ui.generated.resources.baseline_bookmark_border
 
 @Composable
 fun bookmarkPainter(): Painter = painterResource(Res.drawable.baseline_bookmark)
