@@ -22,7 +22,7 @@ The Pokemon KMP Demo App is a Kotlin Multiplatform (KMP) project designed to sho
 ![Details Screen](https://github.com/cvivek07/KMM-PicSplash/assets/60019872/6b3bab88-ae65-45d2-b1e1-ba5c3253a23e)
 
 ### Modularization Technique
-![Modularization Technique](https://github.com/cvivek07/KMM-PicSplash/assets/60019872/b5da01cb-3ee9-47ee-af08-441b855c6214)
+![Modularization Technique](https://github.com/user-attachments/assets/b4414800-1173-4b80-845a-4be2ee28389a)
 
 ## Technologies and Libraries
 
