@@ -7,12 +7,12 @@ internal val SimplePokemon.toEntity: PokemonEntity
     get() = PokemonEntity(
         id = this.id,
         name = this.name,
-        url = this.url
+        url = this.url,
     )
 
 internal val PokemonEntity.toModel: SimplePokemon
     get() = SimplePokemon(
         id = this.id,
         name = this.name,
-        url = this.url
+        url = this.url,
     )

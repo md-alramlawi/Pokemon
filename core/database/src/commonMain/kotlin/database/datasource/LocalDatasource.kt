@@ -1,22 +1,37 @@
 package database.datasource
 
+import common.result.Result
+import database.DataBaseFactory
 import database.PokemonDao
 import database.mapper.toEntity
 import database.mapper.toModel
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import model.SimplePokemon
 
 interface LocalDatasource {
+
+    suspend fun getBookmarks(): Result<List<SimplePokemon>>
+
     suspend fun upsert(pokemon: SimplePokemon)
+
     suspend fun delete(pokemon: SimplePokemon)
-    fun getAll(): Flow<List<SimplePokemon>>
+
+    companion object {
+        fun create(dataBaseFactory: DataBaseFactory): LocalDatasource {
+            val dao = dataBaseFactory.createRoomDatabase().pokemonDao()
+            return LocalDatasourceImpl(dao)
+        }
+    }
 }
 
-class LocalDatasourceImpl(private val dao: PokemonDao) : LocalDatasource {
+private class LocalDatasourceImpl(private val dao: PokemonDao) : LocalDatasource {
+
+    override suspend fun getBookmarks(): Result<List<SimplePokemon>> {
+        return Result.Success(dao.getPokemonList().first().map { it.toModel })
+    }
+
     override suspend fun upsert(pokemon: SimplePokemon) {
         dao.upsert(pokemon.toEntity)
     }
@@ -24,14 +39,9 @@ class LocalDatasourceImpl(private val dao: PokemonDao) : LocalDatasource {
     override suspend fun delete(pokemon: SimplePokemon) {
         dao.delete(pokemon.toEntity)
     }
-
-    override fun getAll(): Flow<List<SimplePokemon>> {
-        return dao.getPokemonList().map { entities -> entities.map { it.toModel } }
-    }
 }
 
-
-class FakeLocalDatasource : LocalDatasource {
+private class FakeLocalDatasource : LocalDatasource {
     private val pokemonList = MutableStateFlow<List<SimplePokemon>>(emptyList())
 
     override suspend fun upsert(pokemon: SimplePokemon) {
@@ -53,7 +63,7 @@ class FakeLocalDatasource : LocalDatasource {
         }
     }
 
-    override fun getAll(): Flow<List<SimplePokemon>> {
-        return pokemonList.asStateFlow()
+    override suspend fun getBookmarks(): Result<List<SimplePokemon>> {
+        return Result.Success(pokemonList.value)
     }
 }

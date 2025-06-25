@@ -8,3 +8,13 @@ captures
 .cxx
 local.properties
 xcuserdata
+
+.kotlin
+**/build/
+!src/**/build/
+*.xcodeproj/*
+!*.xcodeproj/project.pbxproj
+!*.xcodeproj/xcshareddata/
+!*.xcodeproj/project.xcworkspace/
+!*.xcworkspace/contents.xcworkspacedata
+**/xcshareddata/WorkspaceSettings.xcsettings

@@ -1,23 +1,20 @@
 package database
 
+import androidx.room.ConstructedBy
 import androidx.room.Database
 import androidx.room.RoomDatabase
+import androidx.room.RoomDatabaseConstructor
 
-@Database(
-    entities = [PokemonEntity::class],
-    version = 1
-)
-abstract class PokemonDatabase: RoomDatabase(), DB {
-
+@Database(entities = [PokemonEntity::class], version = 1)
+@ConstructedBy(AppDatabaseConstructor::class)
+abstract class AppDatabase : RoomDatabase() {
     abstract fun pokemonDao(): PokemonDao
-
-    override fun clearAllTables() {
-        super.clearAllTables()
-    }
 }
 
-// FIXME: Added a hack to resolve below issue:
-// Class 'PokemonDatabase_Impl' is not abstract and does not implement abstract base class member 'clearAllTables'.
-interface DB {
-    fun clearAllTables() {}
+// The Room compiler generates the `actual` implementations.
+@Suppress("NO_ACTUAL_FOR_EXPECT")
+expect object AppDatabaseConstructor : RoomDatabaseConstructor<AppDatabase> {
+    override fun initialize(): AppDatabase
 }
+
+internal const val DB_FILE_NAME = "pokemon.db"

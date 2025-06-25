@@ -1,28 +1,30 @@
 package data.mapper
 
+import core.network.PokemonDto
+import core.network.util.ApiConstant
 import model.Pokemon
 import model.SimplePokemon
-import network.service.dto.PokemonDto
-import network.util.ApiConstant
 
 val PokemonDto.toModel: Pokemon
-    get() = Pokemon(
-        id = this.id.toString(),
-        name = this.name,
-        images = this.images(),
-        iconUrl = "${ApiConstant.ICON_BASE_URL}$id.png",
-        types = this.types.map { it.type.name },
-        weight = this.weight.div(10.0),
-        height = this.height.times(10.0),
-        stats = this.stats.map {
-            Pokemon.Stat(
-                name = it.stat.name.abbreviation,
-                baseStat = it.baseStat,
-                effort = it.effort,
-                percentage = it.baseStat.toFloat().div(100.0f)
-            )
-        }
-    )
+    get() =
+        Pokemon(
+            id = this.id.toString(),
+            name = this.name,
+            images = this.images(),
+            iconUrl = "${ApiConstant.ICON_BASE_URL}$id.png",
+            types = this.types.map { it.type.name },
+            weight = this.weight.div(10.0),
+            height = this.height.times(10.0),
+            stats =
+            this.stats.map {
+                Pokemon.Stat(
+                    name = it.stat.name.abbreviation,
+                    baseStat = it.baseStat,
+                    effort = it.effort,
+                    percentage = it.baseStat.toFloat().div(100.0f),
+                )
+            },
+        )
 
 private fun PokemonDto.images(): List<String> {
     val images = mutableListOf<String>()
@@ -49,8 +51,9 @@ private val String.abbreviation: String
     }
 
 val Pokemon.toSimple: SimplePokemon
-    get() = SimplePokemon(
-        id = this.id,
-        name = this.name,
-        url = this.iconUrl
-    )
+    get() =
+        SimplePokemon(
+            id = this.id,
+            name = this.name,
+            url = this.iconUrl,
+        )
