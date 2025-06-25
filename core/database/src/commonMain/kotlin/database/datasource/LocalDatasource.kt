@@ -1,17 +1,17 @@
 package database.datasource
 
-import kotlinx.coroutines.flow.Flow
+import common.result.Result
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import model.SimplePokemon
 
 interface LocalDatasource {
+
     suspend fun upsert(pokemon: SimplePokemon)
 
     suspend fun delete(pokemon: SimplePokemon)
 
-    fun getAll(): Flow<List<SimplePokemon>>
+    suspend fun getBookmarks(): Result<List<SimplePokemon>>
 
     companion object {
         fun create(): LocalDatasource {
@@ -42,7 +42,7 @@ private class FakeLocalDatasource : LocalDatasource {
         }
     }
 
-    override fun getAll(): Flow<List<SimplePokemon>> {
-        return pokemonList.asStateFlow()
+    override suspend fun getBookmarks(): Result<List<SimplePokemon>> {
+        return Result.Success(pokemonList.value)
     }
 }

@@ -7,9 +7,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import core.ui.theme.Gray95
 import core.ui.theme.PokemonTheme
 import feature.detail.DetailsScreen
@@ -58,23 +60,28 @@ private fun NavHostMain(navController: NavHostController = rememberNavController
     ) {
         composable(route = "home") {
             HomeScreen(
-                onClickItem = {
-                    navController.navigate("details") { launchSingleTop = true }
+                onClickItem = { name ->
+                    navController.navigate("details/$name") { launchSingleTop = true }
                 },
                 onGoFavorite = {
                     navController.navigate("favorite") { launchSingleTop = true }
                 },
             )
         }
-        composable(route = "details") {
+        composable(
+            route = "details/{name}",
+            arguments = listOf(navArgument("name") { type = NavType.StringType }),
+        ) { backStackEntry ->
+            val name = backStackEntry.arguments?.getString("name") ?: ""
             DetailsScreen(
+                name = name,
                 onBack = navController::navigateUp,
             )
         }
         composable(route = "favorite") {
             FavoriteScreen(
-                onClickItem = {
-                    navController.navigate("details") { launchSingleTop = true }
+                onClickItem = { name ->
+                    navController.navigate("details/$name") { launchSingleTop = true }
                 },
                 onBack = navController::navigateUp,
             )

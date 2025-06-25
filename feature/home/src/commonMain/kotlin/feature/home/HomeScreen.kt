@@ -15,7 +15,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -24,59 +23,57 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import core.ui.composable.AdaptiveLayout
 import core.ui.composable.AppBarHeight
+import core.ui.composable.ErrorDialog
 import core.ui.composable.ShimmerEffect
+import core.ui.state.UIState
 import core.ui.theme.AppShape
 import feature.home.composable.HomeBarWithShadow
 import feature.home.composable.PokemonItem
-import kotlinx.coroutines.launch
 import model.SimplePokemon
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun HomeScreen(
     viewModel: HomeViewModel = koinViewModel(),
-    onClickItem: () -> Unit,
+    onClickItem: (name: String) -> Unit,
     onGoFavorite: () -> Unit,
 ) {
-    val list by viewModel.currentList.collectAsStateWithLifecycle()
-    val query by viewModel.searchQuery.collectAsStateWithLifecycle()
-    val bookmarkIds by viewModel.bookmarkIds.collectAsStateWithLifecycle()
-//    val uiEvent by viewModel.uiEvents.collectAsState()
-    val isLoadingMore by viewModel.isLoadingMore.collectAsStateWithLifecycle()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val data by viewModel.data.collectAsStateWithLifecycle()
+
+    LaunchedEffect(Unit) {
+        viewModel.fetchInitialData()
+    }
 
     PokemonListContent(
-        initLoading = false,
-        isLoadingMore = isLoadingMore,
-        list = list,
-        bookmarkIds = bookmarkIds,
-        onClickItem = {
-            viewModel.setCurrentPokemon(it.name)
-            onClickItem()
-        },
-        onClickSave = viewModel::bookmarkPokemon,
-        onLoadMore = viewModel::loadMoreItems,
-        onSearch = viewModel::searchItems,
-        searchQuery = query,
+        isLoading = uiState is UIState.Loading,
+        data = data,
+        onClickItem = { onClickItem(it.name) },
+        onClickSave = viewModel::bookmark,
+        onLoadNext = viewModel::loadNextPage,
+        onSearch = viewModel::changeSearchQuery,
         onGoFavorite = onGoFavorite,
     )
 
-//    if (uiEvent is UIEvent.Error) {
-//        ErrorDialog((uiEvent as UIEvent.Error).message) {
-//            viewModel.onAction(UserAction.Release)
-//        }
-//    }
+    when (val state = uiState) {
+        is UIState.Failure -> {
+            ErrorDialog(
+                throwable = state.throwable,
+                onDismiss = viewModel::releaseState,
+            )
+        }
+
+        else -> {}
+    }
 }
 
 @Composable
 private fun PokemonListContent(
-    initLoading: Boolean,
-    isLoadingMore: Boolean,
-    list: List<SimplePokemon>,
-    bookmarkIds: List<String>,
+    isLoading: Boolean,
+    data: HomeData,
     onClickItem: (SimplePokemon) -> Unit,
     onClickSave: (SimplePokemon) -> Unit,
-    onLoadMore: () -> Unit,
-    searchQuery: String,
+    onLoadNext: () -> Unit,
     onSearch: (String) -> Unit,
     onGoFavorite: () -> Unit,
 ) {
@@ -90,23 +87,24 @@ private fun PokemonListContent(
             compactContent = AppBarHeight.WideHeight,
             expandedContent = AppBarHeight.BasicHeight,
         ) { padding ->
-            if (initLoading) {
+            if (isLoading && data.pokemonList.isEmpty()) {
                 LoadingGridContent(padding)
             } else {
                 DataGridContent(
                     topPadding = padding,
-                    isLoadingMore = isLoadingMore,
-                    list = list,
-                    bookmarkIds = bookmarkIds,
+                    isLoading = isLoading,
+                    list = data.pokemonList.search(data.searchQuery),
+                    bookmarkIds = data.bookmarkIds,
+                    hasNext = data.hasNext == true,
                     onClickItem = onClickItem,
                     onClickSave = onClickSave,
-                    onLoadMore = onLoadMore,
+                    onLoadMore = onLoadNext,
                 )
             }
         }
 
         HomeBarWithShadow(
-            searchQuery = searchQuery,
+            searchQuery = data.searchQuery,
             onSearch = onSearch,
             onGoFavorite = onGoFavorite,
         )
@@ -140,15 +138,14 @@ private fun LoadingGridContent(topPadding: Dp) {
 @Composable
 private fun DataGridContent(
     topPadding: Dp,
-    isLoadingMore: Boolean,
+    isLoading: Boolean,
     list: List<SimplePokemon>,
     bookmarkIds: List<String>,
+    hasNext: Boolean,
     onClickItem: (SimplePokemon) -> Unit,
     onClickSave: (SimplePokemon) -> Unit,
     onLoadMore: () -> Unit,
 ) {
-    val coroutineScope = rememberCoroutineScope()
-
     LazyVerticalGrid(
         columns = GridCells.Fixed(3),
         verticalArrangement = Arrangement.spacedBy(5.dp),
@@ -171,10 +168,12 @@ private fun DataGridContent(
             )
         }
         item {
+            if (!hasNext) return@item
+
             LaunchedEffect(true) {
-                coroutineScope.launch { onLoadMore() }
+                onLoadMore()
             }
-            if (isLoadingMore) {
+            if (isLoading) {
                 Box(
                     Modifier
                         .fillMaxWidth()

@@ -37,6 +37,7 @@ include(":core:database")
 include(":core:model")
 include(":core:network")
 include(":core:ui")
+include(":core:domain")
 
 include(":feature:home")
 include(":feature:details")

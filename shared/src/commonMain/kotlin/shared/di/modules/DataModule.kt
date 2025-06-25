@@ -7,7 +7,7 @@ import database.datasource.LocalDatasource
 import org.koin.dsl.module
 import shared.Greeting
 
-val dataModule =
+internal val dataModule =
     module {
         single { Greeting() }
         single<LocalDatasource> { LocalDatasource.create() }

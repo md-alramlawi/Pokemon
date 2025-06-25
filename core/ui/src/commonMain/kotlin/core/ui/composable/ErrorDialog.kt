@@ -20,7 +20,7 @@ import androidx.compose.ui.unit.dp
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ErrorDialog(
-    message: String,
+    throwable: Throwable,
     onDismiss: () -> Unit,
 ) {
     BasicAlertDialog(
@@ -42,7 +42,10 @@ fun ErrorDialog(
                         ),
                     )
                     Spacer(modifier = Modifier.height(20.dp))
-                    Text(message, style = MaterialTheme.typography.bodyMedium)
+                    Text(
+                        text = throwable.message ?: "",
+                        style = MaterialTheme.typography.bodyMedium,
+                    )
                     Spacer(modifier = Modifier.height(20.dp))
                     TextButton(
                         onClick = onDismiss,

@@ -1,6 +1,5 @@
 package core.network
 
-import common.result.NoMoreException
 import common.result.Result
 import io.ktor.client.call.body
 import kotlinx.coroutines.delay
@@ -9,9 +8,8 @@ import kotlin.coroutines.cancellation.CancellationException
 import kotlin.coroutines.coroutineContext
 
 interface PokemonDataSource {
-    suspend fun getPokemonListing(): Result<PokemonListingResponse>
 
-    suspend fun getNextList(): Result<PokemonListingResponse>
+    suspend fun getPokemonPage(offset: Int): Result<PokemonListingResponse>
 
     suspend fun getPokemon(name: String): Result<PokemonDto>
 
@@ -23,26 +21,11 @@ interface PokemonDataSource {
 }
 
 private class PokemonDataSourceImpl(private val api: PokemonApi) : PokemonDataSource {
-    private var nextUrl: String? = null
 
-    override suspend fun getPokemonListing(): Result<PokemonListingResponse> {
+    override suspend fun getPokemonPage(offset: Int): Result<PokemonListingResponse> {
         delay(500)
         return safeApiCall {
-            val result = api.getInitialList().body<PokemonListingResponse>()
-            nextUrl = result.next
-            result
-        }
-    }
-
-    override suspend fun getNextList(): Result<PokemonListingResponse> {
-        delay(200)
-        if (nextUrl == null) {
-            return Result.Error(NoMoreException("No More Data to Load"))
-        }
-        return safeApiCall {
-            val result = api.getNextList(nextUrl.orEmpty()).body<PokemonListingResponse>()
-            nextUrl = result.next
-            result
+            api.getPage(offset).body<PokemonListingResponse>()
         }
     }
 

@@ -12,6 +12,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -22,7 +23,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import core.ui.composable.AppBarHeight
 import core.ui.composable.AppIconButton
 import core.ui.composable.AppTopBar
+import core.ui.composable.ErrorDialog
 import core.ui.painter.backPainter
+import core.ui.state.UIState
 import feature.home.composable.PokemonItem
 import model.SimplePokemon
 import org.koin.compose.koinInject
@@ -30,34 +33,38 @@ import org.koin.compose.koinInject
 @Composable
 fun FavoriteScreen(
     viewModel: FavoriteViewModel = koinInject(),
-    onClickItem: () -> Unit,
+    onClickItem: (name: String) -> Unit,
     onBack: () -> Unit,
 ) {
-    val list by viewModel.list.collectAsStateWithLifecycle()
-//    val uiEvent by viewModel.uiEvents.collectAsState()
+    val data by viewModel.data.collectAsStateWithLifecycle()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+    LaunchedEffect(Unit) {
+        viewModel.fetchInitialData()
+    }
 
     FavoriteContent(
-        list = list,
-        onClickItem = {
-            viewModel.setCurrent(it.name)
-            onClickItem()
-        },
+        data = data,
+        onClickItem = { onClickItem(it.name) },
         onBack = onBack,
         onClickSave = viewModel::bookmark,
     )
 
-//    when (uiEvent) {
-//        is UIEvent.Error -> {
-//            ErrorDialog((uiEvent as UIEvent.Error).message) { viewModel.onReleaseScreenState() }
-//        }
-//
-//        else -> {}
-//    }
+    when (val state = uiState) {
+        is UIState.Failure -> {
+            ErrorDialog(
+                throwable = state.throwable,
+                onDismiss = viewModel::releaseState,
+            )
+        }
+
+        else -> {}
+    }
 }
 
 @Composable
 private fun FavoriteContent(
-    list: List<SimplePokemon>,
+    data: BookmarkData,
     onClickItem: (SimplePokemon) -> Unit,
     onClickSave: (SimplePokemon) -> Unit,
     onBack: () -> Unit,
@@ -74,7 +81,7 @@ private fun FavoriteContent(
                 bottom = 20.dp,
             ),
         ) {
-            items(list, key = { it.name }) { pokemon ->
+            items(data.list, key = { it.name }) { pokemon ->
                 PokemonItem(
                     id = pokemon.id,
                     name = pokemon.name,

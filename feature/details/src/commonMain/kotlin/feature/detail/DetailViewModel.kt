@@ -2,56 +2,70 @@ package feature.detail
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import common.result.flatMapSuccess
 import common.result.mapError
 import common.result.mapSuccess
-import data.mapper.toSimple
-import data.repository.PokemonRepository
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.IO
+import core.ui.StateHelper
+import domain.BookmarkUseCase
+import domain.FetchBookmarksUseCase
+import domain.FetchPokemonDetailsUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import model.Pokemon
+import model.SimplePokemon
 
 class DetailViewModel(
-    private val pokemonRepository: PokemonRepository,
+    private val fetchPokemonDetailsUseCase: FetchPokemonDetailsUseCase,
+    private val fetchBookmarksUseCase: FetchBookmarksUseCase,
+    private val bookmarkUseCase: BookmarkUseCase,
 ) : ViewModel() {
 
-    private var _data: MutableStateFlow<Pokemon?> = MutableStateFlow(null)
-    val data = _data.asStateFlow()
+    private val stateHelper: StateHelper = StateHelper(viewModelScope)
 
-    val bookmarkIds = pokemonRepository.getBookmarks()
-        .map { bookmarks ->
-            bookmarks.map { it.id }
-        }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
+    internal val uiState = stateHelper.uiState
 
-    init {
-        getPokemonDetails()
-    }
+    private val _data: MutableStateFlow<DetailsData> = MutableStateFlow(DetailsData())
+    internal val data: StateFlow<DetailsData> = _data.asStateFlow()
 
-    private fun getPokemonDetails() {
-        viewModelScope.launch(Dispatchers.IO) {
-//            showLoader(true)
-            pokemonRepository.getPokemon(pokemonRepository.currentName.value)
-                .also {
-//                    showLoader(false)
-                }
-                .mapSuccess {
-                    _data.emit(it)
-                }.mapError {
-//                    fireError(it)
-                }
+    internal fun fetchPokemonDetails(name: String) = viewModelScope.launch {
+        if (data.value.pokemon != null) return@launch
+
+        stateHelper.setLoadingState()
+        fetchBookmarksUseCase.invoke().flatMapSuccess { bookmarks ->
+            _data.update { d -> d.copy(bookmarkIds = bookmarks.map { it.id }) }
+            fetchPokemonDetailsUseCase.invoke(name)
         }
-    }
-
-    fun bookmark(pokemon: Pokemon) {
-        viewModelScope.launch {
-            pokemonRepository.bookmark(pokemon.toSimple).mapError {
-//                fireError(it)
+            .mapSuccess { pokemon ->
+                stateHelper.setIdleState()
+                _data.update { d -> d.copy(pokemon = pokemon) }
             }
+            .mapError { error ->
+                stateHelper.setFailureState(error)
+            }
+    }
+
+    internal fun bookmark(pokemon: Pokemon) = viewModelScope.launch {
+        val exist = _data.value.bookmarkIds.contains(pokemon.id)
+        bookmarkUseCase.invoke(
+            exist = exist,
+            simplePokemon = SimplePokemon(
+                id = pokemon.id,
+                name = pokemon.name,
+                url = pokemon.iconUrl,
+            ),
+        )
+        _data.update { d ->
+            d.copy(bookmarkIds = if (exist) d.bookmarkIds - pokemon.id else d.bookmarkIds + pokemon.id)
         }
     }
+
+    internal fun releaseState() = stateHelper.setIdleState()
 }
+
+internal data class DetailsData(
+    val pokemon: Pokemon? = null,
+    val bookmarkIds: List<String> = emptyList(),
+)

@@ -36,6 +36,7 @@ kotlin {
             implementation(compose.components.uiToolingPreview)
 
             implementation(libs.kamel)
+            implementation(libs.kotlinx.coroutines.core)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

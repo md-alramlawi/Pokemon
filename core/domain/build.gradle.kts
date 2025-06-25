@@ -3,8 +3,6 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidLibrary)
-    alias(libs.plugins.composeMultiplatform)
-    alias(libs.plugins.composeCompiler)
     alias(libs.plugins.ktlint)
 }
 
@@ -21,7 +19,7 @@ kotlin {
         iosSimulatorArm64(),
     ).forEach { iosTarget ->
         iosTarget.binaries.framework {
-            baseName = "feature-home"
+            baseName = "domain"
             isStatic = true
         }
     }
@@ -30,26 +28,15 @@ kotlin {
         commonMain.dependencies {
             implementation(projects.core.model)
             implementation(projects.core.common)
-            implementation(projects.core.domain)
-            implementation(projects.core.ui)
+            implementation(projects.core.data)
 
-            implementation(compose.runtime)
-            implementation(compose.foundation)
-            implementation(compose.material3)
-            implementation(compose.ui)
-            implementation(compose.components.resources)
-            implementation(compose.components.uiToolingPreview)
-
-            implementation(libs.androidx.lifecycle.viewmodel)
-            implementation(libs.androidx.lifecycle.runtime.compose)
-
-            implementation(libs.koin.compose.viewmodel)
+            implementation(libs.kotlinx.coroutines.core)
         }
     }
 }
 
 android {
-    namespace = "feature.home"
+    namespace = "core.domain"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
@@ -58,12 +45,5 @@ android {
 
     defaultConfig {
         minSdk = libs.versions.android.minSdk.get().toInt()
-    }
-}
-
-ktlint {
-    filter {
-        exclude("**/generated/**")
-        include("**/kotlin/**")
     }
 }

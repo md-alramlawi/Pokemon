@@ -16,14 +16,14 @@ val PokemonDto.toModel: Pokemon
             weight = this.weight.div(10.0),
             height = this.height.times(10.0),
             stats =
-                this.stats.map {
-                    Pokemon.Stat(
-                        name = it.stat.name.abbreviation,
-                        baseStat = it.baseStat,
-                        effort = it.effort,
-                        percentage = it.baseStat.toFloat().div(100.0f),
-                    )
-                },
+            this.stats.map {
+                Pokemon.Stat(
+                    name = it.stat.name.abbreviation,
+                    baseStat = it.baseStat,
+                    effort = it.effort,
+                    percentage = it.baseStat.toFloat().div(100.0f),
+                )
+            },
         )
 
 private fun PokemonDto.images(): List<String> {

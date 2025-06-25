@@ -20,6 +20,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -30,9 +31,11 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import core.ui.brush.shadowBrush
 import core.ui.composable.AdaptiveLayout
 import core.ui.composable.AppIconButton
+import core.ui.composable.ErrorDialog
 import core.ui.composable.ShimmerEffect
 import core.ui.painter.BackgroundsPainterMap
 import core.ui.painter.backPainter
+import core.ui.state.UIState
 import core.ui.theme.AppShape
 import feature.detail.component.BaseStatuses
 import feature.detail.component.CompactPokemonInfo
@@ -44,28 +47,37 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 fun DetailsScreen(
     viewModel: DetailViewModel = koinViewModel(),
+    name: String,
     onBack: () -> Unit,
 ) {
-    val pokemonDate by viewModel.data.collectAsStateWithLifecycle()
-    val bookmarkIds by viewModel.bookmarkIds.collectAsStateWithLifecycle()
-//    val uiEvent by viewModel.uiEvents.collectAsState()
+    val date by viewModel.data.collectAsStateWithLifecycle()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+    LaunchedEffect(Unit) {
+        viewModel.fetchPokemonDetails(name)
+    }
 
     PokemonDetailsContent(
-        isBookmarked = bookmarkIds.contains(pokemonDate?.id ?: false),
-        pokemon = pokemonDate,
+        data = date,
         onClickSave = viewModel::bookmark,
         onBack = onBack,
     )
 
-//    if (uiEvent is UIEvent.Error) {
-//        ErrorDialog((uiEvent as UIEvent.Error).message) { viewModel.onAction(UserAction.Release) }
-//    }
+    when (val state = uiState) {
+        is UIState.Failure -> {
+            ErrorDialog(
+                throwable = state.throwable,
+                onDismiss = viewModel::releaseState,
+            )
+        }
+
+        else -> {}
+    }
 }
 
 @Composable
 private fun PokemonDetailsContent(
-    pokemon: Pokemon?,
-    isBookmarked: Boolean,
+    data: DetailsData,
     onClickSave: (Pokemon) -> Unit,
     onBack: () -> Unit = {},
 ) {
@@ -74,10 +86,10 @@ private fun PokemonDetailsContent(
         color = MaterialTheme.colorScheme.background,
     ) {
         Box {
-            pokemon?.let {
+            data.pokemon?.let {
                 DataContent(
-                    pokemon = pokemon,
-                    isBookmarked = isBookmarked,
+                    pokemon = it,
+                    isBookmarked = data.bookmarkIds.contains(it.id),
                     onClickSave = { onClickSave(it) },
                 )
             } ?: LoadingContent()

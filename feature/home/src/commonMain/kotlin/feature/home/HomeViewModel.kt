@@ -2,81 +2,103 @@ package feature.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import common.result.Result
+import common.result.flatMapSuccess
 import common.result.mapError
 import common.result.mapSuccess
-import data.repository.PokemonRepository
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.IO
+import constant.Constants
+import core.ui.StateHelper
+import domain.BookmarkUseCase
+import domain.FetchBookmarksUseCase
+import domain.FetchPokemonPageUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import model.SimplePokemon
 
 class HomeViewModel(
-    private val pokemonRepository: PokemonRepository,
+    private val fetchPokemonPageUseCase: FetchPokemonPageUseCase,
+    private val fetchBookmarksUseCase: FetchBookmarksUseCase,
+    private val bookmarkUseCase: BookmarkUseCase,
 ) : ViewModel() {
 
-    val bookmarkIds: StateFlow<List<String>> = pokemonRepository.getBookmarks()
-        .map { bookmarks -> bookmarks.map { it.id } }
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
+    private val stateHelper: StateHelper = StateHelper(viewModelScope)
 
-    val currentList = pokemonRepository.currentList
-    val searchQuery = pokemonRepository.searchQuery
-    private val _isLoadingMore = MutableStateFlow(false)
-    val isLoadingMore: StateFlow<Boolean> = _isLoadingMore
+    internal val uiState = stateHelper.uiState
 
-    init {
-        fetchPokemonList()
-    }
+    private val _data: MutableStateFlow<HomeData> = MutableStateFlow(HomeData())
+    internal val data: StateFlow<HomeData> = _data.asStateFlow()
 
-    private fun fetchPokemonList() {
-        viewModelScope.launch(Dispatchers.IO) {
-//            showLoader(true)
-            pokemonRepository.getPokemonList()
-//                .also { showLoader(false) }
-//                .mapError { error -> fireError(error) }
-        }
-    }
-
-    fun setCurrentPokemon(name: String) {
-        viewModelScope.launch(Dispatchers.IO) {
-            pokemonRepository.setCurrent(name)
-        }
-    }
-
-    fun searchItems(query: String) {
-        viewModelScope.launch(Dispatchers.IO) {
-            pokemonRepository.search(query)
-        }
-    }
-
-    fun bookmarkPokemon(simplePokemon: SimplePokemon) {
-        viewModelScope.launch(Dispatchers.IO) {
-            pokemonRepository.bookmark(simplePokemon)
-//                .mapError { error -> fireError(error) }
-        }
-    }
-
-    fun loadMoreItems() {
-        if (isLoadingMore.value) return
-
-        viewModelScope.launch(Dispatchers.IO) {
-            _isLoadingMore.value = true
-            withContext(Dispatchers.IO) {
-                pokemonRepository.loadNext()
-            }.also {
-                _isLoadingMore.value = false
-            }.mapError { error ->
-//                fireError(error)
-            }.mapSuccess {
-                if (currentList.value.isEmpty()) {
-                    loadMoreItems()
-                }
+    internal fun fetchInitialData() = viewModelScope.launch {
+        stateHelper.setLoadingState()
+        fetchBookmarksUseCase.invoke().flatMapSuccess { bookmarks ->
+            _data.update { d -> d.copy(bookmarkIds = bookmarks.map { it.id }) }
+            if (data.value.pokemonList.isEmpty()) {
+                fetchPokemonPageUseCase(offset = 0)
+            } else {
+                Result.Success(data.value.pokemonList)
             }
         }
+            .mapSuccess { pokemonList ->
+                stateHelper.setIdleState()
+                _data.update { d ->
+                    d.copy(
+                        hasNext = pokemonList.size == Constants.PAGE_LIMIT,
+                        pokemonList = pokemonList,
+                    )
+                }
+            }
+            .mapError { error ->
+                stateHelper.setFailureState(error)
+            }
     }
+
+    internal fun bookmark(simplePokemon: SimplePokemon) = viewModelScope.launch {
+        val exist = _data.value.bookmarkIds.contains(simplePokemon.id)
+        bookmarkUseCase.invoke(
+            exist = exist,
+            simplePokemon = simplePokemon,
+        )
+        _data.update { d ->
+            d.copy(bookmarkIds = if (exist) d.bookmarkIds - simplePokemon.id else d.bookmarkIds + simplePokemon.id)
+        }
+    }
+
+    internal fun loadNextPage() = viewModelScope.launch {
+        if (stateHelper.isLoading()) return@launch
+
+        stateHelper.setLoadingState()
+        fetchPokemonPageUseCase.invoke()
+            .mapSuccess { pokemonList ->
+                stateHelper.setIdleState()
+                _data.update { d ->
+                    d.copy(
+                        hasNext = pokemonList.size == Constants.PAGE_LIMIT,
+                        pokemonList = d.pokemonList + pokemonList,
+                    )
+                }
+            }
+            .mapError { error ->
+                stateHelper.setFailureState(error)
+            }
+    }
+
+    internal fun changeSearchQuery(query: String) = viewModelScope.launch {
+        _data.update { d -> d.copy(searchQuery = query) }
+    }
+
+    internal fun releaseState() = stateHelper.setIdleState()
+}
+
+internal data class HomeData(
+    val pokemonList: List<SimplePokemon> = emptyList(),
+    val searchQuery: String = "",
+    val bookmarkIds: List<String> = emptyList(),
+    val hasNext: Boolean? = null,
+)
+
+internal fun List<SimplePokemon>.search(searchQuery: String): List<SimplePokemon> {
+    return this.filter { it.name.contains(searchQuery, true) || it.id.contains(searchQuery, true) }
 }

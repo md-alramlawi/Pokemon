@@ -51,6 +51,7 @@ kotlin {
             implementation(projects.core.data)
             implementation(projects.core.database)
             implementation(projects.core.ui)
+            implementation(projects.core.domain)
 
             // features
             implementation(projects.feature.home)

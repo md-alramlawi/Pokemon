@@ -1,8 +1,14 @@
 package core.network
 
+import constant.Constants
 import core.network.util.ApiConstant
 import io.ktor.client.HttpClient
+import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.client.plugins.logging.LogLevel
+import io.ktor.client.plugins.logging.Logger
+import io.ktor.client.plugins.logging.Logging
+import io.ktor.client.plugins.logging.SIMPLE
 import io.ktor.client.request.get
 import io.ktor.client.statement.HttpResponse
 import io.ktor.http.ContentType
@@ -13,6 +19,8 @@ internal interface PokemonApi {
     suspend fun getInitialList(): HttpResponse
 
     suspend fun getNextList(nextUrl: String): HttpResponse
+
+    suspend fun getPage(offset: Int): HttpResponse
 
     suspend fun getPokemon(name: String): HttpResponse
 
@@ -33,18 +41,34 @@ private class KtorPokemonApi(private val client: HttpClient) : PokemonApi {
         return client.get(nextUrl)
     }
 
+    override suspend fun getPage(offset: Int): HttpResponse {
+        val endPoint = ApiConstant.BASE_URL + "pokemon/?offset=$offset&limit=${Constants.PAGE_LIMIT}"
+        return client.get(endPoint)
+    }
+
     override suspend fun getPokemon(name: String): HttpResponse {
         val endPoint = ApiConstant.BASE_URL + "pokemon/$name"
         return client.get(endPoint)
     }
 }
 
-val client: HttpClient
-    get() {
-        val json = Json { ignoreUnknownKeys = true }
-        return HttpClient {
-            install(ContentNegotiation) {
-                json(json, contentType = ContentType.Application.Json)
-            }
-        }
+private val client = HttpClient {
+    install(ContentNegotiation) {
+        json(
+            json = Json {
+                ignoreUnknownKeys = true
+                isLenient = true
+            },
+            contentType = ContentType.Application.Json,
+        )
     }
+    install(HttpTimeout) {
+        requestTimeoutMillis = 15_000
+        connectTimeoutMillis = 10_000
+        socketTimeoutMillis = 15_000
+    }
+    install(Logging) {
+        logger = Logger.SIMPLE
+        level = LogLevel.ALL
+    }
+}
