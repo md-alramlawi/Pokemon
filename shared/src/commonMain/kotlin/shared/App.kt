@@ -7,17 +7,28 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
-import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navArgument
+import androidx.navigation.toRoute
 import core.ui.theme.Gray95
 import core.ui.theme.PokemonTheme
 import feature.detail.DetailsScreen
 import feature.favorite.FavoriteScreen
 import feature.home.HomeScreen
+import kotlinx.serialization.Serializable
 import org.jetbrains.compose.ui.tooling.preview.Preview
+
+sealed interface AppDestination
+
+@Serializable
+data object Home : AppDestination
+
+@Serializable
+data class Details(val name: String) : AppDestination
+
+@Serializable
+data object Favorite : AppDestination
 
 @Composable
 @Preview
@@ -31,7 +42,7 @@ fun App() {
 private fun NavHostMain(navController: NavHostController = rememberNavController()) {
     NavHost(
         navController = navController,
-        startDestination = "home",
+        startDestination = Home,
         modifier = Modifier.fillMaxSize().background(Gray95),
         enterTransition = {
             slideIntoContainer(
@@ -58,30 +69,33 @@ private fun NavHostMain(navController: NavHostController = rememberNavController
             )
         },
     ) {
-        composable(route = "home") {
+        composable<Home> {
             HomeScreen(
                 onClickItem = { name ->
-                    navController.navigate("details/$name") { launchSingleTop = true }
+                    navController.navigate(Details(name = name)) {
+                        launchSingleTop = true
+                    }
                 },
                 onGoFavorite = {
-                    navController.navigate("favorite") { launchSingleTop = true }
+                    navController.navigate(Favorite) {
+                        launchSingleTop = true
+                    }
                 },
             )
         }
-        composable(
-            route = "details/{name}",
-            arguments = listOf(navArgument("name") { type = NavType.StringType }),
-        ) { backStackEntry ->
-            val name = backStackEntry.arguments?.getString("name") ?: ""
+        composable<Details> { backStackEntry ->
+            val details: Details = backStackEntry.toRoute()
             DetailsScreen(
-                name = name,
+                name = details.name,
                 onBack = navController::navigateUp,
             )
         }
-        composable(route = "favorite") {
+        composable<Favorite> {
             FavoriteScreen(
                 onClickItem = { name ->
-                    navController.navigate("details/$name") { launchSingleTop = true }
+                    navController.navigate(Details(name = name)) {
+                        launchSingleTop = true
+                    }
                 },
                 onBack = navController::navigateUp,
             )

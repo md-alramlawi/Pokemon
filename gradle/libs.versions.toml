@@ -14,9 +14,11 @@ junit = "4.13.2"
 kotlin = "2.1.21"
 koin = "4.1.0"
 
+
 room = "2.7.2"
 ksp = "2.1.21-2.0.1"
 sqlite = "2.5.2"
+skie = "0.10.2"
 
 ktor = "2.3.12"
 
@@ -25,6 +27,7 @@ kotlinx-coroutines-core = "1.10.2"
 kamel = "0.9.5"
 
 navigation-compose = "2.7.0-alpha07"
+kotlinxSerializationJson = "1.8.1"
 
 ktlint = "12.1.1"
 
@@ -48,6 +51,7 @@ koin-compose-viewmodel-nav = {module = "io.insert-koin:koin-compose-viewmodel-na
 room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
 room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
 sqlite-bundled = { module = "androidx.sqlite:sqlite-bundled", version.ref = "sqlite" }
+skie-annotations = { module = "co.touchlab.skie:configuration-annotations", version.ref = "skie" }
 
 ktor-client-content-negotiation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktor" }
 ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
@@ -61,6 +65,7 @@ kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-c
 kamel = { module = "media.kamel:kamel-image", version.ref = "kamel" }
 
 navigation-compose = { module = "org.jetbrains.androidx.navigation:navigation-compose", version.ref = "navigation-compose" }
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
@@ -71,5 +76,6 @@ kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref =
 kotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 room = { id = "androidx.room", version.ref = "room" }
+skie = { id = "co.touchlab.skie", version.ref = "skie" }
 kotlinxSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint" }

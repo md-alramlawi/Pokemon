@@ -6,6 +6,7 @@ plugins {
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.ktlint)
+    alias(libs.plugins.kotlinxSerialization)
 }
 
 kotlin {
@@ -44,6 +45,7 @@ kotlin {
 
             // navigation
             implementation(libs.navigation.compose)
+            implementation(libs.kotlinx.serialization.json)
 
             // core
             implementation(projects.core.network)

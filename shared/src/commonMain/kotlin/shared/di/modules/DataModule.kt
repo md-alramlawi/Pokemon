@@ -10,7 +10,7 @@ import shared.Greeting
 internal val dataModule =
     module {
         single { Greeting() }
-        single<LocalDatasource> { LocalDatasource.create() }
+        single<LocalDatasource> { LocalDatasource.create(dataBaseFactory = get()) }
         single<PokemonDataSource> { PokemonDataSource.create() }
         single<PokemonRepository> { PokemonRepositoryImpl(get(), get()) }
     }

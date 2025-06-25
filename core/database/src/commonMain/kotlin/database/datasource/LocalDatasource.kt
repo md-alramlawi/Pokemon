@@ -1,22 +1,43 @@
 package database.datasource
 
 import common.result.Result
+import database.DataBaseFactory
+import database.PokemonDao
+import database.mapper.toEntity
+import database.mapper.toModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import model.SimplePokemon
 
 interface LocalDatasource {
 
+    suspend fun getBookmarks(): Result<List<SimplePokemon>>
+
     suspend fun upsert(pokemon: SimplePokemon)
 
     suspend fun delete(pokemon: SimplePokemon)
 
-    suspend fun getBookmarks(): Result<List<SimplePokemon>>
-
     companion object {
-        fun create(): LocalDatasource {
-            return FakeLocalDatasource()
+        fun create(dataBaseFactory: DataBaseFactory): LocalDatasource {
+            val dao = dataBaseFactory.createRoomDatabase().pokemonDao()
+            return LocalDatasourceImpl(dao)
         }
+    }
+}
+
+private class LocalDatasourceImpl(private val dao: PokemonDao) : LocalDatasource {
+
+    override suspend fun getBookmarks(): Result<List<SimplePokemon>> {
+        return Result.Success(dao.getPokemonList().first().map { it.toModel })
+    }
+
+    override suspend fun upsert(pokemon: SimplePokemon) {
+        dao.upsert(pokemon.toEntity)
+    }
+
+    override suspend fun delete(pokemon: SimplePokemon) {
+        dao.delete(pokemon.toEntity)
     }
 }
 

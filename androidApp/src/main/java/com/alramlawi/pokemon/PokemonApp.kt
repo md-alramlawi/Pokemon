@@ -8,7 +8,7 @@ import shared.di.initKoin
 class PokemonApp : Application() {
     override fun onCreate() {
         super.onCreate()
-        initKoin {
+        initKoin(app = this) {
             androidContext(this@PokemonApp)
             androidLogger()
         }
