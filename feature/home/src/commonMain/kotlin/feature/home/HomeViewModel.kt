@@ -45,7 +45,7 @@ class HomeViewModel(
                 stateHelper.setIdleState()
                 _data.update { d ->
                     d.copy(
-                        hasNext = pokemonList.size == Constants.PAGE_LIMIT,
+                        hasNext = pokemonList.size >= Constants.PAGE_LIMIT,
                         pokemonList = pokemonList,
                     )
                 }
