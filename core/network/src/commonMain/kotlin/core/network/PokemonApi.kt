@@ -53,7 +53,7 @@ private class KtorPokemonApi(private val client: HttpClient) : PokemonApi {
 }
 
 private val client = HttpClient {
-    install(ContentNegotiation) {
+    install(plugin = ContentNegotiation) {
         json(
             json = Json {
                 ignoreUnknownKeys = true
@@ -62,12 +62,12 @@ private val client = HttpClient {
             contentType = ContentType.Application.Json,
         )
     }
-    install(HttpTimeout) {
+    install(plugin = HttpTimeout) {
         requestTimeoutMillis = 15_000
         connectTimeoutMillis = 10_000
         socketTimeoutMillis = 15_000
     }
-    install(Logging) {
+    install(plugin = Logging) {
         logger = Logger.SIMPLE
         level = LogLevel.ALL
     }

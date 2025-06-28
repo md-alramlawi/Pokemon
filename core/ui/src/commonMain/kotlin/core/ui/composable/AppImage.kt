@@ -1,7 +1,9 @@
 package core.ui.composable
 
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.DefaultAlpha
 import androidx.compose.ui.layout.ContentScale
 import io.kamel.image.KamelImage
 import io.kamel.image.asyncPainterResource
@@ -14,9 +16,12 @@ fun AppImage(
     contentScale: ContentScale = ContentScale.Fit,
 ) {
     KamelImage(
-        resource = asyncPainterResource(data = imageUrl),
+        resource = { asyncPainterResource(data = imageUrl) },
         contentDescription = contentDescription,
-        contentScale = contentScale,
         modifier = modifier,
+        alignment = Alignment.Center,
+        contentScale = contentScale,
+        alpha = DefaultAlpha,
+        contentAlignment = Alignment.Center
     )
 }
