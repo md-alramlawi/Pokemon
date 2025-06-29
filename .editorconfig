@@ -15,3 +15,7 @@ ktlint_code_style = intellij_idea
 
 [*.{yml,yaml}]
 indent_size = 2
+
+# Disable KtLint for generated files
+[**/build/generated/**]
+ktlint = disabled

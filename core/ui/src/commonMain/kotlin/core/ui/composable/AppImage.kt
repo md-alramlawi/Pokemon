@@ -22,6 +22,6 @@ fun AppImage(
         alignment = Alignment.Center,
         contentScale = contentScale,
         alpha = DefaultAlpha,
-        contentAlignment = Alignment.Center
+        contentAlignment = Alignment.Center,
     )
 }

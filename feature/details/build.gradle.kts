@@ -64,10 +64,3 @@ android {
         minSdk = libs.versions.android.minSdk.get().toInt()
     }
 }
-
-ktlint {
-    filter {
-        exclude("**/generated/**")
-        include("**/kotlin/**")
-    }
-}

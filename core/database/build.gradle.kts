@@ -73,10 +73,3 @@ skie {
         enableSwiftUIObservingPreview = true
     }
 }
-
-ktlint {
-    filter {
-        exclude("**/generated/**")
-        include("**/kotlin/**")
-    }
-}
