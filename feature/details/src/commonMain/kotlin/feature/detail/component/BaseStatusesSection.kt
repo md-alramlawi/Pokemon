@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -23,13 +24,17 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shadow
+import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import model.Pokemon
 
 @Composable
-fun BaseStatuses(
+internal fun BaseStatuses(
     modifier: Modifier = Modifier,
     stats: List<Pokemon.Stat>,
 ) {
@@ -60,6 +65,7 @@ private fun StatusBar(
     label: String,
     value: Int,
     color: Color,
+    shape: Shape = RoundedCornerShape(10.dp),
 ) {
     var startAnimation by remember { mutableStateOf(false) }
 
@@ -91,17 +97,30 @@ private fun StatusBar(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(18.dp)
-                    .clip(MaterialTheme.shapes.extraSmall)
-                    .border(width = 1.dp, color = color),
+                    .clip(shape)
+                    .border(
+                        width = 1.dp,
+                        color = color,
+                        shape = shape,
+                    ),
                 color = color,
                 trackColor = Color.White,
+                strokeCap = StrokeCap.Square,
+                gapSize = 0.dp,
             )
 
             Text(
                 text = "$animatedValue/100",
                 color = Color.Black,
                 modifier = Modifier.align(Alignment.Center),
-                style = MaterialTheme.typography.labelMedium,
+                style = MaterialTheme.typography.labelMedium.copy(
+                    shadow = Shadow(
+                        color = Color.White,
+                        offset = Offset.Zero,
+                        blurRadius = 10f,
+                    ),
+                ),
+                fontWeight = FontWeight.SemiBold,
             )
         }
     }
