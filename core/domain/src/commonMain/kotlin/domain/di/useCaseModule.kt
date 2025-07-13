@@ -1,12 +1,13 @@
-package shared.di.modules
+package domain.di
 
 import domain.BookmarkUseCase
 import domain.FetchBookmarksUseCase
 import domain.FetchPokemonDetailsUseCase
 import domain.FetchPokemonPageUseCase
+import org.koin.core.module.Module
 import org.koin.dsl.module
 
-internal val domainModule = module {
+val useCaseModule: Module = module {
     factory { FetchPokemonPageUseCase(get()) }
     factory { FetchBookmarksUseCase(get()) }
     factory { BookmarkUseCase(get()) }

@@ -40,6 +40,8 @@ kotlin {
             implementation(libs.room.runtime)
             implementation(libs.sqlite.bundled)
             implementation(libs.skie.annotations)
+
+            implementation(libs.koin.core)
         }
     }
 }
@@ -71,12 +73,5 @@ room {
 skie {
     features {
         enableSwiftUIObservingPreview = true
-    }
-}
-
-ktlint {
-    filter {
-        exclude("**/generated/**")
-        include("**/kotlin/**")
     }
 }

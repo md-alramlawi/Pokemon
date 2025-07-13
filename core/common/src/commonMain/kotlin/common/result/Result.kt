@@ -8,24 +8,20 @@ sealed interface Result<out R> {
     data object Loading : Result<Nothing>
 }
 
-inline fun <T, R> Result<T>.mapSuccess(transform: (T) -> R): Result<R> {
-    return when (this) {
-        is Result.Error -> Result.Error(this.exception)
-        is Result.Loading -> Result.Loading
-        is Result.Success -> Result.Success(transform(this.data))
-    }
+inline fun <T, R> Result<T>.mapSuccess(transform: (T) -> R): Result<R> = when (this) {
+    is Result.Error -> Result.Error(this.exception)
+    is Result.Loading -> Result.Loading
+    is Result.Success -> Result.Success(transform(this.data))
 }
 
-inline fun <T, R> Result<T>.flatMapSuccess(transform: (T) -> Result<R>): Result<R> {
-    return when (this) {
-        is Result.Error -> Result.Error(this.exception)
-        is Result.Loading -> Result.Loading
-        is Result.Success -> {
-            when (val result = transform(this.data)) {
-                is Result.Error -> Result.Error(result.exception)
-                Result.Loading -> Result.Loading
-                is Result.Success -> Result.Success(result.data)
-            }
+inline fun <T, R> Result<T>.flatMapSuccess(transform: (T) -> Result<R>): Result<R> = when (this) {
+    is Result.Error -> Result.Error(this.exception)
+    is Result.Loading -> Result.Loading
+    is Result.Success -> {
+        when (val result = transform(this.data)) {
+            is Result.Error -> Result.Error(result.exception)
+            Result.Loading -> Result.Loading
+            is Result.Success -> Result.Success(result.data)
         }
     }
 }

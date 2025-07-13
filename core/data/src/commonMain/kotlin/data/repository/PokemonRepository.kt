@@ -19,7 +19,7 @@ interface PokemonRepository {
     suspend fun getPokemonDetails(name: String): Result<Pokemon>
 }
 
-class PokemonRepositoryImpl(
+internal class PokemonRepositoryImpl(
     private val remoteDataSource: PokemonDataSource,
     private val localDatasource: LocalDatasource,
 ) : PokemonRepository {

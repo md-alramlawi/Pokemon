@@ -23,23 +23,15 @@ internal interface PokemonApi {
     suspend fun getPage(offset: Int): HttpResponse
 
     suspend fun getPokemon(name: String): HttpResponse
-
-    companion object {
-        fun create(): PokemonApi {
-            return KtorPokemonApi(client)
-        }
-    }
 }
 
-private class KtorPokemonApi(private val client: HttpClient) : PokemonApi {
+internal class KtorPokemonApi(private val client: HttpClient) : PokemonApi {
     override suspend fun getInitialList(): HttpResponse {
         val endPoint = ApiConstant.BASE_URL + "pokemon/"
         return client.get(endPoint)
     }
 
-    override suspend fun getNextList(nextUrl: String): HttpResponse {
-        return client.get(nextUrl)
-    }
+    override suspend fun getNextList(nextUrl: String): HttpResponse = client.get(nextUrl)
 
     override suspend fun getPage(offset: Int): HttpResponse {
         val endPoint = ApiConstant.BASE_URL + "pokemon/?offset=$offset&limit=${Constants.PAGE_LIMIT}"
@@ -52,8 +44,8 @@ private class KtorPokemonApi(private val client: HttpClient) : PokemonApi {
     }
 }
 
-private val client = HttpClient {
-    install(ContentNegotiation) {
+internal val client = HttpClient {
+    install(plugin = ContentNegotiation) {
         json(
             json = Json {
                 ignoreUnknownKeys = true
@@ -62,12 +54,12 @@ private val client = HttpClient {
             contentType = ContentType.Application.Json,
         )
     }
-    install(HttpTimeout) {
+    install(plugin = HttpTimeout) {
         requestTimeoutMillis = 15_000
         connectTimeoutMillis = 10_000
         socketTimeoutMillis = 15_000
     }
-    install(Logging) {
+    install(plugin = Logging) {
         logger = Logger.SIMPLE
         level = LogLevel.ALL
     }

@@ -26,11 +26,9 @@ interface LocalDatasource {
     }
 }
 
-private class LocalDatasourceImpl(private val dao: PokemonDao) : LocalDatasource {
+internal class LocalDatasourceImpl(private val dao: PokemonDao) : LocalDatasource {
 
-    override suspend fun getBookmarks(): Result<List<SimplePokemon>> {
-        return Result.Success(dao.getPokemonList().first().map { it.toModel })
-    }
+    override suspend fun getBookmarks(): Result<List<SimplePokemon>> = Result.Success(dao.getPokemonList().first().map { it.toModel })
 
     override suspend fun upsert(pokemon: SimplePokemon) {
         dao.upsert(pokemon.toEntity)
@@ -63,7 +61,5 @@ private class FakeLocalDatasource : LocalDatasource {
         }
     }
 
-    override suspend fun getBookmarks(): Result<List<SimplePokemon>> {
-        return Result.Success(pokemonList.value)
-    }
+    override suspend fun getBookmarks(): Result<List<SimplePokemon>> = Result.Success(pokemonList.value)
 }

@@ -3,12 +3,12 @@ package com.alramlawi.pokemon
 import android.app.Application
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
-import shared.di.initKoin
+import shared.di.initKoinApplication
 
 class PokemonApp : Application() {
     override fun onCreate() {
         super.onCreate()
-        initKoin(app = this) {
+        initKoinApplication {
             androidContext(this@PokemonApp)
             androidLogger()
         }
