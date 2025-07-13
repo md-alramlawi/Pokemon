@@ -14,78 +14,78 @@ import kotlinx.serialization.Serializable
 
 inline fun <reified T : @Serializable Any> NavGraphBuilder.composableWithHorizontalSlide(
     deepLinks: List<NavDeepLink> = emptyList(),
-    noinline content: @Composable AnimatedContentScope.(NavBackStackEntry) -> Unit
+    noinline content: @Composable AnimatedContentScope.(NavBackStackEntry) -> Unit,
 ) = composable<T>(
     deepLinks = deepLinks,
     enterTransition = {
         slideIntoContainer(
             towards = AnimatedContentTransitionScope.SlideDirection.Start,
-            animationSpec = tween(300)
+            animationSpec = tween(300),
         )
     },
     exitTransition = {
         slideOutOfContainer(
             towards = AnimatedContentTransitionScope.SlideDirection.Start,
-            animationSpec = tween(300)
+            animationSpec = tween(300),
         )
     },
     popEnterTransition = {
         slideIntoContainer(
             towards = AnimatedContentTransitionScope.SlideDirection.End,
-            animationSpec = tween(300)
+            animationSpec = tween(300),
         )
     },
     popExitTransition = {
         slideOutOfContainer(
             towards = AnimatedContentTransitionScope.SlideDirection.End,
-            animationSpec = tween(300)
+            animationSpec = tween(300),
         )
     },
-    content = content
+    content = content,
 )
 
 inline fun <reified T : @Serializable Any> NavGraphBuilder.composableWithVerticalSlide(
     deepLinks: List<NavDeepLink> = emptyList(),
-    noinline content: @Composable AnimatedContentScope.(NavBackStackEntry) -> Unit
+    noinline content: @Composable AnimatedContentScope.(NavBackStackEntry) -> Unit,
 ) = composable<T>(
     deepLinks = deepLinks,
     enterTransition = {
         slideIntoContainer(
             towards = AnimatedContentTransitionScope.SlideDirection.Up,
-            animationSpec = tween(300)
+            animationSpec = tween(300),
         )
     },
     exitTransition = {
         slideOutOfContainer(
             towards = AnimatedContentTransitionScope.SlideDirection.Up,
-            animationSpec = tween(300)
+            animationSpec = tween(300),
         )
     },
     popEnterTransition = {
         slideIntoContainer(
             towards = AnimatedContentTransitionScope.SlideDirection.Down,
-            animationSpec = tween(300)
+            animationSpec = tween(300),
         )
     },
     popExitTransition = {
         slideOutOfContainer(
             towards = AnimatedContentTransitionScope.SlideDirection.Down,
-            animationSpec = tween(300)
+            animationSpec = tween(300),
         )
     },
-    content = content
+    content = content,
 )
 
 inline fun <reified T : @Serializable Any> NavGraphBuilder.composableNoAnimation(
     deepLinks: List<NavDeepLink> = emptyList(),
-    noinline content: @Composable AnimatedContentScope.(NavBackStackEntry) -> Unit
+    noinline content: @Composable AnimatedContentScope.(NavBackStackEntry) -> Unit,
 ) = composable<T>(
     deepLinks = deepLinks,
     enterTransition = { null },
     exitTransition = { null },
     popEnterTransition = { null },
     popExitTransition = { null },
-    content = content
+    content = content,
 )
 
 @MainThread

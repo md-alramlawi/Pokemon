@@ -23,7 +23,6 @@ internal interface PokemonApi {
     suspend fun getPage(offset: Int): HttpResponse
 
     suspend fun getPokemon(name: String): HttpResponse
-
 }
 
 internal class KtorPokemonApi(private val client: HttpClient) : PokemonApi {
@@ -32,9 +31,7 @@ internal class KtorPokemonApi(private val client: HttpClient) : PokemonApi {
         return client.get(endPoint)
     }
 
-    override suspend fun getNextList(nextUrl: String): HttpResponse {
-        return client.get(nextUrl)
-    }
+    override suspend fun getNextList(nextUrl: String): HttpResponse = client.get(nextUrl)
 
     override suspend fun getPage(offset: Int): HttpResponse {
         val endPoint = ApiConstant.BASE_URL + "pokemon/?offset=$offset&limit=${Constants.PAGE_LIMIT}"

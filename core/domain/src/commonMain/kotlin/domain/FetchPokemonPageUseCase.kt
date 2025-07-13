@@ -7,7 +7,5 @@ import model.SimplePokemon
 class FetchPokemonPageUseCase(
     private val repository: PokemonRepository,
 ) {
-    suspend operator fun invoke(offset: Int? = null): Result<List<SimplePokemon>> {
-        return repository.getPokemonPage(offset)
-    }
+    suspend operator fun invoke(offset: Int? = null): Result<List<SimplePokemon>> = repository.getPokemonPage(offset)
 }

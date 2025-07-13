@@ -78,24 +78,23 @@ private fun steelPainter(): Painter = painterResource(Res.drawable.steel)
 private fun waterPainter(): Painter = painterResource(Res.drawable.water)
 
 @Composable
-fun BackgroundsPainterMap(): HashMap<String, Painter> =
-    hashMapOf(
-        "bug" to bugPainter(),
-        "dark" to darkPainter(),
-        "dragon" to dragonPainter(),
-        "electric" to electricPainter(),
-        "fairy" to fairyPainter(),
-        "fighting" to fightingPainter(),
-        "fire" to firePainter(),
-        "flying" to flyingPainter(),
-        "ghost" to ghostPainter(),
-        "grass" to grassPainter(),
-        "ground" to groundPainter(),
-        "ice" to icePainter(),
-        "normal" to normalPainter(),
-        "poison" to poisonPainter(),
-        "psychic" to psychicPainter(),
-        "rock" to rockPainter(),
-        "steel" to steelPainter(),
-        "water" to waterPainter(),
-    )
+fun BackgroundsPainterMap(): HashMap<String, Painter> = hashMapOf(
+    "bug" to bugPainter(),
+    "dark" to darkPainter(),
+    "dragon" to dragonPainter(),
+    "electric" to electricPainter(),
+    "fairy" to fairyPainter(),
+    "fighting" to fightingPainter(),
+    "fire" to firePainter(),
+    "flying" to flyingPainter(),
+    "ghost" to ghostPainter(),
+    "grass" to grassPainter(),
+    "ground" to groundPainter(),
+    "ice" to icePainter(),
+    "normal" to normalPainter(),
+    "poison" to poisonPainter(),
+    "psychic" to psychicPainter(),
+    "rock" to rockPainter(),
+    "steel" to steelPainter(),
+    "water" to waterPainter(),
+)

@@ -7,7 +7,5 @@ import model.Pokemon
 class FetchPokemonDetailsUseCase(
     private val repository: PokemonRepository,
 ) {
-    suspend operator fun invoke(name: String): Result<Pokemon> {
-        return repository.getPokemonDetails(name)
-    }
+    suspend operator fun invoke(name: String): Result<Pokemon> = repository.getPokemonDetails(name)
 }

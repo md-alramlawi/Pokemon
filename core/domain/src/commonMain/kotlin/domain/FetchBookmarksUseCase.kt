@@ -7,7 +7,5 @@ import model.SimplePokemon
 class FetchBookmarksUseCase(
     private val repository: PokemonRepository,
 ) {
-    suspend operator fun invoke(): Result<List<SimplePokemon>> {
-        return repository.getBookmarks()
-    }
+    suspend operator fun invoke(): Result<List<SimplePokemon>> = repository.getBookmarks()
 }

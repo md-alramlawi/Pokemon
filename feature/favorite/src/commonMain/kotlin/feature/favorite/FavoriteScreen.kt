@@ -38,7 +38,7 @@ fun FavoriteScreen(
     onClickItem: (name: String) -> Unit,
     onBack: () -> Unit,
 ) {
-    val data by viewModel.data.collectAsStateWithLifecycle()
+    val data by viewModel.bookmarksData.collectAsStateWithLifecycle()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {

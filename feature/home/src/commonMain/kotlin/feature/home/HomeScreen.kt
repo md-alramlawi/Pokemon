@@ -39,7 +39,7 @@ fun HomeScreen(
     onGoFavorite: () -> Unit,
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    val data by viewModel.data.collectAsStateWithLifecycle()
+    val data by viewModel.homeData.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
         viewModel.fetchInitialData()

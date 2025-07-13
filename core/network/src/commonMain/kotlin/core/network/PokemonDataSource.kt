@@ -30,19 +30,17 @@ internal class PokemonDataSourceImpl(private val api: PokemonApi) : PokemonDataS
         }
     }
 
-    private suspend inline fun <T> safeApiCall(apiCall: () -> T?): Result<T> {
-        return try {
-            coroutineContext.ensureActive() // Check for coroutine cancellation
-            val result = apiCall()
-            if (result != null) {
-                Result.Success(result)
-            } else {
-                Result.Error(NullPointerException("Response body is null"))
-            }
-        } catch (e: CancellationException) {
-            throw e // Propagate the cancellation exception
-        } catch (e: Exception) {
-            Result.Error(e)
+    private suspend inline fun <T> safeApiCall(apiCall: () -> T?): Result<T> = try {
+        coroutineContext.ensureActive() // Check for coroutine cancellation
+        val result = apiCall()
+        if (result != null) {
+            Result.Success(result)
+        } else {
+            Result.Error(NullPointerException("Response body is null"))
         }
+    } catch (e: CancellationException) {
+        throw e // Propagate the cancellation exception
+    } catch (e: Exception) {
+        Result.Error(e)
     }
 }
