@@ -4,12 +4,14 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -69,38 +71,43 @@ private fun FavoriteContent(
     onClickSave: (SimplePokemon) -> Unit,
     onBack: () -> Unit,
 ) {
-    Box {
-        LazyVerticalGrid(
-            columns = GridCells.Fixed(3),
-            verticalArrangement = Arrangement.spacedBy(5.dp),
-            horizontalArrangement = Arrangement.spacedBy(5.dp),
-            contentPadding = PaddingValues(
-                start = 5.dp,
-                end = 5.dp,
-                top = AppBarHeight.BasicHeight,
-                bottom = 20.dp,
-            ),
-        ) {
-            items(data.list, key = { it.name }) { pokemon ->
-                PokemonItem(
-                    id = pokemon.id,
-                    name = pokemon.name,
-                    iconUrl = pokemon.url,
-                    isBookmarked = true,
-                    onClick = { onClickItem(pokemon) },
-                    onClickSave = { onClickSave(pokemon) },
+    Surface(
+        modifier = Modifier.fillMaxSize(),
+        color = MaterialTheme.colorScheme.background,
+    ) {
+        Box {
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(3),
+                verticalArrangement = Arrangement.spacedBy(5.dp),
+                horizontalArrangement = Arrangement.spacedBy(5.dp),
+                contentPadding = PaddingValues(
+                    start = 5.dp,
+                    end = 5.dp,
+                    top = AppBarHeight.BasicHeight,
+                    bottom = 20.dp,
+                ),
+            ) {
+                items(data.list, key = { it.name }) { pokemon ->
+                    PokemonItem(
+                        id = pokemon.id,
+                        name = pokemon.name,
+                        iconUrl = pokemon.url,
+                        isBookmarked = true,
+                        onClick = { onClickItem(pokemon) },
+                        onClickSave = { onClickSave(pokemon) },
+                    )
+                }
+            }
+
+            AppTopBar(Modifier.height(AppBarHeight.BasicHeight)) {
+                BackButton { onBack() }
+                Text(
+                    text = "Favorite",
+                    style = MaterialTheme.typography.headlineMedium,
+                    color = Color.White,
+                    fontWeight = FontWeight.Bold,
                 )
             }
-        }
-
-        AppTopBar(Modifier.height(AppBarHeight.BasicHeight)) {
-            BackButton { onBack() }
-            Text(
-                text = "Favorite",
-                style = MaterialTheme.typography.headlineMedium,
-                color = Color.White,
-                fontWeight = FontWeight.Bold,
-            )
         }
     }
 }
