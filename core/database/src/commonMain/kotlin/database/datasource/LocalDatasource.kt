@@ -26,7 +26,7 @@ interface LocalDatasource {
     }
 }
 
-private class LocalDatasourceImpl(private val dao: PokemonDao) : LocalDatasource {
+internal class LocalDatasourceImpl(private val dao: PokemonDao) : LocalDatasource {
 
     override suspend fun getBookmarks(): Result<List<SimplePokemon>> {
         return Result.Success(dao.getPokemonList().first().map { it.toModel })
