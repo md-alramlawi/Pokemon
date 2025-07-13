@@ -65,7 +65,7 @@ fun FavoriteScreen(
 }
 
 @Composable
-private fun FavoriteContent(
+internal fun FavoriteContent(
     data: BookmarkData,
     onClickItem: (SimplePokemon) -> Unit,
     onClickSave: (SimplePokemon) -> Unit,
