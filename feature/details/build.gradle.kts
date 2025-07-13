@@ -72,7 +72,6 @@ android {
 }
 
 dependencies {
-    // — Runtime tooling (gutter icons, live updates, etc.) – debug only
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 }

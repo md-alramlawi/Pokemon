@@ -68,7 +68,7 @@ fun HomeScreen(
 }
 
 @Composable
-private fun PokemonListContent(
+internal fun PokemonListContent(
     isLoading: Boolean,
     data: HomeData,
     onClickItem: (SimplePokemon) -> Unit,
