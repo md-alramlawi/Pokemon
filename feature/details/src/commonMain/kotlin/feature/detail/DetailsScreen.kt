@@ -50,7 +50,7 @@ fun DetailsScreen(
     name: String,
     onBack: () -> Unit,
 ) {
-    val date by viewModel.data.collectAsStateWithLifecycle()
+    val date by viewModel.detailsData.collectAsStateWithLifecycle()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
@@ -76,7 +76,7 @@ fun DetailsScreen(
 }
 
 @Composable
-private fun PokemonDetailsContent(
+internal fun PokemonDetailsContent(
     data: DetailsData,
     onClickSave: (Pokemon) -> Unit,
     onBack: () -> Unit = {},

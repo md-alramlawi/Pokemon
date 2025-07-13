@@ -28,26 +28,25 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
-            implementation(projects.core.model)
-            implementation(projects.core.common)
-            implementation(projects.core.domain)
-            implementation(projects.core.ui)
-
+            // compose
             implementation(compose.runtime)
             implementation(compose.foundation)
             implementation(compose.material3)
             implementation(compose.ui)
             implementation(compose.components.resources)
-            implementation(compose.components.uiToolingPreview)
 
+            // core
+            implementation(projects.core.model)
+            implementation(projects.core.common)
+            implementation(projects.core.domain)
+            implementation(projects.core.ui)
+
+            // lifecycle
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtime.compose)
 
+            // koin
             implementation(libs.koin.compose.viewmodel)
-        }
-
-        androidMain.dependencies {
-            implementation(libs.koin.android)
         }
     }
 }
@@ -63,4 +62,17 @@ android {
     defaultConfig {
         minSdk = libs.versions.android.minSdk.get().toInt()
     }
+
+    buildFeatures {
+        compose = true
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.4.8"
+    }
+}
+
+dependencies {
+    // — Runtime tooling (gutter icons, live updates, etc.) – debug only
+    debugImplementation(libs.androidx.ui.tooling)
+    debugImplementation(libs.androidx.ui.test.manifest)
 }
