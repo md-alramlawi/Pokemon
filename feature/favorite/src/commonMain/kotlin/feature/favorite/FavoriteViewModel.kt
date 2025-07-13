@@ -36,13 +36,6 @@ class FavoriteViewModel(
                 stateHelper.setFailureState(error)
             }
     }
-//
-//    fun setCurrent(name: String) {
-//        viewModelScope.launch(Dispatchers.IO) {
-//            pokemonRepository.setCurrent(name)
-//        }
-//    }
-
     internal fun bookmark(simplePokemon: SimplePokemon) = viewModelScope.launch {
         bookmarksUseCase.invoke(
             exist = true,

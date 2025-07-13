@@ -28,11 +28,11 @@ import core.ui.painter.backPainter
 import core.ui.state.UIState
 import feature.home.composable.PokemonItem
 import model.SimplePokemon
-import org.koin.compose.koinInject
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun FavoriteScreen(
-    viewModel: FavoriteViewModel = koinInject(),
+    viewModel: FavoriteViewModel = koinViewModel(),
     onClickItem: (name: String) -> Unit,
     onBack: () -> Unit,
 ) {
