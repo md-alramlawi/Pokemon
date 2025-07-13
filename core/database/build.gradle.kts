@@ -44,6 +44,17 @@ kotlin {
             implementation(libs.koin.core)
         }
     }
+
+    targets.configureEach {
+        compilations.configureEach {
+            // hook into the underlying KotlinCompile task…
+            compileTaskProvider.configure {
+                compilerOptions {
+                    freeCompilerArgs.add("-Xexpect-actual-classes")
+                }
+            }
+        }
+    }
 }
 
 android {

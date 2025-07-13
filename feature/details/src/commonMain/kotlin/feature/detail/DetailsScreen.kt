@@ -198,8 +198,9 @@ private fun LoadingContent() {
                 ) {
                     ShimmerEffect(modifier = Modifier.height(50.dp).fillMaxWidth(0.8f))
                     Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                        ShimmerEffect(modifier = Modifier.size(height = 50.dp, width = 100.dp))
-                        ShimmerEffect(modifier = Modifier.size(height = 50.dp, width = 100.dp))
+                        repeat(2) {
+                            ShimmerEffect(modifier = Modifier.size(height = 50.dp, width = 100.dp))
+                        }
                     }
                 }
                 Spacer(Modifier.height(10.dp))
@@ -207,12 +208,9 @@ private fun LoadingContent() {
                     Modifier.weight(1f).fillMaxWidth(0.8f),
                     verticalArrangement = Arrangement.spacedBy(10.dp),
                 ) {
-                    ShimmerEffect(modifier = Modifier.height(20.dp).fillMaxWidth())
-                    ShimmerEffect(modifier = Modifier.height(20.dp).fillMaxWidth())
-                    ShimmerEffect(modifier = Modifier.height(20.dp).fillMaxWidth())
-                    ShimmerEffect(modifier = Modifier.height(20.dp).fillMaxWidth())
-                    ShimmerEffect(modifier = Modifier.height(20.dp).fillMaxWidth())
-                    ShimmerEffect(modifier = Modifier.height(20.dp).fillMaxWidth())
+                    repeat(6) {
+                        ShimmerEffect(modifier = Modifier.height(20.dp).fillMaxWidth())
+                    }
                 }
                 Spacer(Modifier.height(20.dp))
             }
@@ -236,10 +234,9 @@ private fun LoadingContent() {
                         ShimmerEffect(modifier = Modifier.height(30.dp).fillMaxWidth())
                     }
                     Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                        ShimmerEffect(modifier = Modifier.height(20.dp).fillMaxWidth())
-                        ShimmerEffect(modifier = Modifier.height(20.dp).fillMaxWidth())
-                        ShimmerEffect(modifier = Modifier.height(20.dp).fillMaxWidth())
-                        ShimmerEffect(modifier = Modifier.height(20.dp).fillMaxWidth())
+                        repeat(4) {
+                            ShimmerEffect(modifier = Modifier.height(20.dp).fillMaxWidth())
+                        }
                     }
                 }
             }

@@ -4,7 +4,7 @@ import core.network.KtorPokemonApi
 import core.network.PokemonApi
 import core.network.PokemonDataSource
 import core.network.PokemonDataSourceImpl
-import core.network.ktorClient
+import core.network.client.ktorClient
 import io.ktor.client.HttpClient
 import org.koin.core.module.Module
 import org.koin.dsl.module
