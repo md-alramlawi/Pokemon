@@ -12,15 +12,9 @@ interface PokemonDataSource {
     suspend fun getPokemonPage(offset: Int): Result<PokemonListingResponse>
 
     suspend fun getPokemon(name: String): Result<PokemonDto>
-
-    companion object {
-        fun create(): PokemonDataSource {
-            return PokemonDataSourceImpl(PokemonApi.create())
-        }
-    }
 }
 
-private class PokemonDataSourceImpl(private val api: PokemonApi) : PokemonDataSource {
+internal class PokemonDataSourceImpl(private val api: PokemonApi) : PokemonDataSource {
 
     override suspend fun getPokemonPage(offset: Int): Result<PokemonListingResponse> {
         delay(500)

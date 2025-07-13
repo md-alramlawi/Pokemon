@@ -24,14 +24,9 @@ internal interface PokemonApi {
 
     suspend fun getPokemon(name: String): HttpResponse
 
-    companion object {
-        fun create(): PokemonApi {
-            return KtorPokemonApi(client)
-        }
-    }
 }
 
-private class KtorPokemonApi(private val client: HttpClient) : PokemonApi {
+internal class KtorPokemonApi(private val client: HttpClient) : PokemonApi {
     override suspend fun getInitialList(): HttpResponse {
         val endPoint = ApiConstant.BASE_URL + "pokemon/"
         return client.get(endPoint)
@@ -52,7 +47,7 @@ private class KtorPokemonApi(private val client: HttpClient) : PokemonApi {
     }
 }
 
-private val client = HttpClient {
+internal val client = HttpClient {
     install(plugin = ContentNegotiation) {
         json(
             json = Json {
